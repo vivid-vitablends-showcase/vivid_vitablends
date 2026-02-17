@@ -1,40 +1,18 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const { login, isLoading } = useAdminAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    // TODO: Replace with actual API call
-    setTimeout(() => {
-      if (username === "admin" && password === "admin123") {
-        sessionStorage.setItem("adminAuth", "true");
-        toast({
-          title: "Login successful",
-          description: "Welcome back, admin.",
-        });
-        navigate("/sys-admin-dashboard");
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Invalid credentials.",
-          variant: "destructive",
-        });
-      }
-      setLoading(false);
-    }, 800);
+    await login({ username, password });
   };
 
   return (
@@ -67,8 +45,8 @@ const AdminLogin = () => {
                 autoComplete="off"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Authenticating..." : "Login"}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Authenticating..." : "Login"}
             </Button>
           </form>
         </CardContent>

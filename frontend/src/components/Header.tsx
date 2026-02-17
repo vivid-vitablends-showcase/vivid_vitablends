@@ -4,7 +4,13 @@ import { ShoppingBag, Menu, X, Search } from "lucide-react";
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const navLinks = ["Home", "Pickles", "Health Powders", "Combos", "About"];
+  const navLinks = [
+    { label: "Home", href: "/" },
+    { label: "Health Powders", href: "/health-powders" },
+    { label: "Premium Pickles", href: "/premium-pickles" },
+    { label: "Combos", href: "/#combos" },
+    { label: "About", href: "/#about" },
+  ];
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border">
@@ -16,11 +22,11 @@ const Header = () => {
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <a
-              key={link}
-              href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
+              key={link.label}
+              href={link.href}
               className="text-sm font-medium text-foreground/70 transition-colors hover:text-accent"
             >
-              {link}
+              {link.label}
             </a>
           ))}
         </nav>
@@ -49,16 +55,17 @@ const Header = () => {
         <nav className="border-t border-border bg-card px-5 py-4 md:hidden">
           {navLinks.map((link) => (
             <a
-              key={link}
-              href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
+              key={link.label}
+              href={link.href}
               className="block py-3 text-sm font-medium text-foreground/70 transition-colors hover:text-accent"
               onClick={() => setMobileOpen(false)}
             >
-              {link}
+              {link.label}
             </a>
           ))}
         </nav>
       )}
+
     </header>
   );
 };
