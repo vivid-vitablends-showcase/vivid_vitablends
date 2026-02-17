@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
-import productKoorka from "@/assets/product-koorka-pickle.jpg";
-import productSmoothie from "@/assets/product-smoothie-powder.jpg";
-import productAbc from "@/assets/product-abc-powder.jpg";
+import productKoorka from "@/assets/koorka.jpg";
+import productSmoothie from "@/assets/banana.jpg";
+import productAbc from "@/assets/abc.jpg";
 import productComboPickles from "@/assets/product-combo-pickles.jpg";
 
 const products = [
