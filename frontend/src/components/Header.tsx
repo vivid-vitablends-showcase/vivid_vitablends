@@ -8,9 +8,8 @@ const Header = () => {
     { label: "Home", href: "/" },
     { label: "Health Powders", href: "/health-powders" },
     { label: "Premium Pickles", href: "/premium-pickles" },
-    { label: "Combos", href:"/"},
-    { label: "About", href:"/"}
-
+    { label: "Combos", href: "/#combos" },
+    { label: "About", href: "/#about" },
   ];
 
   return (
@@ -21,18 +20,15 @@ const Header = () => {
         </a>
 
         <nav className="hidden items-center gap-8 md:flex">
-          <nav className="hidden items-center gap-8 md:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={`#${link.href}`}
-                className="text-sm font-medium text-foreground/70 transition-colors hover:text-accent"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="text-sm font-medium text-foreground/70 transition-colors hover:text-accent"
+            >
+              {link.label}
+            </a>
+          ))}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -60,7 +56,7 @@ const Header = () => {
           {navLinks.map((link) => (
             <a
               key={link.label}
-              href={`#${link.href}`}
+              href={link.href}
               className="block py-3 text-sm font-medium text-foreground/70 transition-colors hover:text-accent"
               onClick={() => setMobileOpen(false)}
             >
