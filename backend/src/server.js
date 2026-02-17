@@ -5,6 +5,7 @@ import config from './config/index.js';
 import logger from './utils/logger.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import healthRoutes from './routes/health.js';
+import adminRoutes from './routes/admin.routes.js';
 
 dotenv.config();
 
@@ -15,7 +16,17 @@ app.use(express.json());
 app.use(requestLogger);
 
 app.use('/api', healthRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/', healthRoutes);
+
+app.use((err, req, res, next) => {
+  logger.error('Request failed', { error: err.message, path: req.path });
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || 'Internal server error',
+    code: err.code || 'INTERNAL_ERROR'
+  });
+});
 
 app.listen(config.port, () => {
   logger.info(`Server running on port ${config.port} in ${config.nodeEnv} mode`);
