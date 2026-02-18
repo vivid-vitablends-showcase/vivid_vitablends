@@ -8,15 +8,14 @@ const VideoSection = () => {
   return (
     <section id="about" className="section-padding">
       <div className="mx-auto max-w-5xl text-center">
-        <p className="text-sm font-semibold uppercase tracking-[0.15em] text-accent">Our Story</p>
-        <h2 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">
-          Made with Love, Served with Pride
+        <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
+          Made Using Grandmother's Recipes
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-          Every jar tells a story of tradition, care, and purity. Watch how we bring our grandmother's recipes to your table.
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+          Pure ingredients, traditional methods, authentic taste — Just like home.
         </p>
 
-        <div className="mt-10 overflow-hidden rounded-lg">
+        <div className="mt-10 overflow-hidden rounded-lg shadow-xl">
           {!playing ? (
             <div
               className="group relative cursor-pointer"
@@ -26,7 +25,7 @@ const VideoSection = () => {
             >
               <img
                 src={heroBanner}
-                alt="Video thumbnail - Our story"
+                alt="Our homemade kitchen process"
                 className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 flex items-center justify-center bg-foreground/30 transition-colors group-hover:bg-foreground/40">

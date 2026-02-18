@@ -1,10 +1,10 @@
 import { Leaf, Home, ShieldCheck, BookOpen } from "lucide-react";
 
 const promises = [
-  { icon: Leaf, title: "100% Natural", desc: "Pure ingredients, no chemicals" },
-  { icon: Home, title: "Homemade", desc: "Crafted in small batches" },
-  { icon: ShieldCheck, title: "No Preservatives", desc: "Fresh & preservative-free" },
-  { icon: BookOpen, title: "Traditional Recipe", desc: "Passed down generations" },
+  { icon: Leaf, title: "100% Natural", desc: "Pure ingredients, no chemicals", badge: "Certified" },
+  { icon: Home, title: "Homemade", desc: "Small batch production", badge: "Authentic" },
+  { icon: ShieldCheck, title: "No Preservatives", desc: "Fresh & preservative-free", badge: "Pure" },
+  { icon: BookOpen, title: "Traditional Recipe", desc: "Passed down generations", badge: "Heritage" },
 ];
 
 const BrandPromise = () => {
@@ -22,6 +22,7 @@ const BrandPromise = () => {
               </div>
               <h3 className="font-display text-lg font-bold text-foreground">{p.title}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
+              <span className="mt-2 text-xs font-semibold text-accent">✓ {p.badge}</span>
             </div>
           ))}
         </div>
