@@ -58,7 +58,7 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           port: ${{ secrets.VM_PORT || 22 }}
           command_timeout: 15m
-          envs: DOCKER_USERNAME,DOCKER_PASSWORD,DATABASE_URL,JWT_SECRET
+          envs: DOCKER_USERNAME,DOCKER_PASSWORD,DATABASE_URL,DIRECT_URL,JWT_SECRET
           script: |
             # Check Docker Compose availability
             echo "🔍 Checking Docker Compose..."
@@ -90,6 +90,7 @@ jobs:
             # Create production environment file
             echo "🔧 Creating .env file for docker-compose..."
             echo "DATABASE_URL=$DATABASE_URL" > .env
+            echo "DIRECT_URL=$DIRECT_URL" >> .env
             echo "JWT_SECRET=$JWT_SECRET" >> .env
             
             chmod +x deploy.sh
@@ -98,6 +99,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Health Check
