@@ -3,6 +3,18 @@ set -e
 
 echo "🚀 Starting deployment..."
 
+# Detect docker compose command
+if command -v docker-compose &> /dev/null; then
+    COMPOSE_CMD="docker-compose"
+elif docker compose version &> /dev/null; then
+    COMPOSE_CMD="docker compose"
+else
+    echo "❌ Neither docker-compose nor docker compose found!"
+    exit 1
+fi
+
+echo "Using: $COMPOSE_CMD"
+
 # Load environment variables
 if [ -f .env.deploy ]; then
     export $(cat .env.deploy | xargs)
@@ -16,15 +28,15 @@ fi
 
 # Stop existing containers
 echo "⏹️  Stopping existing containers..."
-docker compose -f docker-compose.prod.yml down
+$COMPOSE_CMD -f docker-compose.prod.yml down
 
 # Pull latest images
 echo "📦 Pulling latest images from registry..."
-docker compose -f docker-compose.prod.yml pull
+$COMPOSE_CMD -f docker-compose.prod.yml pull
 
 # Start containers
 echo "▶️  Starting containers..."
-docker compose -f docker-compose.prod.yml up -d
+$COMPOSE_CMD -f docker-compose.prod.yml up -d
 
 # Wait for services to be healthy
 echo "⏳ Waiting for services to be healthy..."
@@ -32,7 +44,7 @@ sleep 10
 
 # Run database migrations
 echo "🗄️  Running database migrations..."
-docker compose -f docker-compose.prod.yml exec -T backend npm run prisma:migrate deploy
+$COMPOSE_CMD -f docker-compose.prod.yml exec -T backend npm run prisma:migrate deploy
 
 # Clean up old images
 echo "🧹 Cleaning up..."
