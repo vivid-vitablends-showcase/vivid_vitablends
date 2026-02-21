@@ -26,3 +26,20 @@ export const findById = async (id) => {
     where: { id },
   });
 };
+
+export const create = async (data) => {
+  return prisma.product.create({ data });
+};
+
+export const update = async (id, data) => {
+  return prisma.product.update({
+    where: { id },
+    data,
+  });
+};
+
+export const deleteProduct = async (id) => {
+  return prisma.product.delete({
+    where: { id },
+  });
+};
