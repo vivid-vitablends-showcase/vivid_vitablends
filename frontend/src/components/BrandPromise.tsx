@@ -19,9 +19,7 @@ const BrandPromise = () => {
   return (
     <section className="section-padding bg-secondary">
       <div className="mx-auto max-w-7xl">
-        
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
-
           {promises.map((p, i) => (
             <div
               key={p.title}
@@ -29,11 +27,8 @@ const BrandPromise = () => {
             >
               {/* Smaller icon container on mobile */}
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 md:h-14 md:w-14">
-  <p.icon
-    size={20}
-    className="text-accent md:size-[28px]"
-  />
-</div>
+                <p.icon size={20} className="text-accent md:size-[28px]" />
+              </div>
 
               {/* Smaller title on mobile */}
               <h3 className="font-display mb-0 text-sm font-bold text-foreground md:text-lg">
@@ -44,10 +39,8 @@ const BrandPromise = () => {
               <p className="mt-0  text-xs text-muted-foreground md:text-sm">
                 {p.desc}
               </p>
-
             </div>
           ))}
-
         </div>
       </div>
     </section>

@@ -6,7 +6,6 @@ const HeroSection = () => {
   return (
     <section className="relative overflow-hidden">
       <div className="relative h-[70vh] min-h-[500px] md:h-[85vh]">
-
         {/* Background Image */}
         {/* <img
           src={heroBanner}
@@ -22,7 +21,6 @@ const HeroSection = () => {
         <div className="absolute inset-0 flex items-center">
           <div className="mx-auto w-full max-w-7xl px-5 md:px-10">
             <div className="max-w-lg animate-fade-up">
-
               <p className="mb-12 text-sm font-semibold uppercase tracking-[0.2em] text-warm-gold">
                 No Preservatives, Just real ingredients
               </p>
@@ -46,11 +44,9 @@ const HeroSection = () => {
                   Shop Now
                 </Link>
               </div>
-
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );

@@ -18,10 +18,8 @@ const CategoryGrid = () => {
   return (
     <section className="section-padding">
       <div className="mx-auto max-w-7xl">
-
         {/* 🔥 Changed grid to always 2 columns */}
         <div className="grid grid-cols-2 gap-4">
-
           {categories.map((cat) => (
             <a
               key={cat.name}
@@ -54,7 +52,6 @@ const CategoryGrid = () => {
               </div>
             </a>
           ))}
-
         </div>
       </div>
     </section>

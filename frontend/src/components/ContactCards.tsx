@@ -20,7 +20,11 @@ const getStarColor = (value: number) => {
 
 const contacts = [
   { icon: Mail, label: "Email Us", href: "mailto:hello@vividvitablends.com" },
-  { icon: MessageCircle, label: "WhatsApp", href: "https://wa.me/919876543210" },
+  {
+    icon: MessageCircle,
+    label: "WhatsApp",
+    href: "https://wa.me/919876543210",
+  },
   { icon: Phone, label: "Call Us", href: "tel:+919876543210" },
 ];
 
@@ -68,7 +72,6 @@ const ContactCards = () => {
           </h3>
 
           <form className="space-y-6">
-
             {/* ⭐ Star Rating */}
             <div className="text-center">
               <p className="mb-3 text-sm font-medium text-foreground">
@@ -128,7 +131,6 @@ const ContactCards = () => {
             >
               Submit Message
             </button>
-
           </form>
         </div>
       </div>

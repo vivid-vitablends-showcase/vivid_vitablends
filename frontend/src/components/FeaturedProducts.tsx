@@ -34,21 +34,16 @@ const FeaturedProducts = () => {
 
     if (diff > 50) {
       // Swipe Left
-      setCurrentIndex((prev) =>
-        prev === featured.length - 1 ? 0 : prev + 1
-      );
+      setCurrentIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1));
     } else if (diff < -50) {
       // Swipe Right
-      setCurrentIndex((prev) =>
-        prev === 0 ? featured.length - 1 : prev - 1
-      );
+      setCurrentIndex((prev) => (prev === 0 ? featured.length - 1 : prev - 1));
     }
   };
 
   return (
     <section className="section-padding bg-background">
       <div className="mx-auto max-w-7xl">
-
         {/* Heading */}
         <div className="mb-12 text-center">
           <p className="text-sm font-semibold uppercase tracking-widest text-accent">
@@ -188,7 +183,6 @@ const FeaturedProducts = () => {
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );
