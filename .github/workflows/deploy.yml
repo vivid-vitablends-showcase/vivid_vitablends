@@ -89,8 +89,8 @@ jobs:
             
             # Create production environment file
             echo "🔧 Creating .env file for docker-compose..."
-            echo "DATABASE_URL=${DATABASE_URL}" > .env
-            echo "JWT_SECRET=${JWT_SECRET}" >> .env
+            echo "DATABASE_URL=$DATABASE_URL" > .env
+            echo "JWT_SECRET=$JWT_SECRET" >> .env
             
             chmod +x deploy.sh
             ./deploy.sh
