@@ -58,6 +58,20 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           port: ${{ secrets.VM_PORT || 22 }}
           script: |
+            # Check Docker Compose availability
+            echo "🔍 Checking Docker Compose..."
+            if command -v docker-compose &> /dev/null; then
+              echo "✅ docker-compose found: $(docker-compose --version)"
+            elif docker compose version &> /dev/null 2>&1; then
+              echo "✅ docker compose found: $(docker compose version)"
+            else
+              echo "❌ Docker Compose not found. Installing..."
+              echo "📦 Installing Docker Compose..."
+              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+              echo "✅ Installed: $(docker-compose --version)"
+            fi
+            
             # Create directory if it doesn't exist
             if [ ! -d "/opt/vivid_vitablends" ]; then
               echo "📁 Creating project directory..."
