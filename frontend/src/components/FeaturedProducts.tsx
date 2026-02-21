@@ -11,7 +11,9 @@ const FeaturedProducts = () => {
   const featured = products.filter((p) => p.featured);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [startX, setStartX] = useState(0);
 
+  // ================= AUTO SLIDE =================
   useEffect(() => {
     if (featured.length <= 1) return;
 
@@ -24,9 +26,33 @@ const FeaturedProducts = () => {
     return () => clearInterval(interval);
   }, [featured.length]);
 
+  // ================= TOUCH HANDLERS =================
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX - endX;
+
+    if (diff > 50) {
+      // Swipe Left
+      setCurrentIndex((prev) =>
+        prev === featured.length - 1 ? 0 : prev + 1
+      );
+    } else if (diff < -50) {
+      // Swipe Right
+      setCurrentIndex((prev) =>
+        prev === 0 ? featured.length - 1 : prev - 1
+      );
+    }
+  };
+
   return (
     <section className="section-padding bg-background">
       <div className="mx-auto max-w-7xl">
+
+        {/* Heading */}
         <div className="mb-12 text-center">
           <p className="text-sm font-semibold uppercase tracking-widest text-accent">
             Handpicked For You
@@ -37,7 +63,11 @@ const FeaturedProducts = () => {
         </div>
 
         {/* ================= MOBILE SLIDER ================= */}
-        <div className="relative overflow-hidden md:hidden">
+        <div
+          className="relative overflow-hidden md:hidden"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           <div
             className="flex transition-transform duration-700 ease-in-out"
             style={{
@@ -45,10 +75,7 @@ const FeaturedProducts = () => {
             }}
           >
             {featured.map((product) => (
-              <div
-                key={product.id}
-                className="w-full flex-shrink-0 px-4"
-              >
+              <div key={product.id} className="w-full flex-shrink-0 px-4">
                 <div className="group relative overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl">
 
                   {product.badge && (
@@ -108,7 +135,7 @@ const FeaturedProducts = () => {
         </div>
 
         {/* ================= DESKTOP GRID ================= */}
-        <div className="hidden grid-cols-3 gap-8 md:grid">
+        <div className="hidden md:grid grid-cols-3 gap-8">
           {featured.map((product) => (
             <div
               key={product.id}
@@ -167,6 +194,7 @@ const FeaturedProducts = () => {
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

@@ -32,7 +32,7 @@ const ComboOffers = () => {
   return (
     <section id="combos" className="section-padding bg-secondary">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 text-center">
+        <div className="mb-0 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.15em] text-accent">
             Bundle & Save
           </p>
