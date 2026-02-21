@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { useDebounce } from './useDebounce';
+import { useState, useMemo } from "react";
+import { useDebounce } from "./useDebounce";
 
 interface UseTableFiltersProps<T> {
   data: T[];
@@ -7,17 +7,21 @@ interface UseTableFiltersProps<T> {
   pageSize?: number;
 }
 
-export const useTableFilters = <T,>({ data, searchFields, pageSize = 10 }: UseTableFiltersProps<T>) => {
-  const [search, setSearch] = useState('');
+export const useTableFilters = <T>({
+  data,
+  searchFields,
+  pageSize = 10,
+}: UseTableFiltersProps<T>) => {
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedSearch = useDebounce(search, 300);
 
   const filteredData = useMemo(() => {
     if (!debouncedSearch) return data;
-    
+
     const searchLower = debouncedSearch.toLowerCase();
-    return data.filter(item =>
-      searchFields.some(field => {
+    return data.filter((item) =>
+      searchFields.some((field) => {
         const value = item[field];
         return String(value).toLowerCase().includes(searchLower);
       })

@@ -5,7 +5,8 @@ export const reviews: Review[] = [
     id: "r1",
     name: "Anjali K",
     rating: 5,
-    comment: "Absolutely loved the Banana-Dates Smoothie! So fresh and natural.",
+    comment:
+      "Absolutely loved the Banana-Dates Smoothie! So fresh and natural.",
     showInHero: true,
   },
   {
@@ -22,7 +23,7 @@ export const reviews: Review[] = [
     comment: "Health powders are amazing. My daily energy boost!",
     showInHero: true,
   },
-    {
+  {
     id: "r2",
     name: "Rahul M",
     rating: 4,

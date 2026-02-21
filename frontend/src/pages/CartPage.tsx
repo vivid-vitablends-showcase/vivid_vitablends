@@ -10,10 +10,7 @@ const CartPage = () => {
   const [showDetails, setShowDetails] = useState(false);
 
   const total = useMemo(() => {
-    return cart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
+    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }, [cart]);
 
   return (
@@ -30,7 +27,10 @@ const CartPage = () => {
             {/* ================= MOBILE ================= */}
             <div className="space-y-6 md:hidden">
               {cart.map((item) => (
-                <div key={item.id} className="rounded-2xl bg-white p-4 shadow-sm">
+                <div
+                  key={item.id}
+                  className="rounded-2xl bg-white p-4 shadow-sm"
+                >
                   <div className="flex gap-4">
                     <div className="h-28 w-28 rounded-xl bg-gray-100 p-2">
                       <img
@@ -101,7 +101,10 @@ const CartPage = () => {
             <div className="hidden md:grid md:grid-cols-[1fr_360px] md:gap-10">
               <div className="space-y-8">
                 {cart.map((item) => (
-                  <div key={item.id} className="rounded-2xl bg-white p-6 shadow-sm">
+                  <div
+                    key={item.id}
+                    className="rounded-2xl bg-white p-6 shadow-sm"
+                  >
                     <div className="flex gap-6">
                       <div className="flex w-[220px] justify-center">
                         <img

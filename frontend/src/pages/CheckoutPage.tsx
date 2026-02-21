@@ -36,8 +36,7 @@ const CheckoutPage = () => {
     if (!city.trim()) return "Please enter your city";
     if (!pincode.trim() || pincode.length < 6)
       return "Please enter a valid pincode";
-    if (checkoutItems.length === 0)
-      return "No products to checkout";
+    if (checkoutItems.length === 0) return "No products to checkout";
     return null;
   };
 
@@ -55,7 +54,7 @@ const CheckoutPage = () => {
         address,
         city,
         pincode,
-        items: checkoutItems.map(item => ({
+        items: checkoutItems.map((item) => ({
           productId: item.id,
           name: item.name,
           quantity: item.quantity,
@@ -64,7 +63,7 @@ const CheckoutPage = () => {
         total,
       });
     } catch (err) {
-      toast.error('Failed to save order');
+      toast.error("Failed to save order");
     }
 
     const itemsText = checkoutItems
@@ -108,7 +107,6 @@ Please confirm availability & delivery time.
   return (
     <div className="min-h-screen bg-[#f2f2f2]">
       <div className="mx-auto max-w-6xl px-5 py-10">
-
         <div className="mb-8 flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
@@ -126,15 +124,11 @@ Please confirm availability & delivery time.
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
-
           {/* LEFT FORM */}
           <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-bold">
-              Delivery Details
-            </h2>
+            <h2 className="mb-5 text-lg font-bold">Delivery Details</h2>
 
             <div className="grid gap-4">
-
               <div>
                 <label className="mb-1 block text-sm font-medium">
                   Full Name
@@ -192,7 +186,6 @@ Please confirm availability & delivery time.
                   className="rounded-xl border px-3 py-2 text-sm outline-none"
                 />
               </div>
-
             </div>
           </div>
 
@@ -239,7 +232,6 @@ Please confirm availability & delivery time.
               </Button>
             </div>
           </div>
-
         </div>
       </div>
     </div>

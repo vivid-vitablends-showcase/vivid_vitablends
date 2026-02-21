@@ -8,12 +8,15 @@ const VideoSection = () => {
   return (
     <section id="about" className="section-padding">
       <div className="mx-auto max-w-5xl text-center">
-        <p className="text-sm font-semibold uppercase tracking-[0.15em] text-accent">Our Story</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.15em] text-accent">
+          Our Story
+        </p>
         <h2 className="mt-2 font-display text-3xl font-bold text-foreground md:text-4xl">
           Made with Love, Served with Pride
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-          Every jar tells a story of tradition, care, and purity. Watch how we bring our grandmother's recipes to your table.
+          Every jar tells a story of tradition, care, and purity. Watch how we
+          bring our grandmother's recipes to your table.
         </p>
 
         <div className="mt-10 overflow-hidden rounded-lg">
@@ -37,7 +40,9 @@ const VideoSection = () => {
             </div>
           ) : (
             <div className="aspect-video bg-foreground/5 flex items-center justify-center rounded-lg">
-              <p className="text-muted-foreground">Video player placeholder — Add your video URL here</p>
+              <p className="text-muted-foreground">
+                Video player placeholder — Add your video URL here
+              </p>
             </div>
           )}
         </div>

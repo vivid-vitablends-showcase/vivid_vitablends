@@ -2,18 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import { useCombos } from "@/hooks/useProducts";
+import { Product } from "@/types/Product";
 
 const ComboOffers = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { products: combos } = useCombos();
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: Product) => {
     addToCart(product);
     toast.success(`${product.name} added to cart`);
   };
 
-  const handleBuyNow = (product: any) => {
+  const handleBuyNow = (product: Product) => {
     navigate("/checkout", {
       state: {
         buyNowItem: {
@@ -62,7 +63,6 @@ const ComboOffers = () => {
 
                 {/* Content */}
                 <div className="flex flex-1 flex-col justify-center p-6 md:p-8">
-
                   {/* Dynamic Badge */}
                   {combo.badge && (
                     <span className="mb-3 inline-block w-fit rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground">

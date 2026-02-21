@@ -4,9 +4,22 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Product } from "@/types/Product";
 
 const productSchema = z.object({
@@ -26,7 +39,11 @@ interface ProductFormProps {
   onCancel: () => void;
 }
 
-export const ProductForm = ({ product, onSubmit, onCancel }: ProductFormProps) => {
+export const ProductForm = ({
+  product,
+  onSubmit,
+  onCancel,
+}: ProductFormProps) => {
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -127,7 +144,10 @@ export const ProductForm = ({ product, onSubmit, onCancel }: ProductFormProps) =
           render={({ field }) => (
             <FormItem className="flex items-center space-x-2">
               <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
               </FormControl>
               <FormLabel className="!mt-0">Featured Product</FormLabel>
             </FormItem>

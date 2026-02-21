@@ -9,10 +9,7 @@ const HealthPowders = () => {
   const { cart } = useCart();
   const { products: healthPowders } = useProducts("health");
 
-  const cartCount = cart.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="min-h-screen bg-background">

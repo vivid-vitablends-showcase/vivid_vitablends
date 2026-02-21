@@ -17,7 +17,9 @@ const ProductPageLayout = ({
   children,
 }: ProductPageLayoutProps) => (
   <div className="min-h-screen bg-background">
-    <section className={`relative bg-gradient-to-r ${gradientFrom} ${gradientTo} text-white`}>
+    <section
+      className={`relative bg-gradient-to-r ${gradientFrom} ${gradientTo} text-white`}
+    >
       <div className="absolute left-4 top-4">
         <BackButton />
       </div>
@@ -28,7 +30,9 @@ const ProductPageLayout = ({
     </section>
     <section className="section-padding">
       <div className="container mx-auto">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {children}
+        </div>
       </div>
     </section>
   </div>

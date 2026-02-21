@@ -37,4 +37,4 @@ jobs:
         run: npm run prisma:generate
       - name: Check formatting
         working-directory: ./backend
-        run: npx prettier --check "src/**/*.js"
+        run: npm run format:check

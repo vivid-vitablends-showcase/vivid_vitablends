@@ -2,26 +2,27 @@ import prisma from '../utils/prisma.js';
 
 export const findFeatured = async () => {
   return prisma.product.findMany({
-    where: { featured: true }
+    where: { featured: true },
   });
 };
 
 export const findAll = async (filters = {}) => {
   const where = {};
   if (filters.category) where.category = filters.category;
-  if (filters.featured !== undefined) where.featured = filters.featured === 'true';
-  
+  if (filters.featured !== undefined)
+    where.featured = filters.featured === 'true';
+
   return prisma.product.findMany({ where });
 };
 
 export const findByCategory = async (category) => {
   return prisma.product.findMany({
-    where: { category }
+    where: { category },
   });
 };
 
 export const findById = async (id) => {
   return prisma.product.findUnique({
-    where: { id }
+    where: { id },
   });
 };

@@ -12,7 +12,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "prepare": "husky",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

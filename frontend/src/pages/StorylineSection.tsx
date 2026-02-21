@@ -2,8 +2,6 @@ const StorylineSection = () => {
   return (
     <section className="section-padding bg-background">
       <div className="mx-auto max-w-5xl px-5 md:px-10 text-center">
-       
-
         <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl animate-fade-up-delay-1">
           Food the way it was meant to be
         </h2>

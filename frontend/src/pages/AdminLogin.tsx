@@ -19,7 +19,9 @@ const AdminLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[hsl(var(--warm-cream))] to-[hsl(var(--background))] p-4">
       <Card className="w-full max-w-md shadow-[var(--card-shadow)]">
         <CardHeader>
-          <CardTitle className="text-2xl text-center text-[hsl(var(--primary))]">System Access</CardTitle>
+          <CardTitle className="text-2xl text-center text-[hsl(var(--primary))]">
+            System Access
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -4,15 +4,30 @@ import logger from '../utils/logger.js';
 const validateOrderData = (data) => {
   const errors = [];
 
-  if (!data.customerName || typeof data.customerName !== 'string' || data.customerName.trim() === '') {
-    errors.push({ field: 'customerName', message: 'Customer name is required' });
+  if (
+    !data.customerName ||
+    typeof data.customerName !== 'string' ||
+    data.customerName.trim() === ''
+  ) {
+    errors.push({
+      field: 'customerName',
+      message: 'Customer name is required',
+    });
   }
 
-  if (!data.phone || typeof data.phone !== 'string' || !/^\d{10}$/.test(data.phone)) {
+  if (
+    !data.phone ||
+    typeof data.phone !== 'string' ||
+    !/^\d{10}$/.test(data.phone)
+  ) {
     errors.push({ field: 'phone', message: 'Phone number must be 10 digits' });
   }
 
-  if (!data.address || typeof data.address !== 'string' || data.address.trim() === '') {
+  if (
+    !data.address ||
+    typeof data.address !== 'string' ||
+    data.address.trim() === ''
+  ) {
     errors.push({ field: 'address', message: 'Address is required' });
   }
 
@@ -20,16 +35,26 @@ const validateOrderData = (data) => {
     errors.push({ field: 'city', message: 'City is required' });
   }
 
-  if (!data.pincode || typeof data.pincode !== 'string' || !/^\d{6}$/.test(data.pincode)) {
+  if (
+    !data.pincode ||
+    typeof data.pincode !== 'string' ||
+    !/^\d{6}$/.test(data.pincode)
+  ) {
     errors.push({ field: 'pincode', message: 'Pincode must be 6 digits' });
   }
 
   if (!Array.isArray(data.items) || data.items.length === 0) {
-    errors.push({ field: 'items', message: 'Order must contain at least one item' });
+    errors.push({
+      field: 'items',
+      message: 'Order must contain at least one item',
+    });
   } else {
     data.items.forEach((item, index) => {
       if (!item.productId || !item.name || !item.quantity || !item.price) {
-        errors.push({ field: `items[${index}]`, message: 'Invalid item structure' });
+        errors.push({
+          field: `items[${index}]`,
+          message: 'Invalid item structure',
+        });
       }
     });
   }
@@ -60,6 +85,10 @@ export const create = async (data) => {
   const orderId = generateOrderId();
   const orderData = { ...data, orderId };
 
-  logger.info('Creating order', { orderId, total: data.total, itemCount: data.items.length });
+  logger.info('Creating order', {
+    orderId,
+    total: data.total,
+    itemCount: data.items.length,
+  });
   return await orderRepository.create(orderData);
 };

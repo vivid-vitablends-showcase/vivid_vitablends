@@ -4,10 +4,12 @@ export const getAll = async (req, res, next) => {
   try {
     const filters = {
       showInHero: req.query.showInHero,
-      limit: req.query.limit
+      limit: req.query.limit,
     };
     const reviews = await reviewService.getAll(filters);
-    res.status(200).json({ success: true, data: reviews, count: reviews.length });
+    res
+      .status(200)
+      .json({ success: true, data: reviews, count: reviews.length });
   } catch (error) {
     next(error);
   }

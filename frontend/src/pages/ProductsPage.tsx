@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import { useProducts } from "@/hooks/useProducts";
+import { Product } from "@/types/Product";
 
 type SectionProps = {
   title: string;
@@ -14,12 +15,12 @@ const Section = ({ title, category }: SectionProps) => {
   const { addToCart } = useCart();
   const { products: filteredProducts } = useProducts(category);
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: Product) => {
     addToCart(product);
     toast.success(`${product.name} added to cart`);
   };
 
-  const handleBuyNow = (product: any) => {
+  const handleBuyNow = (product: Product) => {
     navigate("/checkout", {
       state: {
         buyNowItem: {
@@ -126,8 +127,8 @@ const ProductsPage = () => {
         <div className="mx-auto max-w-7xl">
           <div className="mb-16">
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Explore our homemade pickles and healthy smoothie & juice powders —
-              crafted with care and no preservatives.
+              Explore our homemade pickles and healthy smoothie & juice powders
+              — crafted with care and no preservatives.
             </p>
           </div>
 

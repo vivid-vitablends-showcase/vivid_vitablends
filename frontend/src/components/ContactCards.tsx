@@ -26,7 +26,6 @@ const ContactCards = () => {
   return (
     <section className="section-padding bg-secondary">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
-
         {/* Heading */}
         <div className="mb-10 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.15em] text-accent">
@@ -53,9 +52,7 @@ const ContactCards = () => {
               <h3 className="font-display text-lg font-bold text-foreground">
                 {c.label}
               </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {c.value}
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{c.value}</p>
             </a>
           ))}
         </div>
@@ -74,10 +71,6 @@ const ContactCards = () => {
 };
 
 export default ContactCards;
-
-
-
-
 
 // =======================
 // Review Form Component
@@ -117,7 +110,6 @@ const ReviewForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-
       {/* ⭐ Star Rating */}
       <div className="text-center">
         <p className="mb-3 text-sm font-medium text-foreground">

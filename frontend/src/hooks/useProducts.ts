@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { productApi } from '@/services/api/productApi';
-import { Product } from '@/types/Product';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { productApi } from "@/services/api/productApi";
+import { Product } from "@/types/Product";
+import { toast } from "sonner";
 
 export const useProducts = (category?: string) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -11,9 +11,11 @@ export const useProducts = (category?: string) => {
     const fetchProducts = async () => {
       try {
         const data = await productApi.getAll();
-        setProducts(category ? data.filter(p => p.category === category) : data);
+        setProducts(
+          category ? data.filter((p) => p.category === category) : data
+        );
       } catch (err) {
-        toast.error('Failed to load products');
+        toast.error("Failed to load products");
       } finally {
         setLoading(false);
       }
@@ -34,7 +36,7 @@ export const useFeaturedProducts = () => {
         const data = await productApi.getFeatured();
         setProducts(data);
       } catch (err) {
-        toast.error('Failed to load featured products');
+        toast.error("Failed to load featured products");
       } finally {
         setLoading(false);
       }
@@ -55,7 +57,7 @@ export const useCombos = () => {
         const data = await productApi.getCombos();
         setProducts(data);
       } catch (err) {
-        toast.error('Failed to load combo offers');
+        toast.error("Failed to load combo offers");
       } finally {
         setLoading(false);
       }

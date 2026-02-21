@@ -7,35 +7,84 @@ import { EmptyState } from "./EmptyState";
 import { TableSkeleton } from "./TableSkeleton";
 import { SearchBar } from "./SearchBar";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Product } from "@/types/Product";
 
 export const ProductsManagement = () => {
-  const { products, loading, createProduct, updateProduct, deleteProduct } = useAdminProducts();
+  const { products, loading, createProduct, updateProduct, deleteProduct } =
+    useAdminProducts();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | undefined>();
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [featuredFilter, setFeaturedFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [featuredFilter, setFeaturedFilter] = useState<string>("all");
 
   const filteredProducts = useMemo(() => {
-    return products.filter(p => {
-      if (categoryFilter !== 'all' && p.category !== categoryFilter) return false;
-      if (featuredFilter === 'featured' && !p.featured) return false;
-      if (featuredFilter === 'not-featured' && p.featured) return false;
+    return products.filter((p) => {
+      if (categoryFilter !== "all" && p.category !== categoryFilter)
+        return false;
+      if (featuredFilter === "featured" && !p.featured) return false;
+      if (featuredFilter === "not-featured" && p.featured) return false;
       return true;
     });
   }, [products, categoryFilter, featuredFilter]);
 
-  const { search, setSearch, currentPage, totalPages, paginatedData, filteredCount, handlePageChange } = useTableFilters({
+  const {
+    search,
+    setSearch,
+    currentPage,
+    totalPages,
+    paginatedData,
+    filteredCount,
+    handlePageChange,
+  } = useTableFilters({
     data: filteredProducts,
-    searchFields: ['name', 'category'],
+    searchFields: ["name", "category"],
     pageSize: 10,
   });
 
@@ -49,7 +98,7 @@ export const ProductsManagement = () => {
     setDialogOpen(true);
   };
 
-  const handleSubmit = async (data: Omit<Product, 'id'>) => {
+  const handleSubmit = async (data: Omit<Product, "id">) => {
     if (editingProduct) {
       await updateProduct(editingProduct.id, data);
     } else {
@@ -154,9 +203,15 @@ export const ProductsManagement = () => {
                 {paginatedData.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>
-                      <img src={product.image} alt={product.name} className="h-12 w-12 object-cover rounded" />
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="h-12 w-12 object-cover rounded"
+                      />
                     </TableCell>
-                    <TableCell className="font-medium">{product.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {product.name}
+                    </TableCell>
                     <TableCell>
                       <Badge variant="outline">{product.category}</Badge>
                     </TableCell>
@@ -172,7 +227,12 @@ export const ProductsManagement = () => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" onClick={() => handleEdit(product)} aria-label={`Edit ${product.name}`}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(product)}
+                              aria-label={`Edit ${product.name}`}
+                            >
                               <Pencil className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -182,7 +242,12 @@ export const ProductsManagement = () => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" onClick={() => setDeleteId(product.id)} aria-label={`Delete ${product.name}`}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setDeleteId(product.id)}
+                              aria-label={`Delete ${product.name}`}
+                            >
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -200,26 +265,41 @@ export const ProductsManagement = () => {
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious 
-                    onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  <PaginationPrevious
+                    onClick={() =>
+                      currentPage > 1 && handlePageChange(currentPage - 1)
+                    }
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
                   />
                 </PaginationItem>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      onClick={() => handlePageChange(page)}
-                      isActive={currentPage === page}
-                      className="cursor-pointer"
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => handlePageChange(page)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
                 <PaginationItem>
-                  <PaginationNext 
-                    onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  <PaginationNext
+                    onClick={() =>
+                      currentPage < totalPages &&
+                      handlePageChange(currentPage + 1)
+                    }
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -231,7 +311,9 @@ export const ProductsManagement = () => {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{editingProduct ? "Edit Product" : "Create Product"}</DialogTitle>
+            <DialogTitle>
+              {editingProduct ? "Edit Product" : "Create Product"}
+            </DialogTitle>
           </DialogHeader>
           <ProductForm
             product={editingProduct}
