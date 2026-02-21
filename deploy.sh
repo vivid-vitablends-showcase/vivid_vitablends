@@ -44,7 +44,7 @@ sleep 10
 
 # Run database migrations
 echo "🗄️  Running database migrations..."
-$COMPOSE_CMD -f docker-compose.prod.yml exec -T backend npm run prisma:migrate deploy
+$COMPOSE_CMD -f docker-compose.prod.yml exec -T backend npx prisma migrate deploy
 
 # Clean up old images
 echo "🧹 Cleaning up..."
