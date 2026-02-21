@@ -1,21 +1,15 @@
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
-import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
+import { useProducts } from "@/hooks/useProducts";
 
 const HealthPowders = () => {
   const navigate = useNavigate();
   const { cart } = useCart();
+  const { products: healthPowders } = useProducts("health");
 
-  const healthPowders = products.filter(
-    (product) => product.category === "health"
-  );
-
-  const cartCount = cart.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="min-h-screen bg-background">

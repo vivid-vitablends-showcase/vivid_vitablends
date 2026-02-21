@@ -31,7 +31,6 @@ const ContactCards = () => {
   return (
     <section className="section-padding bg-secondary">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
-
         {/* Heading */}
         <div className="mb-10 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.15em] text-accent">

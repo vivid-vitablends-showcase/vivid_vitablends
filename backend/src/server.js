@@ -3,20 +3,28 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import config from './config/index.js';
 import logger from './utils/logger.js';
+import './utils/redis.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import healthRoutes from './routes/health.js';
 import adminRoutes from './routes/admin.routes.js';
+import productRoutes from './routes/product.routes.js';
+import reviewRoutes from './routes/review.routes.js';
+import orderRoutes from './routes/order.routes.js';
 
 dotenv.config();
 
 const app = express();
 
+app.set('etag', false);
 app.use(cors({ origin: config.corsOrigin }));
 app.use(express.json());
 app.use(requestLogger);
 
 app.use('/api', healthRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/orders', orderRoutes);
 app.use('/', healthRoutes);
 
 app.use((err, req, res, next) => {
@@ -24,10 +32,12 @@ app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json({
     success: false,
     message: err.message || 'Internal server error',
-    code: err.code || 'INTERNAL_ERROR'
+    code: err.code || 'INTERNAL_ERROR',
   });
 });
 
 app.listen(config.port, () => {
-  logger.info(`Server running on port ${config.port} in ${config.nodeEnv} mode`);
+  logger.info(
+    `Server running on port ${config.port} in ${config.nodeEnv} mode`
+  );
 });

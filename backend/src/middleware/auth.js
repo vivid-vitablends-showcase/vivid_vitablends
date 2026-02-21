@@ -8,7 +8,7 @@ export const authenticate = (req, res, next) => {
     if (!token) {
       throw Object.assign(new Error('Authentication required'), {
         statusCode: 401,
-        code: 'AUTH_REQUIRED'
+        code: 'AUTH_REQUIRED',
       });
     }
 
@@ -17,9 +17,11 @@ export const authenticate = (req, res, next) => {
     next();
   } catch (error) {
     logger.warn('Authentication failed', { error: error.message });
-    next(Object.assign(new Error('Invalid or expired token'), {
-      statusCode: 401,
-      code: 'INVALID_TOKEN'
-    }));
+    next(
+      Object.assign(new Error('Invalid or expired token'), {
+        statusCode: 401,
+        code: 'INVALID_TOKEN',
+      })
+    );
   }
 };

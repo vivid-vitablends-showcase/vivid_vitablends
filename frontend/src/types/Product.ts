@@ -6,4 +6,6 @@ export type Product = {
   image: string;
   category: "health" | "pickle" | "combo";
   featured?: boolean;
+  badge?: string;
+  originalPrice?: number;
 };

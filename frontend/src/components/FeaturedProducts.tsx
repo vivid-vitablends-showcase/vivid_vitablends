@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-import { products } from "@/data/products";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
+import { useFeaturedProducts } from "@/hooks/useProducts";
 
 const FeaturedProducts = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
-
-  const featured = products.filter((p) => p.featured);
+  const { products: featured } = useFeaturedProducts();
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [startX, setStartX] = useState(0);
@@ -18,9 +17,7 @@ const FeaturedProducts = () => {
     if (featured.length <= 1) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) =>
-        prev === featured.length - 1 ? 0 : prev + 1
-      );
+      setCurrentIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1));
     }, 3000);
 
     return () => clearInterval(interval);
@@ -77,7 +74,6 @@ const FeaturedProducts = () => {
             {featured.map((product) => (
               <div key={product.id} className="w-full flex-shrink-0 px-4">
                 <div className="group relative overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl">
-
                   {product.badge && (
                     <span className="absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground shadow">
                       {product.badge}
@@ -156,9 +152,7 @@ const FeaturedProducts = () => {
               </div>
 
               <div className="p-6">
-                <h3 className="mb-2 text-lg font-semibold">
-                  {product.name}
-                </h3>
+                <h3 className="mb-2 text-lg font-semibold">{product.name}</h3>
 
                 <p className="mb-4 text-sm text-muted-foreground">
                   {product.description}

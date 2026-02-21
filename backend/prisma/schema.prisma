@@ -16,3 +16,62 @@ model Admin {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  description   String
+  price         Float
+  image         String
+  category      String
+  featured      Boolean  @default(false)
+  badge         String?
+  originalPrice Float?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([category])
+  @@index([featured])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  name       String
+  rating     Int
+  comment    String
+  showInHero Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  
+  @@index([showInHero])
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  orderId      String      @unique
+  customerName String
+  phone        String
+  address      String
+  city         String
+  pincode      String
+  total        Float
+  status       String      @default("pending")
+  whatsappSent Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  items        OrderItem[]
+  
+  @@index([orderId])
+  @@index([status])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  name      String
+  quantity  Int
+  price     Float
+  
+  @@index([orderId])
+}

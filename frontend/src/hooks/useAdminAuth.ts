@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
-import { loginAdmin } from '@/services/api/adminApiClient';
-import type { LoginCredentials } from '@/types/admin';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { loginAdmin } from "@/services/api/adminApiClient";
+import type { LoginCredentials } from "@/types/admin";
 
 export const useAdminAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,23 +16,23 @@ export const useAdminAuth = () => {
 
     try {
       const response = await loginAdmin(credentials);
-      sessionStorage.setItem('adminToken', response.data.token);
-      sessionStorage.setItem('adminAuth', 'true');
-      
+      sessionStorage.setItem("adminToken", response.data.token);
+      sessionStorage.setItem("adminAuth", "true");
+
       toast({
-        title: 'Login successful',
+        title: "Login successful",
         description: `Welcome back, ${response.data.user.username}.`,
       });
-      
-      navigate('/sys-admin-dashboard');
+
+      navigate("/sys-admin-dashboard");
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+      const errorMessage = err instanceof Error ? err.message : "Login failed";
       setError(errorMessage);
-      
+
       toast({
-        title: 'Login failed',
+        title: "Login failed",
         description: errorMessage,
-        variant: 'destructive',
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);

@@ -3,8 +3,16 @@ import { Leaf, Home, ShieldCheck, BookOpen } from "lucide-react";
 const promises = [
   { icon: Leaf, title: "100% Natural", desc: "Pure ingredients,no chemicals " },
   { icon: Home, title: "Homemade", desc: "Crafted in small batches" },
-  { icon: ShieldCheck, title: "No Preservatives", desc: "Fresh & preservative-free" },
-  { icon: BookOpen, title: "Traditional Recipe", desc: "Passed down generations" },
+  {
+    icon: ShieldCheck,
+    title: "No Preservatives",
+    desc: "Fresh & preservative-free",
+  },
+  {
+    icon: BookOpen,
+    title: "Traditional Recipe",
+    desc: "Passed down generations",
+  },
 ];
 
 const BrandPromise = () => {

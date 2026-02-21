@@ -45,13 +45,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
 
       <CardContent className="p-6">
-        <h3 className="mb-2 text-xl font-semibold">
-          {product.name}
-        </h3>
+        <h3 className="mb-2 text-xl font-semibold">{product.name}</h3>
 
-        <p className="mb-4 text-muted-foreground">
-          {product.description}
-        </p>
+        <p className="mb-4 text-muted-foreground">{product.description}</p>
 
         <div className="mb-4">
           <span className="text-lg font-bold text-green-600">
@@ -64,11 +60,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             Buy Now
           </Button>
 
-          <Button
-            variant="outline"
-            className="w-1/2"
-            onClick={handleAddToCart}
-          >
+          <Button variant="outline" className="w-1/2" onClick={handleAddToCart}>
             Add to Cart
           </Button>
         </div>
