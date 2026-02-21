@@ -58,8 +58,18 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           port: ${{ secrets.VM_PORT || 22 }}
           script: |
-            cd /opt/vivid_vitablends
-            git pull origin main
+            # Create directory if it doesn't exist
+            if [ ! -d "/opt/vivid_vitablends" ]; then
+              echo "📁 Creating project directory..."
+              sudo mkdir -p /opt/vivid_vitablends
+              sudo chown $USER:$USER /opt/vivid_vitablends
+              cd /opt/vivid_vitablends
+              git clone https://github.com/${{ github.repository }} .
+            else
+              cd /opt/vivid_vitablends
+              git pull origin main
+            fi
+            
             chmod +x deploy.sh
             ./deploy.sh
 
