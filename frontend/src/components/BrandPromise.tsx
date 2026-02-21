@@ -1,7 +1,7 @@
 import { Leaf, Home, ShieldCheck, BookOpen } from "lucide-react";
 
 const promises = [
-  { icon: Leaf, title: "100% Natural", desc: "Pure ingredients, no chemicals" },
+  { icon: Leaf, title: "100% Natural", desc: "Pure ingredients,no chemicals " },
   { icon: Home, title: "Homemade", desc: "Crafted in small batches" },
   {
     icon: ShieldCheck,
@@ -19,19 +19,26 @@ const BrandPromise = () => {
   return (
     <section className="section-padding bg-secondary">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
           {promises.map((p, i) => (
             <div
               key={p.title}
-              className={`card-hover flex flex-col items-center rounded-lg bg-card p-6 text-center md:p-8 animate-fade-up-delay-${Math.min(i, 3)}`}
+              className={`card-hover flex flex-col items-center rounded-lg bg-card p-4 text-center md:p-8`}
             >
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent/10">
-                <p.icon size={28} className="text-accent" />
+              {/* Smaller icon container on mobile */}
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 md:h-14 md:w-14">
+                <p.icon size={20} className="text-accent md:size-[28px]" />
               </div>
-              <h3 className="font-display text-lg font-bold text-foreground">
+
+              {/* Smaller title on mobile */}
+              <h3 className="font-display mb-0 text-sm font-bold text-foreground md:text-lg">
                 {p.title}
               </h3>
-              <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
+
+              {/* Smaller description on mobile */}
+              <p className="mt-0  text-xs text-muted-foreground md:text-sm">
+                {p.desc}
+              </p>
             </div>
           ))}
         </div>
