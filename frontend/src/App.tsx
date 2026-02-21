@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
-
+import { useMemo } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
@@ -15,35 +15,32 @@ import { CartProvider } from "@/context/CartContext";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 
-const queryClient = new QueryClient();
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+const App = () => {
+  const queryClient = useMemo(() => new QueryClient(), []);
 
-      {/* ✅ CartProvider MUST wrap HashRouter */}
-      <CartProvider>
-        <HashRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/sys-admin-portal" element={<AdminLogin />} />
-            <Route path="/sys-admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/health-powders" element={<HealthPowders />} />
-            <Route path="/premium-pickles" element={<PremiumPickles />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </HashRouter>
-      </CartProvider>
-
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <CartProvider>
+          <HashRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/sys-admin-portal" element={<AdminLogin />} />
+              <Route path="/sys-admin-dashboard" element={<AdminDashboard />} />
+              <Route path="/health-powders" element={<HealthPowders />} />
+              <Route path="/premium-pickles" element={<PremiumPickles />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </HashRouter>
+        </CartProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
-
-

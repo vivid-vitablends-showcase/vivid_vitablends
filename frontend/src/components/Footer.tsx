@@ -1,4 +1,4 @@
-import { Instagram, Facebook, Twitter } from "lucide-react";
+import SocialIcon from "./SocialIcon";
 
 const Footer = () => {
   return (
@@ -13,14 +13,14 @@ const Footer = () => {
               Premium homemade food products crafted from traditional recipes with 100% natural ingredients.
             </p>
             <div className="mt-4 flex gap-3">
-              {[Instagram, Facebook, Twitter].map((Icon, i) => (
+              {(["instagram", "facebook", "whatsapp"] as const).map((platform) => (
                 <a
-                  key={i}
+                  key={platform}
                   href="#"
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-all hover:border-accent hover:text-accent"
-                  aria-label="Social media"
+                  aria-label={platform.charAt(0).toUpperCase() + platform.slice(1)}
                 >
-                  <Icon size={18} />
+                  <SocialIcon type={platform} size={18} />
                 </a>
               ))}
             </div>

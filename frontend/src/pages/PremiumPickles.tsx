@@ -8,7 +8,6 @@ const PremiumPickles = () => {
   const navigate = useNavigate();
   const { cart } = useCart();
 
-  // ✅ Filter only pickle products
   const pickleProducts = products.filter(
     (product) => product.category === "pickle"
   );
@@ -20,15 +19,12 @@ const PremiumPickles = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      
-      {/* 🛒 Cart Icon */}
       <div className="fixed right-6 top-6 z-50">
         <button
           onClick={() => navigate("/cart")}
           className="relative rounded-full bg-white p-3 shadow transition hover:scale-105"
         >
           <ShoppingCart size={22} />
-
           {cartCount > 0 && (
             <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
               {cartCount}
@@ -37,7 +33,6 @@ const PremiumPickles = () => {
         </button>
       </div>
 
-      {/* 🌶 Hero Section */}
       <section className="relative bg-gradient-to-r from-orange-600 to-red-500 text-white">
         <button
           onClick={() => navigate(-1)}
@@ -51,21 +46,16 @@ const PremiumPickles = () => {
           <h1 className="mb-4 text-4xl font-bold md:text-5xl">
             Premium Pickles
           </h1>
-
           <p className="mx-auto max-w-2xl text-lg">
             Handcrafted pickles prepared with love, tradition, and purity.
           </p>
         </div>
       </section>
 
-      {/* 🧂 Products Section */}
       <section className="container mx-auto px-6 py-16">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {pickleProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-            />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>

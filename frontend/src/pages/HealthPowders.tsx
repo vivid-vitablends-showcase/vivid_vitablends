@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
@@ -8,9 +6,8 @@ import ProductCard from "@/components/ProductCard";
 
 const HealthPowders = () => {
   const navigate = useNavigate();
-  const { cart, addToCart } = useCart();
+  const { cart } = useCart();
 
-  // ✅ Get only health products
   const healthPowders = products.filter(
     (product) => product.category === "health"
   );
@@ -22,7 +19,6 @@ const HealthPowders = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Cart Icon */}
       <div className="fixed right-6 top-6 z-50">
         <button
           onClick={() => navigate("/cart")}
@@ -37,7 +33,6 @@ const HealthPowders = () => {
         </button>
       </div>
 
-      {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-green-600 to-emerald-500 text-white">
         <button
           onClick={() => navigate(-1)}
@@ -57,7 +52,6 @@ const HealthPowders = () => {
         </div>
       </section>
 
-      {/* Products Section */}
       <section className="container mx-auto px-6 py-16">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {healthPowders.map((product) => (

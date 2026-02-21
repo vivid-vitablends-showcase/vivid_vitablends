@@ -82,6 +82,34 @@ const Header = () => {
           </button>
         </div>
       </div>
+
+      {mobileOpen && (
+        <nav className="border-t border-border bg-card px-5 py-4 md:hidden">
+          {navLinks.map((link) =>
+            link.type === "route" ? (
+              <Link
+                key={link.label}
+                to={link.to}
+                className="block py-3 text-sm font-medium text-foreground/70 hover:text-accent"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <button
+                key={link.label}
+                onClick={() => {
+                  handleScroll(link.to);
+                  setMobileOpen(false);
+                }}
+                className="block w-full py-3 text-left text-sm font-medium text-foreground/70 hover:text-accent"
+              >
+                {link.label}
+              </button>
+            )
+          )}
+        </nav>
+      )}
     </header>
   );
 };
