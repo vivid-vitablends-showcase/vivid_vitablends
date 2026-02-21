@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import config from './config/index.js';
 import logger from './utils/logger.js';
+import './utils/redis.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import healthRoutes from './routes/health.js';
 import adminRoutes from './routes/admin.routes.js';
@@ -14,6 +15,7 @@ dotenv.config();
 
 const app = express();
 
+app.set('etag', false);
 app.use(cors({ origin: config.corsOrigin }));
 app.use(express.json());
 app.use(requestLogger);
