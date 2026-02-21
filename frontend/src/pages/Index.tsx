@@ -8,6 +8,8 @@ import ComboOffers from "@/components/ComboOffers";
 import VideoSection from "@/components/VideoSection";
 import ContactCards from "@/components/ContactCards";
 import Footer from "@/components/Footer";
+import StorylineSection from "@/pages/StorylineSection";
+import ReviewsSection from "@/components/ReviewsSection";
 
 const Index = () => {
   return (
@@ -16,11 +18,13 @@ const Index = () => {
       <Header />
       <main>
         <HeroSection />
+        <StorylineSection />
         <CategoryGrid />
         <BrandPromise />
         <FeaturedProducts />
-        <ComboOffers />
-        <VideoSection />
+       <ComboOffers />
+<ReviewsSection />
+<VideoSection />
         <ContactCards />
       </main>
       <Footer />

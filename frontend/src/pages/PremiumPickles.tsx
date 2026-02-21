@@ -1,70 +1,71 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-import koorkaImg from "@/assets/koorka.jpg";
-
-const premiumPickles = [
-    
-  {
-    name: "Koorka Special Pickle",
-    description: "Traditional homemade pickle prepared with authentic spices",
-    image: koorkaImg,
-  },
-];
+import { useCart } from "@/context/CartContext";
+import { products } from "@/data/products";
+import ProductCard from "@/components/ProductCard";
 
 const PremiumPickles = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { cart } = useCart();
+
+  // ✅ Filter only pickle products
+  const pickleProducts = products.filter(
+    (product) => product.category === "pickle"
+  );
+
+  const cartCount = cart.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-<section className="relative bg-gradient-to-r from-orange-600 to-red-500 text-white">
-  <button
-    onClick={() => navigate(-1)}
-    className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-sm font-medium text-foreground shadow hover:bg-white transition"
-  >
-    <ArrowLeft size={18} />
-    Back
-  </button>
+      
+      {/* 🛒 Cart Icon */}
+      <div className="fixed right-6 top-6 z-50">
+        <button
+          onClick={() => navigate("/cart")}
+          className="relative rounded-full bg-white p-3 shadow transition hover:scale-105"
+        >
+          <ShoppingCart size={22} />
 
-  <div className="container mx-auto px-4 py-20 text-center">
-    <h1 className="text-4xl md:text-5xl font-bold mb-4">
-      Premium Pickles
-    </h1>
-    <p className="text-lg max-w-2xl mx-auto">
-      Handcrafted pickles prepared with love, tradition, and purity.
-    </p>
-  </div>
-</section>
+          {cartCount > 0 && (
+            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+              {cartCount}
+            </span>
+          )}
+        </button>
+      </div>
 
+      {/* 🌶 Hero Section */}
+      <section className="relative bg-gradient-to-r from-orange-600 to-red-500 text-white">
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-sm font-medium text-foreground shadow hover:bg-white transition"
+        >
+          <ArrowLeft size={18} />
+          Back
+        </button>
 
-      {/* Products Section */}
-      <section className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-20 text-center">
+          <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+            Premium Pickles
+          </h1>
+
+          <p className="mx-auto max-w-2xl text-lg">
+            Handcrafted pickles prepared with love, tradition, and purity.
+          </p>
+        </div>
+      </section>
+
+      {/* 🧂 Products Section */}
+      <section className="container mx-auto px-6 py-16">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {premiumPickles.map((product) => (
-            <Card
-              key={product.name}
-              className="overflow-hidden hover:shadow-lg transition"
-            >
-              {/* ✅ IMAGE ADDED */}
-              <img
-                src={product.image}
-                alt={product.name}
-                className="h-58 w-full object-cover"
-                loading="lazy"
-              />
-
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold mb-2">
-                  {product.name}
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  {product.description}
-                </p>
-                <Button className="w-full">View Details</Button>
-              </CardContent>
-            </Card>
+          {pickleProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+            />
           ))}
         </div>
       </section>
