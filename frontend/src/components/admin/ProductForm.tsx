@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,7 +27,7 @@ const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
   price: z.coerce.number().positive("Price must be positive"),
-  image: z.string().url("Must be a valid URL"),
+  image: z.string().min(1, "Image is required"),
   category: z.enum(["health", "pickle", "combo"]),
   featured: z.boolean().optional(),
 });
@@ -44,6 +45,10 @@ export const ProductForm = ({
   onSubmit,
   onCancel,
 }: ProductFormProps) => {
+  const [imagePreview, setImagePreview] = useState<string>(
+    product?.image || ""
+  );
+
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -55,6 +60,19 @@ export const ProductForm = ({
       featured: product?.featured || false,
     },
   });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      form.setValue("image", base64);
+      setImagePreview(base64);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (data: ProductFormData) => {
     await onSubmit(data);
@@ -106,12 +124,23 @@ export const ProductForm = ({
         <FormField
           control={form.control}
           name="image"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
-              <FormLabel>Image URL</FormLabel>
+              <FormLabel>Image</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
               </FormControl>
+              {imagePreview && (
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="mt-2 h-32 w-32 object-cover rounded"
+                />
+              )}
               <FormMessage />
             </FormItem>
           )}
