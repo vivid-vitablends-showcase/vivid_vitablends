@@ -6,6 +6,9 @@ import logger from './utils/logger.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import healthRoutes from './routes/health.js';
 import adminRoutes from './routes/admin.routes.js';
+import productRoutes from './routes/product.routes.js';
+import reviewRoutes from './routes/review.routes.js';
+import orderRoutes from './routes/order.routes.js';
 
 dotenv.config();
 
@@ -17,6 +20,9 @@ app.use(requestLogger);
 
 app.use('/api', healthRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/orders', orderRoutes);
 app.use('/', healthRoutes);
 
 app.use((err, req, res, next) => {

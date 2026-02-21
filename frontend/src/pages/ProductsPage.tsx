@@ -1,8 +1,8 @@
 import { Home, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
-import { products } from "@/data/products";
 import { toast } from "sonner";
+import { useProducts } from "@/hooks/useProducts";
 
 type SectionProps = {
   title: string;
@@ -12,10 +12,7 @@ type SectionProps = {
 const Section = ({ title, category }: SectionProps) => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
-
-  const filteredProducts = products.filter(
-    (product) => product.category === category
-  );
+  const { products: filteredProducts } = useProducts(category);
 
   const handleAddToCart = (product: any) => {
     addToCart(product);

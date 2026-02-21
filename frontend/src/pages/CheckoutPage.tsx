@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, Phone, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
+import { orderApi } from "@/services/api/orderApi";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -40,11 +41,30 @@ const CheckoutPage = () => {
     return null;
   };
 
-  const handleWhatsAppOrder = () => {
+  const handleWhatsAppOrder = async () => {
     const error = validate();
     if (error) {
       toast.error(error);
       return;
+    }
+
+    try {
+      await orderApi.create({
+        customerName: name,
+        phone,
+        address,
+        city,
+        pincode,
+        items: checkoutItems.map(item => ({
+          productId: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        total,
+      });
+    } catch (err) {
+      toast.error('Failed to save order');
     }
 
     const itemsText = checkoutItems
