@@ -16,15 +16,15 @@ fi
 
 # Stop existing containers
 echo "⏹️  Stopping existing containers..."
-docker-compose -f docker-compose.prod.yml down
+docker compose -f docker-compose.prod.yml down
 
 # Pull latest images
 echo "📦 Pulling latest images from registry..."
-docker-compose -f docker-compose.prod.yml pull
+docker compose -f docker-compose.prod.yml pull
 
 # Start containers
 echo "▶️  Starting containers..."
-docker-compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml up -d
 
 # Wait for services to be healthy
 echo "⏳ Waiting for services to be healthy..."
@@ -32,7 +32,7 @@ sleep 10
 
 # Run database migrations
 echo "🗄️  Running database migrations..."
-docker-compose -f docker-compose.prod.yml exec -T backend npm run prisma:migrate deploy
+docker compose -f docker-compose.prod.yml exec -T backend npm run prisma:migrate deploy
 
 # Clean up old images
 echo "🧹 Cleaning up..."
