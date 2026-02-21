@@ -15,9 +15,7 @@ const FeaturedProducts = () => {
     if (featured.length <= 1) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) =>
-        prev === featured.length - 1 ? 0 : prev + 1
-      );
+      setCurrentIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1));
     }, 3000);
 
     return () => clearInterval(interval);
@@ -44,12 +42,8 @@ const FeaturedProducts = () => {
             }}
           >
             {featured.map((product) => (
-              <div
-                key={product.id}
-                className="w-full flex-shrink-0 px-4"
-              >
+              <div key={product.id} className="w-full flex-shrink-0 px-4">
                 <div className="group relative overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl">
-
                   {product.badge && (
                     <span className="absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground shadow">
                       {product.badge}
@@ -128,9 +122,7 @@ const FeaturedProducts = () => {
               </div>
 
               <div className="p-6">
-                <h3 className="mb-2 text-lg font-semibold">
-                  {product.name}
-                </h3>
+                <h3 className="mb-2 text-lg font-semibold">{product.name}</h3>
 
                 <p className="mb-4 text-sm text-muted-foreground">
                   {product.description}

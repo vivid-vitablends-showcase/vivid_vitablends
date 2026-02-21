@@ -10,7 +10,7 @@ export const createAdminService = ({ adminRepository }) => ({
     if (!username || !password) {
       throw Object.assign(new Error('Username and password are required'), {
         statusCode: 400,
-        code: 'VALIDATION_ERROR'
+        code: 'VALIDATION_ERROR',
       });
     }
 
@@ -20,7 +20,7 @@ export const createAdminService = ({ adminRepository }) => ({
       logger.warn('User not found', { username });
       throw Object.assign(new Error('Invalid credentials'), {
         statusCode: 401,
-        code: 'INVALID_CREDENTIALS'
+        code: 'INVALID_CREDENTIALS',
       });
     }
 
@@ -30,11 +30,15 @@ export const createAdminService = ({ adminRepository }) => ({
       logger.warn('Invalid password', { username });
       throw Object.assign(new Error('Invalid credentials'), {
         statusCode: 401,
-        code: 'INVALID_CREDENTIALS'
+        code: 'INVALID_CREDENTIALS',
       });
     }
 
-    const token = generateToken({ id: admin.id, username: admin.username, role: admin.role });
+    const token = generateToken({
+      id: admin.id,
+      username: admin.username,
+      role: admin.role,
+    });
     logger.info('Login success', { username, userId: admin.id });
 
     return {
@@ -42,9 +46,9 @@ export const createAdminService = ({ adminRepository }) => ({
       user: {
         id: admin.id,
         username: admin.username,
-        role: admin.role
+        role: admin.role,
       },
-      expiresIn: config.jwtExpiresIn
+      expiresIn: config.jwtExpiresIn,
     };
-  }
+  },
 });

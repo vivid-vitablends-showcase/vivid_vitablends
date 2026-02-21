@@ -30,10 +30,12 @@ app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json({
     success: false,
     message: err.message || 'Internal server error',
-    code: err.code || 'INTERNAL_ERROR'
+    code: err.code || 'INTERNAL_ERROR',
   });
 });
 
 app.listen(config.port, () => {
-  logger.info(`Server running on port ${config.port} in ${config.nodeEnv} mode`);
+  logger.info(
+    `Server running on port ${config.port} in ${config.nodeEnv} mode`
+  );
 });

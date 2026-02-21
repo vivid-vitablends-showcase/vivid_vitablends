@@ -1,12 +1,22 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface TableSkeletonProps {
   rows?: number;
   columns?: number;
 }
 
-export const TableSkeleton = ({ rows = 5, columns = 5 }: TableSkeletonProps) => {
+export const TableSkeleton = ({
+  rows = 5,
+  columns = 5,
+}: TableSkeletonProps) => {
   return (
     <Table>
       <TableHeader>

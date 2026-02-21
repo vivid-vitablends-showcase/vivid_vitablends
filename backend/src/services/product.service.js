@@ -27,7 +27,7 @@ export const getById = async (id) => {
 
   logger.info('Fetching product by ID', { productId: id });
   const product = await productRepository.findById(id);
-  
+
   if (!product) {
     logger.warn('Product not found', { productId: id });
     const error = new Error('Product not found');
@@ -35,6 +35,6 @@ export const getById = async (id) => {
     error.code = 'PRODUCT_NOT_FOUND';
     throw error;
   }
-  
+
   return product;
 };

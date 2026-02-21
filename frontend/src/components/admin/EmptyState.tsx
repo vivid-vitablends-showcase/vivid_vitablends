@@ -9,12 +9,23 @@ interface EmptyStateProps {
   onAction?: () => void;
 }
 
-export const EmptyState = ({ icon: Icon, title, description, actionLabel, onAction }: EmptyStateProps) => {
+export const EmptyState = ({
+  icon: Icon,
+  title,
+  description,
+  actionLabel,
+  onAction,
+}: EmptyStateProps) => {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center" role="status">
+    <div
+      className="flex flex-col items-center justify-center py-12 text-center"
+      role="status"
+    >
       <Icon className="h-16 w-16 text-muted-foreground mb-4" />
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground mb-6 max-w-sm">{description}</p>
+      <p className="text-sm text-muted-foreground mb-6 max-w-sm">
+        {description}
+      </p>
       {actionLabel && onAction && (
         <Button onClick={onAction}>{actionLabel}</Button>
       )}

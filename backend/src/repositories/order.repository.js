@@ -12,16 +12,16 @@ export const create = async (data) => {
       total: data.total,
       whatsappSent: data.sendWhatsApp || false,
       items: {
-        create: data.items.map(item => ({
+        create: data.items.map((item) => ({
           productId: item.productId,
           name: item.name,
           quantity: item.quantity,
-          price: item.price
-        }))
-      }
+          price: item.price,
+        })),
+      },
     },
     include: {
-      items: true
-    }
+      items: true,
+    },
   });
 };

@@ -13,10 +13,12 @@ export const getAll = async (req, res, next) => {
   try {
     const filters = {
       category: req.query.category,
-      featured: req.query.featured
+      featured: req.query.featured,
     };
     const products = await productService.getAll(filters);
-    res.status(200).json({ success: true, data: products, count: products.length });
+    res
+      .status(200)
+      .json({ success: true, data: products, count: products.length });
   } catch (error) {
     next(error);
   }

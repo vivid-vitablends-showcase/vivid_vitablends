@@ -5,17 +5,16 @@ import koorkaImg from "@/assets/koorka.jpg";
 import comboPowders from "@/assets/product-combo-powders.jpg";
 
 export const products: Product[] = [
-{
-  id: "abc-juice",
-  name: "ABC Juice Powder",
-  description: "Rich in antioxidants and essential nutrients.",
-  price: 249,
-  image: abcImg,
-  category: "health",
-  featured: true,
-  badge: "New",
-  
-},
+  {
+    id: "abc-juice",
+    name: "ABC Juice Powder",
+    description: "Rich in antioxidants and essential nutrients.",
+    price: 249,
+    image: abcImg,
+    category: "health",
+    featured: true,
+    badge: "New",
+  },
   {
     id: "banana-dates",
     name: "Banana-Dates Smoothie Powder",
@@ -23,7 +22,6 @@ export const products: Product[] = [
     price: 199,
     image: bananaImg,
     category: "health",
-   
   },
   {
     id: "koorka-special",
@@ -33,20 +31,17 @@ export const products: Product[] = [
     image: koorkaImg,
     category: "pickle",
     featured: true,
-     badge: "Limited",
+    badge: "Limited",
   },
   {
-  id: "health-pack",
-  name: "Health Essentials Pack",
-  description: "ABC Juice + Banana Dates Smoothie combo",
-  price: 549,
-  originalPrice: 648,
-  image: comboPowders,
-  category: "combo",
-  badge: "Limited",
-      featured: true,
-
-},
-
-
+    id: "health-pack",
+    name: "Health Essentials Pack",
+    description: "ABC Juice + Banana Dates Smoothie combo",
+    price: 549,
+    originalPrice: 648,
+    image: comboPowders,
+    category: "combo",
+    badge: "Limited",
+    featured: true,
+  },
 ];

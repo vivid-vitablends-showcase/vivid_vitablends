@@ -4,16 +4,38 @@ import { useTableFilters } from "@/hooks/useTableFilters";
 import { EmptyState } from "./EmptyState";
 import { TableSkeleton } from "./TableSkeleton";
 import { SearchBar } from "./SearchBar";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export const ReviewsManagement = () => {
   const { reviews, loading, stats } = useAdminReviews();
-  const { search, setSearch, currentPage, totalPages, paginatedData, filteredCount, handlePageChange } = useTableFilters({
+  const {
+    search,
+    setSearch,
+    currentPage,
+    totalPages,
+    paginatedData,
+    filteredCount,
+    handlePageChange,
+  } = useTableFilters({
     data: reviews,
-    searchFields: ['name', 'comment'],
+    searchFields: ["name", "comment"],
     pageSize: 10,
   });
 
@@ -53,18 +75,24 @@ export const ReviewsManagement = () => {
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Average Rating
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <div className="text-2xl font-bold">{stats.averageRating.toFixed(1)}</div>
+              <div className="text-2xl font-bold">
+                {stats.averageRating.toFixed(1)}
+              </div>
               <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Featured in Hero</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Featured in Hero
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.heroCount}</div>
@@ -107,7 +135,10 @@ export const ReviewsManagement = () => {
                     <TableCell>
                       <div className="flex items-center gap-1">
                         {Array.from({ length: review.rating }).map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <Star
+                            key={i}
+                            className="h-4 w-4 fill-yellow-400 text-yellow-400"
+                          />
                         ))}
                       </div>
                     </TableCell>
@@ -115,7 +146,9 @@ export const ReviewsManagement = () => {
                       <p className="line-clamp-2">{review.comment}</p>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={review.showInHero ? "default" : "secondary"}>
+                      <Badge
+                        variant={review.showInHero ? "default" : "secondary"}
+                      >
                         {review.showInHero ? "Yes" : "No"}
                       </Badge>
                     </TableCell>
@@ -129,26 +162,41 @@ export const ReviewsManagement = () => {
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious 
-                    onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  <PaginationPrevious
+                    onClick={() =>
+                      currentPage > 1 && handlePageChange(currentPage - 1)
+                    }
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
                   />
                 </PaginationItem>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      onClick={() => handlePageChange(page)}
-                      isActive={currentPage === page}
-                      className="cursor-pointer"
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => handlePageChange(page)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
                 <PaginationItem>
-                  <PaginationNext 
-                    onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  <PaginationNext
+                    onClick={() =>
+                      currentPage < totalPages &&
+                      handlePageChange(currentPage + 1)
+                    }
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>

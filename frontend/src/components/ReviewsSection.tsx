@@ -16,9 +16,7 @@ const ReviewsSection = () => {
 
     const interval = setInterval(() => {
       setIndex((prev) =>
-        prev + itemsPerView >= homepageReviews.length
-          ? 0
-          : prev + itemsPerView
+        prev + itemsPerView >= homepageReviews.length ? 0 : prev + itemsPerView
       );
     }, 3000);
 
@@ -30,7 +28,6 @@ const ReviewsSection = () => {
   return (
     <section className="section-padding bg-background overflow-hidden">
       <div className="mx-auto max-w-7xl">
-
         <div className="mb-12 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.15em] text-accent">
             What Our Customers Say
@@ -53,7 +50,6 @@ const ReviewsSection = () => {
                 className={`w-full md:w-1/3 flex-shrink-0 px-4`}
               >
                 <div className="rounded-2xl bg-card p-6 shadow-sm transition hover:shadow-lg h-full">
-                  
                   {/* Stars */}
                   <div className="mb-4 flex">
                     {Array.from({ length: review.rating }).map((_, i) => (
@@ -72,13 +68,11 @@ const ReviewsSection = () => {
                   <p className="mt-4 font-semibold text-foreground">
                     — {review.name}
                   </p>
-
                 </div>
               </div>
             ))}
           </div>
         </div>
-
       </div>
     </section>
   );

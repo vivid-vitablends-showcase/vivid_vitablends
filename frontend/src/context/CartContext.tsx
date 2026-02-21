@@ -44,9 +44,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (existing) {
         return prev.map((p) =>
-          p.id === item.id
-            ? { ...p, quantity: p.quantity + 1 }
-            : p
+          p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
         );
       }
 
@@ -67,9 +65,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     setCart((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      )
+      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
   };
 

@@ -22,9 +22,9 @@ const Index = () => {
         <CategoryGrid />
         <BrandPromise />
         <FeaturedProducts />
-       <ComboOffers />
-<ReviewsSection />
-<VideoSection />
+        <ComboOffers />
+        <ReviewsSection />
+        <VideoSection />
         <ContactCards />
       </main>
       <Footer />

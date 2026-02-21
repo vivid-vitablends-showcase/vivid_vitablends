@@ -2,8 +2,16 @@ import categoryPickles from "@/assets/category-pickles.jpg";
 import categoryPowders from "@/assets/category-powders.jpg";
 
 const categories = [
-  { name: "Premium Pickles", image: categoryPickles, desc: "Traditional recipes, bold flavors" },
-  { name: "Health Powders", image: categoryPowders, desc: "Nature's goodness, powdered" },
+  {
+    name: "Premium Pickles",
+    image: categoryPickles,
+    desc: "Traditional recipes, bold flavors",
+  },
+  {
+    name: "Health Powders",
+    image: categoryPowders,
+    desc: "Nature's goodness, powdered",
+  },
 ];
 
 const CategoryGrid = () => {
@@ -28,7 +36,9 @@ const CategoryGrid = () => {
                 <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
                   {cat.name}
                 </h2>
-                <p className="mt-2 text-sm text-primary-foreground/70">{cat.desc}</p>
+                <p className="mt-2 text-sm text-primary-foreground/70">
+                  {cat.desc}
+                </p>
                 <span className="mt-4 inline-block text-sm font-semibold text-warm-gold transition-transform group-hover:translate-x-2">
                   Explore →
                 </span>

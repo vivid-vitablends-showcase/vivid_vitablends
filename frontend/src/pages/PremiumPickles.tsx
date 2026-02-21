@@ -9,10 +9,7 @@ const PremiumPickles = () => {
   const { cart } = useCart();
   const { products: pickleProducts } = useProducts("pickle");
 
-  const cartCount = cart.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="min-h-screen bg-background">
