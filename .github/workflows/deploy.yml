@@ -67,7 +67,8 @@ jobs:
               git clone https://github.com/${{ github.repository }} .
             else
               cd /opt/vivid_vitablends
-              git pull origin main
+              git fetch origin
+              git reset --hard origin/main
             fi
             
             chmod +x deploy.sh
