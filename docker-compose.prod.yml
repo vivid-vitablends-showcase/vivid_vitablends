@@ -29,7 +29,7 @@ services:
     restart: always
 
   backend:
-    build: ./backend
+    image: vividvitablendsdev/vividvitablends:backend-latest
     expose:
       - "5000"
     env_file:
@@ -45,7 +45,7 @@ services:
       retries: 3
 
   frontend:
-    build: ./frontend
+    image: vividvitablendsdev/vividvitablends:frontend-latest
     expose:
       - "80"
     restart: always
