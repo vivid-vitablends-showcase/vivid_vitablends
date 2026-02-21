@@ -30,6 +30,8 @@ const productSchema = z.object({
   image: z.string().min(1, "Image is required"),
   category: z.enum(["health", "pickle", "combo"]),
   featured: z.boolean().optional(),
+  badge: z.string().optional(),
+  originalPrice: z.coerce.number().nonnegative().optional(),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
@@ -58,6 +60,8 @@ export const ProductForm = ({
       image: product?.image || "",
       category: product?.category || "health",
       featured: product?.featured || false,
+      badge: product?.badge || "",
+      originalPrice: product?.originalPrice || 0,
     },
   });
 
@@ -102,25 +106,40 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea {...field} />
+                <Textarea {...field} rows={3} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price</FormLabel>
-              <FormControl>
-                <Input type="number" step="0.01" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="originalPrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Original Price (Optional)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" {...field} placeholder="0" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="image"
@@ -138,40 +157,58 @@ export const ProductForm = ({
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="mt-2 h-32 w-32 object-cover rounded"
+                  className="mt-2 h-24 w-24 object-cover rounded"
                 />
               )}
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="health">Health</SelectItem>
+                    <SelectItem value="pickle">Pickle</SelectItem>
+                    <SelectItem value="combo">Combo</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="badge"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Badge (Optional)</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                  <Input {...field} placeholder="e.g., New, Sale" />
                 </FormControl>
-                <SelectContent>
-                  <SelectItem value="health">Health</SelectItem>
-                  <SelectItem value="pickle">Pickle</SelectItem>
-                  <SelectItem value="combo">Combo</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="featured"
           render={({ field }) => (
-            <FormItem className="flex items-center space-x-2">
+            <FormItem className="flex items-center space-x-2 pt-2">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -182,7 +219,7 @@ export const ProductForm = ({
             </FormItem>
           )}
         />
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 pt-2">
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
