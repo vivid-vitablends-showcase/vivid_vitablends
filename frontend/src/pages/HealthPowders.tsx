@@ -1,16 +1,13 @@
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
-import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
+import { useProducts } from "@/hooks/useProducts";
 
 const HealthPowders = () => {
   const navigate = useNavigate();
   const { cart } = useCart();
-
-  const healthPowders = products.filter(
-    (product) => product.category === "health"
-  );
+  const { products: healthPowders } = useProducts("health");
 
   const cartCount = cart.reduce(
     (sum, item) => sum + item.quantity,

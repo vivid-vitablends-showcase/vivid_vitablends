@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-import { products } from "@/data/products";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
+import { useFeaturedProducts } from "@/hooks/useProducts";
 
 const FeaturedProducts = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
-
-  const featured = products.filter((p) => p.featured);
+  const { products: featured } = useFeaturedProducts();
 
   const [currentIndex, setCurrentIndex] = useState(0);
 

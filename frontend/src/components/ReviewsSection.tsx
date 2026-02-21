@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
-import { reviews } from "@/data/reviews";
+import { useState, useEffect } from "react";
 import { Star } from "lucide-react";
+import { useReviews } from "@/hooks/useReviews";
 
 const ReviewsSection = () => {
-  const homepageReviews = reviews.filter(
-    (review) => review.showInHero
-  );
+  const { reviews: homepageReviews } = useReviews(true);
 
   const [index, setIndex] = useState(0);
 

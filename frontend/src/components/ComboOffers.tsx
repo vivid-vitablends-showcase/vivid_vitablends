@@ -1,15 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
-import { products } from "@/data/products";
 import { toast } from "sonner";
+import { useCombos } from "@/hooks/useProducts";
 
 const ComboOffers = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
-
-  const combos = products.filter(
-    (product) => product.category === "combo"
-  );
+  const { products: combos } = useCombos();
 
   const handleAddToCart = (product: any) => {
     addToCart(product);
