@@ -88,18 +88,12 @@ jobs:
             fi
             
             # Create production environment file
-            echo "🔧 Creating production environment file..."
-            echo "NODE_ENV=production" > backend/.env.production
-            echo "PORT=5000" >> backend/.env.production
-            echo "DATABASE_URL=${DATABASE_URL}" >> backend/.env.production
-            echo "DIRECT_URL=${DATABASE_URL}" >> backend/.env.production
-            echo "JWT_SECRET=${JWT_SECRET}" >> backend/.env.production
-            echo "JWT_EXPIRES_IN=86400" >> backend/.env.production
-            echo "REDIS_ENABLED=false" >> backend/.env.production
-            echo "REDIS_TTL=3600" >> backend/.env.production
+            echo "🔧 Setting environment variables..."
+            export DATABASE_URL="${DATABASE_URL}"
+            export JWT_SECRET="${JWT_SECRET}"
             
             chmod +x deploy.sh
-            ./deploy.sh
+            DATABASE_URL="${DATABASE_URL}" JWT_SECRET="${JWT_SECRET}" ./deploy.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

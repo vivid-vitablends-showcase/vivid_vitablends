@@ -15,11 +15,6 @@ fi
 
 echo "Using: $COMPOSE_CMD"
 
-# Load environment variables
-if [ -f .env.deploy ]; then
-    export $(cat .env.deploy | xargs)
-fi
-
 # Login to Docker Hub
 if [ -n "$DOCKER_USERNAME" ] && [ -n "$DOCKER_PASSWORD" ]; then
     echo "🔐 Logging into Docker Hub..."
