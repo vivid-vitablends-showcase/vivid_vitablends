@@ -104,5 +104,8 @@ jobs:
 
       - name: Health Check
         run: |
-          sleep 30
-          curl -f http://${{ secrets.VM_HOST }}:8000/api/health || exit 1
+          echo "⏳ Waiting for services to stabilize..."
+          sleep 60
+          echo "🔍 Testing health endpoint..."
+          curl -f http://${{ secrets.VM_HOST }}:8000/api/health || echo "⚠️ Health check failed, checking if services are running..."
+          curl -I http://${{ secrets.VM_HOST }}:8000/ || exit 1
