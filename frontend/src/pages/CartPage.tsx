@@ -16,9 +16,18 @@ const CartPage = () => {
   return (
     <div className="min-h-screen bg-[#d9d9d9]">
       <div className="mx-auto max-w-7xl px-5 py-10 md:py-12">
-        <h1 className="mb-6 font-display text-3xl font-bold text-black md:mb-10 md:text-4xl">
-          Your Cart
-        </h1>
+        <div className="mb-6 flex items-center gap-4 md:mb-10">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center rounded-full bg-white p-2 shadow-sm hover:bg-gray-100"
+          >
+            ←
+          </button>
+
+          <h1 className="font-display text-3xl font-bold text-black md:text-4xl">
+            Your Cart
+          </h1>
+        </div>
 
         {cart.length === 0 ? (
           <p className="text-muted-foreground">Your cart is empty</p>
@@ -200,23 +209,82 @@ const CartPage = () => {
             </div>
 
             {/* Bottom Mobile Bar */}
+            {/* Bottom Mobile Bar */}
             <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-white p-4 md:hidden">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
+
                 <div>
                   <p className="text-xs text-gray-500">Total</p>
                   <p className="text-lg font-bold">₹ {total}</p>
                 </div>
 
-                <Button
-                  onClick={() => navigate("/checkout")}
-                  className="rounded-full bg-yellow-400 text-black"
-                >
-                  Checkout
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => setShowDetails(true)}
+                    variant="outline"
+                    className="rounded-full"
+                  >
+                    View Details
+                  </Button>
+
+                  <Button
+                    onClick={() => navigate("/checkout")}
+                    className="rounded-full bg-yellow-400 text-black"
+                  >
+                    Checkout
+                  </Button>
+                </div>
               </div>
             </div>
 
             <div className="h-24 md:hidden" />
+            {showDetails && (
+  <div
+    className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 md:hidden"
+    onClick={() => setShowDetails(false)} // 👈 Close when clicking overlay
+  >
+    <div
+      className="w-full max-h-[70vh] overflow-y-auto rounded-t-3xl bg-white p-6"
+      onClick={(e) => e.stopPropagation()} // 👈 Prevent closing when clicking inside
+    >
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-lg font-bold">Cart Details</h3>
+        <button
+          onClick={() => setShowDetails(false)}
+          className="text-sm text-gray-500"
+        >
+          Close
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        {cart.map((item) => (
+          <div key={item.id} className="flex justify-between text-sm">
+            <div>
+              <p className="font-medium">
+                {item.quantity}x {item.name}
+              </p>
+              <p className="text-xs text-gray-500">
+                ₹ {item.price} each
+              </p>
+            </div>
+
+            <span className="font-semibold">
+              ₹ {item.price * item.quantity}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="my-4 h-px bg-gray-200" />
+
+      <div className="flex justify-between font-bold">
+        <span>Total</span>
+        <span>₹ {total}</span>
+      </div>
+    </div>
+  </div>
+)}
           </>
         )}
       </div>
