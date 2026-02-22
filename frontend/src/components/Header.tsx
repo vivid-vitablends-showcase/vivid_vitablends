@@ -57,11 +57,8 @@ const Header = () => {
 
         {/* Icons */}
         <div className="flex items-center gap-3">
-          <button className="rounded-lg p-2 text-foreground/70 hover:bg-secondary">
-            <Search size={20} />
-          </button>
+        
 
-          {/* ✅ CART ICON — THIS IS THE FIX */}
           <Link
             to="/cart"
             className="relative rounded-lg p-2 text-foreground/70 hover:bg-secondary"
