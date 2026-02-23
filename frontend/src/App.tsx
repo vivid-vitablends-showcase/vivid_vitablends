@@ -11,6 +11,11 @@ import AdminDashboard from "./pages/AdminDashboard";
 import HealthPowders from "./pages/HealthPowders";
 import PremiumPickles from "./pages/PremiumPickles";
 import ProductsPage from "./pages/ProductsPage";
+import ContactPage from "./pages/ContactPage";
+import ShippingPolicy from "./pages/shippingPolicy";
+import ReturnPolicy from "./pages/ReturnPolicy";
+import Faq from "./pages/Faq";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { CartProvider } from "@/context/CartContext";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -34,6 +39,11 @@ const App = () => {
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/shipping-policy" element={<ShippingPolicy />} />
+              <Route path="/return-policy" element={<ReturnPolicy />} />
+              <Route path="/faq" element={<Faq />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </HashRouter>

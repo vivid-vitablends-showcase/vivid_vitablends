@@ -30,13 +30,13 @@ const HealthPowders = () => {
       <section className="relative bg-gradient-to-r from-green-600 to-emerald-500 text-white">
         <button
           onClick={() => navigate(-1)}
-          className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-sm font-medium text-foreground shadow hover:bg-white transition"
+          className="absolute left-4 top-4 flex items-center gap-2  text-sm font-medium text-foreground  hover:bg-white transition"
         >
           <ArrowLeft size={18} />
           Back
         </button>
 
-        <div className="container mx-auto px-4 py-20 text-center">
+        <div className="container mx-auto px-4 py-8 text-center">
           <h1 className="mb-4 text-4xl font-bold md:text-5xl">
             Health Powders
           </h1>
