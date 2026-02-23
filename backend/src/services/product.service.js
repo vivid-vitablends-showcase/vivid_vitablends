@@ -1,5 +1,62 @@
 import * as productRepository from '../repositories/product.repository.js';
+import * as imageService from './image.service.js';
 import logger from '../utils/logger.js';
+
+const VALID_CATEGORIES = ['health', 'pickle', 'combo'];
+
+const validateProductData = (data, isUpdate = false) => {
+  if (!isUpdate) {
+    if (
+      !data.name ||
+      !data.description ||
+      data.price === undefined ||
+      !data.image ||
+      !data.category
+    ) {
+      throw Object.assign(
+        new Error(
+          'Missing required fields: name, description, price, image, category'
+        ),
+        {
+          statusCode: 400,
+          code: 'VALIDATION_ERROR',
+        }
+      );
+    }
+  }
+
+  if (data.category && !VALID_CATEGORIES.includes(data.category)) {
+    throw Object.assign(
+      new Error(
+        `Invalid category. Must be one of: ${VALID_CATEGORIES.join(', ')}`
+      ),
+      {
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      }
+    );
+  }
+
+  if (
+    data.price !== undefined &&
+    (typeof data.price !== 'number' || data.price <= 0)
+  ) {
+    throw Object.assign(new Error('Price must be a positive number'), {
+      statusCode: 400,
+      code: 'VALIDATION_ERROR',
+    });
+  }
+
+  if (
+    data.originalPrice !== undefined &&
+    (typeof data.originalPrice !== 'number' || data.originalPrice <= 0)
+  ) {
+    throw Object.assign(new Error('Original price must be a positive number'), {
+      statusCode: 400,
+      code: 'VALIDATION_ERROR',
+    });
+  }
+};
 
 export const getFeatured = async () => {
   logger.info('Fetching featured products');
@@ -19,10 +76,10 @@ export const getCombos = async () => {
 export const getById = async (id) => {
   if (!id || typeof id !== 'string' || id.trim() === '') {
     logger.warn('Invalid product ID provided', { id });
-    const error = new Error('Invalid product ID');
-    error.statusCode = 400;
-    error.code = 'INVALID_PRODUCT_ID';
-    throw error;
+    throw Object.assign(new Error('Invalid product ID'), {
+      statusCode: 400,
+      code: 'INVALID_PRODUCT_ID',
+    });
   }
 
   logger.info('Fetching product by ID', { productId: id });
@@ -30,11 +87,92 @@ export const getById = async (id) => {
 
   if (!product) {
     logger.warn('Product not found', { productId: id });
-    const error = new Error('Product not found');
-    error.statusCode = 404;
-    error.code = 'PRODUCT_NOT_FOUND';
-    throw error;
+    throw Object.assign(new Error('Product not found'), {
+      statusCode: 404,
+      code: 'PRODUCT_NOT_FOUND',
+    });
   }
 
   return product;
+};
+
+export const create = async (data) => {
+  logger.info('Creating product', { productName: data.name });
+  validateProductData(data);
+
+  if (data.image && data.image.startsWith('data:')) {
+    data.image = await imageService.upload(data.image);
+  }
+
+  const product = await productRepository.create(data);
+  logger.info('Product created', {
+    productId: product.id,
+    productName: product.name,
+  });
+  return product;
+};
+
+export const update = async (id, data) => {
+  if (!id || typeof id !== 'string' || id.trim() === '') {
+    logger.warn('Invalid product ID provided', { id });
+    throw Object.assign(new Error('Invalid product ID'), {
+      statusCode: 400,
+      code: 'INVALID_PRODUCT_ID',
+    });
+  }
+
+  if (!data || Object.keys(data).length === 0) {
+    logger.warn('No update data provided', { productId: id });
+    throw Object.assign(
+      new Error('At least one field must be provided for update'),
+      {
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      }
+    );
+  }
+
+  logger.info('Updating product', { productId: id });
+  validateProductData(data, true);
+
+  const exists = await productRepository.findById(id);
+  if (!exists) {
+    logger.warn('Product not found for update', { productId: id });
+    throw Object.assign(new Error('Product not found'), {
+      statusCode: 404,
+      code: 'PRODUCT_NOT_FOUND',
+    });
+  }
+
+  if (data.image && data.image.startsWith('data:')) {
+    data.image = await imageService.upload(data.image);
+  }
+
+  const product = await productRepository.update(id, data);
+  logger.info('Product updated', { productId: id });
+  return product;
+};
+
+export const deleteProduct = async (id) => {
+  if (!id || typeof id !== 'string' || id.trim() === '') {
+    logger.warn('Invalid product ID provided', { id });
+    throw Object.assign(new Error('Invalid product ID'), {
+      statusCode: 400,
+      code: 'INVALID_PRODUCT_ID',
+    });
+  }
+
+  logger.info('Deleting product', { productId: id });
+
+  const exists = await productRepository.findById(id);
+  if (!exists) {
+    logger.warn('Product not found for deletion', { productId: id });
+    throw Object.assign(new Error('Product not found'), {
+      statusCode: 404,
+      code: 'PRODUCT_NOT_FOUND',
+    });
+  }
+
+  await productRepository.deleteProduct(id);
+  logger.info('Product deleted', { productId: id });
 };
