@@ -6,25 +6,24 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: docker.io
   IMAGE_NAME: vividvitablendsdev/vividvitablends
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
+      - name: Docker Hub Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build and push backend
+      - name: Build backend image
         uses: docker/build-push-action@v5
         with:
           context: ./backend
@@ -35,7 +34,7 @@ jobs:
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:backend-latest
           cache-to: type=inline
 
-      - name: Build and push frontend
+      - name: Build frontend image
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
@@ -49,34 +48,19 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+
     steps:
-      - name: Deploy to VM
-        uses: appleboy/ssh-action@v1.0.0
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.VM_SSH_KEY }}
-          port: ${{ secrets.VM_PORT || 22 }}
-          command_timeout: 15m
-          envs: DOCKER_USERNAME,DOCKER_PASSWORD,DATABASE_URL,DIRECT_URL,JWT_SECRET
+          port: ${{ secrets.VM_PORT }}
+          script_stop: true
+          envs: DOCKER_USERNAME,DOCKER_PASSWORD,DATABASE_URL,DIRECT_URL,JWT_SECRET,POSTGRES_PASSWORD
           script: |
-            # Check Docker Compose availability
-            echo "🔍 Checking Docker Compose..."
-            if command -v docker-compose &> /dev/null; then
-              echo "✅ docker-compose found: $(docker-compose --version)"
-            elif docker compose version &> /dev/null 2>&1; then
-              echo "✅ docker compose found: $(docker compose version)"
-            else
-              echo "❌ Docker Compose not found. Installing..."
-              echo "📦 Installing Docker Compose..."
-              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-              sudo chmod +x /usr/local/bin/docker-compose
-              echo "✅ Installed: $(docker-compose --version)"
-            fi
-            
-            # Create directory if it doesn't exist
             if [ ! -d "/opt/vivid_vitablends" ]; then
-              echo "📁 Creating project directory..."
               sudo mkdir -p /opt/vivid_vitablends
               sudo chown $USER:$USER /opt/vivid_vitablends
               cd /opt/vivid_vitablends
@@ -86,26 +70,20 @@ jobs:
               git fetch origin
               git reset --hard origin/main
             fi
-            
-            # Create production environment file
-            echo "🔧 Creating .env file for docker-compose..."
-            echo "DATABASE_URL=$DATABASE_URL" > .env
-            echo "DIRECT_URL=$DIRECT_URL" >> .env
-            echo "JWT_SECRET=$JWT_SECRET" >> .env
-            
+
+            echo "Creating production env file..."
+            cat > .env <<EOF
+            DATABASE_URL=${DATABASE_URL}
+            DIRECT_URL=${DIRECT_URL}
+            JWT_SECRET=${JWT_SECRET}
+            POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            EOF
+
             chmod +x deploy.sh
             ./deploy.sh
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Health Check
         run: |
-          echo "⏳ Waiting for services to stabilize..."
+          echo "Waiting for app..."
           sleep 60
-          echo "🔍 Testing health endpoint..."
-          curl -f http://${{ secrets.VM_HOST }}:8000/api/health || echo "⚠️ Health check failed, checking if services are running..."
-          curl -I http://${{ secrets.VM_HOST }}:8000/ || exit 1
+          curl --retry 5 --retry-delay 10 --fail http://${{ secrets.VM_HOST }}:8000/api/health
