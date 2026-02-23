@@ -52,10 +52,10 @@ export const useAdminAuth = () => {
         description: "You have been logged out successfully.",
       });
 
-      navigate("/sys-admin-login");
+      navigate("/sys-admin-portal");
     } catch (err) {
       authStorage.clear();
-      navigate("/sys-admin-login");
+      navigate("/sys-admin-portal");
     } finally {
       setIsLoading(false);
     }
