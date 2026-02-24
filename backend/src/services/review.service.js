@@ -50,3 +50,32 @@ export const create = async (data) => {
   logger.info('Creating review', { name: data.name, rating: data.rating });
   return reviewRepository.create(data);
 };
+
+export const getHeroReviews = async () => {
+  logger.info('Fetching hero reviews');
+  return reviewRepository.findHeroReviews();
+};
+
+export const updateShowInHero = async (id, showInHero) => {
+  if (typeof showInHero !== 'boolean') {
+    throw Object.assign(new Error('showInHero must be a boolean'), {
+      statusCode: 400,
+      code: 'INVALID_INPUT',
+    });
+  }
+
+  logger.info('Updating review showInHero', { id, showInHero });
+
+  try {
+    return await reviewRepository.updateShowInHero(id, showInHero);
+  } catch (error) {
+    if (error.code === 'P2025') {
+      logger.warn('Review not found for showInHero update', { id });
+      throw Object.assign(new Error('Review not found'), {
+        statusCode: 404,
+        code: 'REVIEW_NOT_FOUND',
+      });
+    }
+    throw error;
+  }
+};
