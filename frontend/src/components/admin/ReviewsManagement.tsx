@@ -4,6 +4,7 @@ import { useTableFilters } from "@/hooks/useTableFilters";
 import { EmptyState } from "./EmptyState";
 import { TableSkeleton } from "./TableSkeleton";
 import { SearchBar } from "./SearchBar";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -24,7 +25,8 @@ import {
 } from "@/components/ui/pagination";
 
 export const ReviewsManagement = () => {
-  const { reviews, loading, stats } = useAdminReviews();
+  const { reviews, loading, stats, toggleShowInHero, updating } =
+    useAdminReviews();
   const {
     search,
     setSearch,
@@ -146,11 +148,20 @@ export const ReviewsManagement = () => {
                       <p className="line-clamp-2">{review.comment}</p>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant={review.showInHero ? "default" : "secondary"}
+                      <Button
+                        size="sm"
+                        variant={review.showInHero ? "default" : "outline"}
+                        onClick={() =>
+                          toggleShowInHero(review.id, review.showInHero)
+                        }
+                        disabled={updating === review.id}
                       >
-                        {review.showInHero ? "Yes" : "No"}
-                      </Badge>
+                        {updating === review.id
+                          ? "..."
+                          : review.showInHero
+                            ? "Yes"
+                            : "No"}
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

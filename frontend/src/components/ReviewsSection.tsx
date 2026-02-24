@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import { useReviews } from "@/hooks/useReviews";
 
 const ReviewsSection = () => {
-  const { reviews: homepageReviews } = useReviews(true);
+  const { reviews: homepageReviews, loading } = useReviews(true);
 
   const [index, setIndex] = useState(0);
 
@@ -23,6 +23,7 @@ const ReviewsSection = () => {
     return () => clearInterval(interval);
   }, [homepageReviews.length, itemsPerView]);
 
+  if (loading) return null;
   if (homepageReviews.length === 0) return null;
 
   return (

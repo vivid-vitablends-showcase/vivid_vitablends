@@ -8,6 +8,12 @@ export const reviewApi = {
     const json = await res.json();
     return json.data || json;
   },
+  getHeroReviews: async (): Promise<Review[]> => {
+    const res = await fetch(`${API_BASE_URL}/api/reviews/hero`);
+    if (!res.ok) throw new Error("Failed to fetch hero reviews");
+    const json = await res.json();
+    return json.data || json;
+  },
   create: async (data: {
     name: string;
     rating: number;
@@ -19,6 +25,23 @@ export const reviewApi = {
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to create review");
+    const json = await res.json();
+    return json.data || json;
+  },
+  updateShowInHero: async (
+    id: string,
+    showInHero: boolean
+  ): Promise<Review> => {
+    const token = sessionStorage.getItem("adminToken");
+    const res = await fetch(`${API_BASE_URL}/api/reviews/${id}/show-in-hero`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: JSON.stringify({ showInHero }),
+    });
+    if (!res.ok) throw new Error("Failed to update review");
     const json = await res.json();
     return json.data || json;
   },
