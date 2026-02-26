@@ -39,6 +39,11 @@ export const apiClient = async (
 ): Promise<Response> => {
   const token = sessionStorage.getItem("adminToken");
 
+  if (!token && url.includes("/api/products") && options.method !== "GET") {
+    window.location.href = "/#/sys-admin-portal";
+    throw new Error("No authentication token found");
+  }
+
   const headers = {
     "Content-Type": "application/json",
     ...options.headers,
@@ -49,7 +54,7 @@ export const apiClient = async (
 
   if (response.status === 401) {
     const data = await response.json();
-    
+
     if (data.code === "INVALID_TOKEN") {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -88,7 +93,9 @@ export const apiClient = async (
         processQueue(error as Error, null);
         isRefreshing = false;
         sessionStorage.removeItem("adminToken");
-        window.location.href = "/admin/login";
+        if (window.location.hash !== "#/sys-admin-portal") {
+          window.location.href = "/#/sys-admin-portal";
+        }
         throw error;
       }
     }
