@@ -22,7 +22,19 @@ initRedis().catch((err) => {
 app.set('etag', false);
 app.use(
   cors({
-    origin: config.corsOrigin,
+    origin: (origin, callback) => {
+      const allowedOrigins = config.corsOrigin.split(',').map((o) => o.trim());
+      if (
+        !origin ||
+        allowedOrigins.includes('*') ||
+        allowedOrigins.includes(origin)
+      ) {
+        callback(null, true);
+      } else {
+        logger.warn('CORS origin rejected', { origin, allowedOrigins });
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   })
 );

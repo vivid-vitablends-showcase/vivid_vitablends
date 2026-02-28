@@ -1,0 +1,20 @@
+meta {
+  name: Create Review
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/reviews
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Jane Smith",
+    "rating": 5,
+    "comment": "Excellent product!",
+    "productId": 1
+  }
+}

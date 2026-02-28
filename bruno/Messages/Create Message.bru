@@ -1,0 +1,20 @@
+meta {
+  name: Create Message
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/messages
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "subject": "Inquiry",
+    "message": "I have a question about your products."
+  }
+}

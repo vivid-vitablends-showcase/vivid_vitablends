@@ -8,15 +8,20 @@ export const getIpAddress = (req) => {
   return req.headers['x-forwarded-for']?.split(',')[0] || req.ip || 'Unknown';
 };
 
+const getCookieOptions = () => ({
+  httpOnly: true,
+  secure: config.nodeEnv === 'production',
+  sameSite: config.nodeEnv === 'production' ? 'none' : 'lax',
+  path: '/',
+});
+
 export const setRefreshTokenCookie = (res, refreshToken) => {
   res.cookie(config.refreshTokenCookieName, refreshToken, {
-    httpOnly: true,
-    secure: config.nodeEnv === 'production',
-    sameSite: 'strict',
+    ...getCookieOptions(),
     maxAge: config.refreshTokenCookieMaxAge,
   });
 };
 
 export const clearRefreshTokenCookie = (res) => {
-  res.clearCookie(config.refreshTokenCookieName);
+  res.clearCookie(config.refreshTokenCookieName, getCookieOptions());
 };
