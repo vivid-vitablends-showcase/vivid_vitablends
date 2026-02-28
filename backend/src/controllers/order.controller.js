@@ -1,4 +1,5 @@
 import * as orderService from '../services/order.service.js';
+import logger from '../utils/logger.js';
 
 export const create = async (req, res, next) => {
   try {
@@ -9,6 +10,20 @@ export const create = async (req, res, next) => {
       data: order,
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const getAll = async (req, res, next) => {
+  try {
+    logger.info('Fetching all orders', { userId: req.user?.id });
+    const orders = await orderService.getAll();
+    res.json({
+      success: true,
+      data: orders,
+    });
+  } catch (error) {
+    logger.error('Failed to fetch orders', { error: error.message });
     next(error);
   }
 };

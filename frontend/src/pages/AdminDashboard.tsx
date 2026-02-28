@@ -12,8 +12,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductsManagement } from "@/components/admin/ProductsManagement";
 import { ReviewsManagement } from "@/components/admin/ReviewsManagement";
+import { OrdersManagement } from "@/components/admin/OrdersManagement";
 import { useAdminProducts } from "@/hooks/useAdminProducts";
 import { useAdminReviews } from "@/hooks/useAdminReviews";
+import { useAdminOrders } from "@/hooks/useAdminOrders";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { authStorage } from "@/lib/storage";
 
@@ -26,6 +28,7 @@ const AdminDashboard = () => {
     loading: productsLoading,
   } = useAdminProducts();
   const { stats: reviewStats, loading: reviewsLoading } = useAdminReviews();
+  const { orders, loading: ordersLoading } = useAdminOrders();
 
   useEffect(() => {
     if (!authStorage.getAuth()) {
@@ -60,10 +63,11 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
+            <TabsTrigger value="orders">Orders</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -115,10 +119,10 @@ const AdminDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-[hsl(var(--primary))]">
-                    0
+                    {ordersLoading ? "..." : orders.length}
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Coming soon
+                    Total orders
                   </p>
                 </CardContent>
               </Card>
@@ -176,6 +180,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="reviews">
             <ReviewsManagement />
+          </TabsContent>
+
+          <TabsContent value="orders">
+            <OrdersManagement />
           </TabsContent>
         </Tabs>
       </div>
