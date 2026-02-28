@@ -1,0 +1,26 @@
+meta {
+  name: Create Order
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/orders
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "customerName": "John Doe",
+    "email": "john@example.com",
+    "phone": "1234567890",
+    "items": [
+      {
+        "productId": 1,
+        "quantity": 2
+      }
+    ],
+    "totalAmount": 59.98
+  }
+}

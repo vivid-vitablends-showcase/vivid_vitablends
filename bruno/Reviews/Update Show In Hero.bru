@@ -1,0 +1,21 @@
+meta {
+  name: Update Show In Hero
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/reviews/1/show-in-hero
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "showInHero": true
+  }
+}
