@@ -16,6 +16,11 @@ import ShippingPolicy from "./pages/shippingPolicy";
 import ReturnPolicy from "./pages/ReturnPolicy";
 import Faq from "./pages/Faq";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import SpicePowders from "./pages/SpicePowders";
+import Jams from "./pages/Jams";
+import Cookies from "./pages/Cookies";
+import ChocolateCandies from "./pages/ChocolateCandies";
+import FruitVegPowders from "./pages/FruitsvegPowders";
 import { CartProvider } from "@/context/CartContext";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -36,6 +41,11 @@ const App = () => {
               <Route path="/sys-admin-dashboard" element={<AdminDashboard />} />
               <Route path="/health-powders" element={<HealthPowders />} />
               <Route path="/premium-pickles" element={<PremiumPickles />} />
+              <Route path="/spices" element={<SpicePowders />} />
+              <Route path="/jams" element={<Jams />} />
+              <Route path="/cookies" element={<Cookies />} />
+              <Route path="/chocolates" element={<ChocolateCandies />} />
+              <Route path="/fruit-veg-powders" element={<FruitVegPowders />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />

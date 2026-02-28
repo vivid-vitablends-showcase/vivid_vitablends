@@ -16,7 +16,7 @@ const HealthPowders = () => {
       <div className="fixed right-6 top-6 z-50">
         <button
           onClick={() => navigate("/cart")}
-          className="relative rounded-full bg-white p-3 shadow transition hover:scale-105"
+          className="relative bg-transparent p-3 transition hover:scale-105"
         >
           <ShoppingCart size={22} />
           {cartCount > 0 && (
@@ -27,20 +27,26 @@ const HealthPowders = () => {
         </button>
       </div>
 
-      <section className="relative bg-gradient-to-r from-green-600 to-emerald-500 text-white">
+      <section
+        className="
+          relative text-black
+          bg-gradient-to-b from-green-600 via-emerald-500 to-white
+          md:bg-gradient-to-r md:from-green-600 md:via-emerald-500 md:to-emerald-700
+        "
+      >
         <button
           onClick={() => navigate(-1)}
-          className="absolute left-4 top-4 flex items-center gap-2  text-sm font-medium text-foreground  hover:bg-white transition"
+          className="absolute left-4 top-4 flex items-center gap-2 text-sm font-medium text-foreground hover:bg-white transition"
         >
           <ArrowLeft size={18} />
           Back
         </button>
 
         <div className="container mx-auto px-4 py-8 text-center">
-          <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+          <h1 className="mb-1 text-2xl font-bold md:text-5xl">
             Health Powders
           </h1>
-          <p className="mx-auto max-w-2xl text-lg">
+          <p className="mx-auto text-sm max-w-2xl text-lg">
             Pure, natural health powders crafted to boost your daily wellness.
           </p>
         </div>
