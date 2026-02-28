@@ -92,3 +92,7 @@ export const create = async (data) => {
   });
   return await orderRepository.create(orderData);
 };
+
+export const getAll = async () => {
+  return await orderRepository.findAll();
+};

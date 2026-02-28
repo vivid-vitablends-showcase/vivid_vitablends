@@ -25,3 +25,14 @@ export const create = async (data) => {
     },
   });
 };
+
+export const findAll = async () => {
+  return prisma.order.findMany({
+    include: {
+      items: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+};

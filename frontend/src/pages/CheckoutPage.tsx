@@ -61,6 +61,7 @@ const CheckoutPage = () => {
           price: item.price,
         })),
         total,
+        sendWhatsApp: true,
       });
     } catch (err) {
       toast.error("Failed to save order");
