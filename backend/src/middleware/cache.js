@@ -8,7 +8,7 @@ export const cache = (ttl = config.redisTtl) => {
       return next();
     }
 
-    const key = `cache:${req.originalUrl}`;
+    const key = `cache:${req.method}:${req.originalUrl}`;
 
     try {
       const cached = await redisClient.get(key);
@@ -23,7 +23,11 @@ export const cache = (ttl = config.redisTtl) => {
 
       res.sendResponse = res.json;
       res.json = async (body) => {
-        await redisClient.setEx(key, ttl, JSON.stringify(body));
+        try {
+          await redisClient.setEx(key, ttl, JSON.stringify(body));
+        } catch (err) {
+          logger.error('Redis setEx cache error', { key, error: err });
+        }
         res.sendResponse(body);
       };
 
@@ -41,10 +45,27 @@ export const clearCache = async (pattern = '*') => {
   }
 
   try {
-    const keys = await redisClient.keys(`cache:${pattern}`);
-    if (keys.length > 0) {
-      await redisClient.del(keys);
-      logger.info('Cache cleared', { pattern, count: keys.length });
+    let cursor = 0;
+    let totalDeleted = 0;
+    const matchPattern = `cache:${pattern}`;
+
+    do {
+      // Use SCAN to iterate over keys matching the cache pattern in a non-blocking way
+      const [nextCursor, foundKeys] = await redisClient.scan(cursor, {
+        MATCH: matchPattern,
+        COUNT: 100,
+      });
+
+      cursor = Number(nextCursor);
+
+      if (Array.isArray(foundKeys) && foundKeys.length > 0) {
+        await redisClient.del(foundKeys);
+        totalDeleted += foundKeys.length;
+      }
+    } while (cursor !== 0);
+
+    if (totalDeleted > 0) {
+      logger.info('Cache cleared', { pattern, count: totalDeleted });
     }
   } catch (err) {
     logger.error('Redis clear cache error', err);
