@@ -39,7 +39,7 @@ export const clearCache = async (pattern = '*') => {
   if (!config.redisEnabled || !redisClient) {
     return;
   }
-
+  if (!config.redisEnabled) {
   try {
     const keys = await redisClient.keys(`cache:${pattern}`);
     if (keys.length > 0) {
