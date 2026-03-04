@@ -22,12 +22,16 @@ jobs:
           node-version: 20
 
       - name: Backend Security Audit
+        env:
+          HUSKY: "0"
         run: |
           cd backend
-          npm ci --only=production
+          npm ci
           npm audit --audit-level=high
 
       - name: Frontend Security Audit
+        env:
+          HUSKY: "0"
         run: |
           cd frontend
           npm ci
