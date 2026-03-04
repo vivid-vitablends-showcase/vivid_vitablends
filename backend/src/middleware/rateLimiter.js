@@ -15,6 +15,11 @@ const rateLimiter = (options = {}) => {
       typeof redisClient.multi !== 'function' ||
       (redisClient.isOpen === false)
     ) {
+      !redisClient ||
+      typeof redisClient.get !== 'function' ||
+      typeof redisClient.multi !== 'function' ||
+      (redisClient.isOpen === false)
+    ) {
       return next();
     }
 
