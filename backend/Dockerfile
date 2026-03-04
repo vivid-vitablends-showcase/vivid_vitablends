@@ -3,9 +3,9 @@ FROM node:22.12-alpine
 # Update all packages and npm to fix security vulnerabilities
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache openssl curl && \
+    apk add --no-cache libpng=1.6.55-r0 openssl curl || \
+    (apk upgrade libpng && apk add --no-cache openssl curl) && \
     npm install -g npm@latest && \
-    npm audit fix --force || true && \
     addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs
 
