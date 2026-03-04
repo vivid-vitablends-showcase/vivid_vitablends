@@ -1,8 +1,8 @@
 FROM node:20-alpine
 
-
+# Update all packages to fix security vulnerabilities
 RUN apk update && \
-    apk upgrade tar && \
+    apk upgrade && \
     apk add --no-cache openssl curl && \
     addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs

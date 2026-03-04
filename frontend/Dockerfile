@@ -1,7 +1,7 @@
 FROM node:20-alpine AS build
 
-# Update tar to fix CVE-2026-26960
-RUN apk update && apk upgrade tar
+# Update all packages to fix security vulnerabilities
+RUN apk update && apk upgrade
 
 WORKDIR /app
 
@@ -11,7 +11,10 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine
+FROM nginx:1.25-alpine
+
+# Update packages and install wget for healthcheck
+RUN apk update && apk upgrade && apk add --no-cache wget
 
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -29,4 +32,8 @@ RUN mkdir -p /var/cache/nginx/client_temp \
 
 USER nginx
 EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
+
 CMD ["nginx", "-g", "daemon off;"]
