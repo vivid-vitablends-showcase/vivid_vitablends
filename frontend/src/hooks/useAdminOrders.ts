@@ -24,7 +24,11 @@ export const useAdminOrders = () => {
   });
 
   return {
-    orders: data?.data || [],
+    orders: Array.isArray(data?.data)
+      ? data.data
+      : Array.isArray(data)
+        ? data
+        : [],
     loading: isLoading,
     error,
     refetch,

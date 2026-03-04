@@ -69,6 +69,7 @@ const validateOrderData = (data) => {
     error.statusCode = 400;
     error.code = 'VALIDATION_ERROR';
     error.errors = errors;
+    logger.warn('Order validation failed', { errors });
     throw error;
   }
 };

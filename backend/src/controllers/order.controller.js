@@ -3,6 +3,12 @@ import logger from '../utils/logger.js';
 
 export const create = async (req, res, next) => {
   try {
+    logger.info('Order creation attempt', {
+      hasCustomerName: !!req.body.customerName,
+      hasPhone: !!req.body.phone,
+      hasItems: Array.isArray(req.body.items),
+      itemCount: req.body.items?.length || 0,
+    });
     const order = await orderService.create(req.body);
     res.status(201).json({
       success: true,
@@ -18,6 +24,7 @@ export const getAll = async (req, res, next) => {
   try {
     logger.info('Fetching all orders', { userId: req.user?.id });
     const orders = await orderService.getAll();
+    logger.info('Orders fetched', { count: orders.length });
     res.json({
       success: true,
       data: orders,
