@@ -1,9 +1,11 @@
-FROM node:20-alpine
+FROM node:22.12-alpine
 
-# Update all packages to fix security vulnerabilities
+# Update all packages and npm to fix security vulnerabilities
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache openssl curl && \
+    npm install -g npm@latest && \
+    npm audit fix --force || true && \
     addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs
 

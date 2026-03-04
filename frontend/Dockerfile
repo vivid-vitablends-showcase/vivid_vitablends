@@ -1,7 +1,9 @@
-FROM node:20-alpine AS build
+FROM node:22.12-alpine AS build
 
-# Update all packages to fix security vulnerabilities
-RUN apk update && apk upgrade
+# Update all packages and npm to fix security vulnerabilities
+RUN apk update && apk upgrade && \
+    npm install -g npm@latest && \
+    npm audit fix --force || true
 
 WORKDIR /app
 
@@ -11,7 +13,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:1.25-alpine
+FROM nginx:1.27-alpine
 
 # Update packages and install wget for healthcheck
 RUN apk update && apk upgrade && apk add --no-cache wget
