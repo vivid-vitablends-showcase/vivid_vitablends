@@ -3,7 +3,7 @@ FROM node:22.12-alpine AS build
 # Update all packages and npm to fix security vulnerabilities
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache libpng=1.6.55-r0 || apk upgrade libpng && \
+    (apk add --no-cache libpng=1.6.55-r0 || apk upgrade libpng) && \
     npm install -g npm@latest
 
 WORKDIR /app
@@ -19,8 +19,7 @@ FROM nginx:1.27-alpine
 # Update packages and install wget for healthcheck
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache libpng=1.6.55-r0 wget || \
-    (apk upgrade libpng && apk add --no-cache wget)
+    (apk add --no-cache libpng=1.6.55-r0 wget || (apk upgrade libpng && apk add --no-cache wget))
 
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf

@@ -1,4 +1,4 @@
-import { Package, Eye, User } from "lucide-react";
+import { Package, User } from "lucide-react";
 import { useState } from "react";
 import {
   Card,

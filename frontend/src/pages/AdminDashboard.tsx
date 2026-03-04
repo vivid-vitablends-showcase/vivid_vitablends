@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -27,7 +26,6 @@ const AdminDashboard = () => {
   const {
     products,
     stats: productStats,
-    loading: productsLoading,
   } = useAdminProducts();
   const { stats: reviewStats, loading: reviewsLoading } = useAdminReviews();
   const { orders, loading: ordersLoading } = useAdminOrders();
@@ -105,9 +103,9 @@ const AdminDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-[hsl(var(--primary))]">
-                    {productsLoading ? "..." : productStats.total}
+                    {products ? productStats.total : "..."}
                   </div>
-                  {!productsLoading && (
+                  {products && (
                     <p className="text-xs text-muted-foreground mt-2">
                       {productStats.featuredCount} featured
                     </p>
