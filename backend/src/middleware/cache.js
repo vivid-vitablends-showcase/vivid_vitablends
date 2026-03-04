@@ -8,7 +8,7 @@ export const cache = (ttl = config.redisTtl) => {
       return next();
     }
 
-    const key = `cache:${req.originalUrl}`;
+    const key = `cache:${req.method}:${req.originalUrl}`;
 
     try {
       const cached = await redisClient.get(key);
