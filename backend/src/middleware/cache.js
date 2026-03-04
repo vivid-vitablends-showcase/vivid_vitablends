@@ -4,7 +4,7 @@ import logger from '../utils/logger.js';
 
 export const cache = (ttl = config.redisTtl) => {
   return async (req, res, next) => {
-    if (!config.redisEnabled || !redisClient) {
+    if (!config.redisEnabled || redisClient == null) {
       return next();
     }
 
@@ -23,7 +23,7 @@ export const cache = (ttl = config.redisTtl) => {
 
       res.sendResponse = res.json;
       res.json = async (body) => {
-        await redisClient.setEx(key, ttl, JSON.stringify(body));
+        if (redisClient == null) {
         res.sendResponse(body);
       };
 
@@ -39,7 +39,7 @@ export const clearCache = async (pattern = '*') => {
   if (!config.redisEnabled || !redisClient) {
     return;
   }
-
+  if (!config.redisEnabled || redisClient == null) {
   try {
     const keys = await redisClient.keys(`cache:${pattern}`);
     if (keys.length > 0) {
