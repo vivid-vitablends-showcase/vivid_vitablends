@@ -9,7 +9,17 @@ const rateLimiter = (options = {}) => {
   } = options;
 
   return async (req, res, next) => {
-    if (!redisClient) {
+    if (
+      !redisClient ||
+      typeof redisClient.get !== 'function' ||
+      typeof redisClient.multi !== 'function' ||
+      (redisClient.isOpen === false)
+    ) {
+      !redisClient ||
+      typeof redisClient.get !== 'function' ||
+      typeof redisClient.multi !== 'function' ||
+      (redisClient.isOpen === false)
+    ) {
       return next();
     }
 
