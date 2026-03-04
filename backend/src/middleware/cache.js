@@ -23,9 +23,6 @@ export const cache = (ttl = config.redisTtl) => {
 
       res.sendResponse = res.json;
       res.json = async (body) => {
-        if (!redisClient) {
-          return res.sendResponse(body);
-        }
         await redisClient.setEx(key, ttl, JSON.stringify(body));
         res.sendResponse(body);
       };
