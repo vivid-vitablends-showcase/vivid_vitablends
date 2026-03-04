@@ -3,6 +3,38 @@ set -e
 
 echo "🚀 Starting production deployment..."
 
+# Function to extract GitHub secrets and create .env files
+extract_github_secrets() {
+  echo "📝 Extracting ALL GitHub secrets to .env files..."
+  
+  # Get all environment variables that look like secrets (uppercase with underscores)
+  BACKEND_VARS=$(env | grep -E '^[A-Z][A-Z0-9_]*=' | grep -v -E '^(PATH|HOME|USER|SHELL|PWD|OLDPWD|TERM|LANG|LC_|GITHUB_|RUNNER_|CI|ACTIONS_)' || true)
+  FRONTEND_VARS=$(env | grep -E '^VITE_[A-Z0-9_]*=' || true)
+  
+  # Create backend .env with all relevant secrets
+  if [ -n "$BACKEND_VARS" ]; then
+    echo "$BACKEND_VARS" > backend/.env
+    echo "✅ Backend .env created with $(echo "$BACKEND_VARS" | wc -l) variables"
+  else
+    echo "⚠️ No backend environment variables found"
+  fi
+  
+  # Create frontend .env with VITE_ prefixed variables
+  if [ -n "$FRONTEND_VARS" ]; then
+    echo "$FRONTEND_VARS" > frontend/.env
+    echo "✅ Frontend .env created with $(echo "$FRONTEND_VARS" | wc -l) variables"
+  fi
+  
+  echo "📋 Extracted secrets summary:"
+  echo "Backend vars: $(echo "$BACKEND_VARS" | grep -c '^' || echo 0)"
+  echo "Frontend vars: $(echo "$FRONTEND_VARS" | grep -c '^' || echo 0)"
+}
+
+# Extract secrets if running in GitHub Actions
+if [ "$GITHUB_ACTIONS" = "true" ]; then
+  extract_github_secrets
+fi
+
 # Detect docker compose command
 if command -v docker-compose &> /dev/null; then
   COMPOSE_CMD="docker-compose"
