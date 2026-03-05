@@ -2,16 +2,17 @@ import { z } from 'zod';
 
 export const orderSchema = z.object({
   customerName: z.string().min(1).max(100),
-  email: z.string().email(),
+  email: z.string().email().max(200),
   phone: z.string().regex(/^\d{10}$/, 'Phone must be 10 digits'),
   address: z.string().min(1).max(500),
   city: z.string().min(1).max(100),
+  state: z.string().min(1).max(100),
   pincode: z.string().regex(/^\d{6}$/, 'Pincode must be 6 digits'),
   total: z.number().positive(),
   items: z
     .array(
       z.object({
-        productId: z.string(),
+        productId: z.string().cuid(),
         name: z.string(),
         quantity: z.number().int().positive(),
         price: z.number().positive(),

@@ -10,7 +10,7 @@ import { useReviewSubmit } from "@/hooks/useReviewSubmit";
 
 const reviewSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name must not exceed 100 characters"),
-  rating: z.number().int().min(1, "Rating is required").max(5, "Rating must be between 1 and 5"),
+  rating: z.number().int().min(1, "Please select a rating").max(5, "Rating must be between 1 and 5"),
   comment: z.string().min(1, "Comment is required").max(1000, "Comment must not exceed 1000 characters"),
 });
 
@@ -56,7 +56,7 @@ export const ReviewForm = () => {
                 <Star
                   key={star}
                   className={`h-6 w-6 cursor-pointer transition ${
-                    star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                    star <= (rating || 0) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
                   }`}
                   onClick={() => form.setValue("rating", star, { shouldValidate: true })}
                 />

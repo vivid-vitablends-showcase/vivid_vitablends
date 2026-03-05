@@ -18,14 +18,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useMessageSubmit } from "@/hooks/useMessageSubmit";
 
 const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Enter a valid email"),
+  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name must not exceed 100 characters"),
+  email: z.string().email("Enter a valid email").max(200, "Email must not exceed 200 characters"),
   phone: z
     .string()
-    .regex(/^\d{10}$/, "Phone must be 10 digits")
     .optional()
-    .or(z.literal("")),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+    .refine(
+      (val) => !val || val === "" || /^\d{10}$/.test(val),
+      "Phone must be 10 digits"
+    ),
+  message: z.string().min(10, "Message must be at least 10 characters").max(2000, "Message must not exceed 2000 characters"),
 });
 
 type ContactFormValues = z.infer<typeof contactSchema>;

@@ -18,6 +18,7 @@ const CheckoutPage = () => {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [pincode, setPincode] = useState("");
+  const [state, setState] = useState("");
 
   const buyNowItem = location.state?.buyNowItem;
 
@@ -40,6 +41,7 @@ const CheckoutPage = () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return "Please enter a valid email address";
     }
+    if (email.length > 200) return "Email must not exceed 200 characters";
 
     const cleanPhone = phone.replace(/\D/g, "");
     if (!cleanPhone || cleanPhone.length !== 10) {
@@ -55,6 +57,9 @@ const CheckoutPage = () => {
     if (!cleanPincode || cleanPincode.length !== 6) {
       return "Please enter a valid 6-digit pincode";
     }
+
+    if (!state.trim()) return "Please enter your state or province";
+    if (state.length > 100) return "State must not exceed 100 characters";
 
     if (checkoutItems.length === 0) return "No products to checkout";
     return null;
@@ -74,6 +79,7 @@ const CheckoutPage = () => {
         phone: phone.replace(/\D/g, ""),
         address,
         city,
+        state,
         pincode: pincode.replace(/\D/g, ""),
         items: checkoutItems.map((item) => ({
           productId: item.id,
@@ -103,7 +109,7 @@ const CheckoutPage = () => {
 👤 Name: ${name}
 📧 Email: ${email}
 📞 Phone: ${phone}
-📍 Address: ${address}, ${city} - ${pincode}
+📍 Address: ${address}, ${city}, ${state} - ${pincode}
 
 📦 Items:
 ${itemsText}
@@ -226,6 +232,18 @@ Please confirm availability & delivery time.
                   onChange={(e) => setPincode(e.target.value)}
                   placeholder="Enter 6-digit pincode"
                   className="rounded-xl border px-3 py-2 text-sm outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium">
+                  State/Province
+                </label>
+                <input
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  placeholder="Enter your state or province"
+                  className="w-full rounded-xl border px-3 py-2 text-sm outline-none"
                 />
               </div>
             </div>

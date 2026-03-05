@@ -94,6 +94,7 @@ model Order {
   phone        String
   address      String
   city         String
+  state        String
   pincode      String
   total        Float
   status       String      @default("PENDING")
