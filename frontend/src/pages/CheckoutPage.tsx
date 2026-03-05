@@ -33,6 +33,7 @@ const CheckoutPage = () => {
 
   const validate = () => {
     if (!name.trim()) return "Please enter your name";
+    if (name.length > 100) return "Name must not exceed 100 characters";
 
     const cleanPhone = phone.replace(/\D/g, "");
     if (!cleanPhone || cleanPhone.length !== 10) {
@@ -40,7 +41,9 @@ const CheckoutPage = () => {
     }
 
     if (!address.trim()) return "Please enter your delivery address";
+    if (address.length > 500) return "Address must not exceed 500 characters";
     if (!city.trim()) return "Please enter your city";
+    if (city.length > 100) return "City must not exceed 100 characters";
 
     const cleanPincode = pincode.replace(/\D/g, "");
     if (!cleanPincode || cleanPincode.length !== 6) {
