@@ -32,11 +32,17 @@ import { Product } from "@/types/Product";
 import { Plus } from "lucide-react";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 const productSchema = z.object({
-  name: z.string().min(1, "Name is required").max(200, "Name must not exceed 200 characters"),
-  description: z.string().min(1, "Description is required").max(2000, "Description must not exceed 2000 characters"),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(200, "Name must not exceed 200 characters"),
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .max(2000, "Description must not exceed 2000 characters"),
   price: z.coerce.number().positive("Price must be positive"),
   image: z.string().min(1, "Image is required"),
   categoryId: z.string().min(1, "Category is required"),
@@ -44,7 +50,10 @@ const productSchema = z.object({
   badge: z
     .string()
     .max(50, "Badge must be 50 characters or less")
-    .regex(/^[a-zA-Z0-9\s%!-]*$/, "Badge can only contain letters, numbers, spaces, %, !, and -")
+    .regex(
+      /^[a-zA-Z0-9\s%!-]*$/,
+      "Badge can only contain letters, numbers, spaces, %, !, and -"
+    )
     .optional(),
   originalPrice: z.coerce.number().nonnegative().optional(),
   inStock: z.boolean().optional(),
@@ -93,14 +102,16 @@ export const ProductForm = ({
     if (!file) return;
 
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      form.setError('image', { message: 'Only JPEG, PNG, and WebP images are allowed' });
-      e.target.value = '';
+      form.setError("image", {
+        message: "Only JPEG, PNG, and WebP images are allowed",
+      });
+      e.target.value = "";
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      form.setError('image', { message: 'Image size must be less than 10MB' });
-      e.target.value = '';
+      form.setError("image", { message: "Image size must be less than 10MB" });
+      e.target.value = "";
       return;
     }
 

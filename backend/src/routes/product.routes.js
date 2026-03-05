@@ -15,7 +15,12 @@ const router = express.Router();
 router.get('/featured', cache(300), productController.getFeatured);
 router.get('/combos', cache(300), productController.getCombos);
 router.get('/:id', cache(600), validateId, productController.getById);
-router.get('/', cache(300), validateQuery(productQuerySchema), productController.getAll);
+router.get(
+  '/',
+  cache(300),
+  validateQuery(productQuerySchema),
+  productController.getAll
+);
 router.post(
   '/',
   authenticate,

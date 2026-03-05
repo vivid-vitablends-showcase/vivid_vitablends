@@ -9,9 +9,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useReviewSubmit } from "@/hooks/useReviewSubmit";
 
 const reviewSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name must not exceed 100 characters"),
-  rating: z.number().int().min(1, "Please select a rating").max(5, "Rating must be between 1 and 5"),
-  comment: z.string().min(1, "Comment is required").max(1000, "Comment must not exceed 1000 characters"),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(100, "Name must not exceed 100 characters"),
+  rating: z
+    .number()
+    .int()
+    .min(1, "Please select a rating")
+    .max(5, "Rating must be between 1 and 5"),
+  comment: z
+    .string()
+    .min(1, "Comment is required")
+    .max(1000, "Comment must not exceed 1000 characters"),
 });
 
 type ReviewFormValues = z.infer<typeof reviewSchema>;
@@ -46,7 +56,9 @@ export const ReviewForm = () => {
           <div>
             <Input placeholder="Your Name" {...form.register("name")} />
             {form.formState.errors.name && (
-              <p className="text-sm text-red-500 mt-1">{form.formState.errors.name.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {form.formState.errors.name.message}
+              </p>
             )}
           </div>
 
@@ -56,25 +68,41 @@ export const ReviewForm = () => {
                 <Star
                   key={star}
                   className={`h-6 w-6 cursor-pointer transition ${
-                    star <= (rating || 0) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                    star <= (rating || 0)
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-300"
                   }`}
-                  onClick={() => form.setValue("rating", star, { shouldValidate: true })}
+                  onClick={() =>
+                    form.setValue("rating", star, { shouldValidate: true })
+                  }
                 />
               ))}
             </div>
             {form.formState.errors.rating && (
-              <p className="text-sm text-red-500">{form.formState.errors.rating.message}</p>
+              <p className="text-sm text-red-500">
+                {form.formState.errors.rating.message}
+              </p>
             )}
           </div>
 
           <div>
-            <Textarea placeholder="Your Review" rows={4} {...form.register("comment")} />
+            <Textarea
+              placeholder="Your Review"
+              rows={4}
+              {...form.register("comment")}
+            />
             {form.formState.errors.comment && (
-              <p className="text-sm text-red-500 mt-1">{form.formState.errors.comment.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {form.formState.errors.comment.message}
+              </p>
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={mutation.isPending}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={mutation.isPending}
+          >
             {mutation.isPending ? "Submitting..." : "Submit Review"}
           </Button>
         </form>

@@ -81,11 +81,11 @@ export const refresh = async (req, res, next) => {
 export const logout = async (req, res, next) => {
   try {
     const refreshToken = req.cookies[config.refreshTokenCookieName];
-    
+
     if (refreshToken) {
       const refreshTokenHash = hashToken(refreshToken);
       const session = await sessionRepository.findByTokenHash(refreshTokenHash);
-      
+
       if (session && session.adminId !== req.user.id) {
         logger.warn('Token ownership mismatch during logout', {
           userId: req.user.id,
@@ -97,7 +97,7 @@ export const logout = async (req, res, next) => {
         });
       }
     }
-    
+
     const result = await adminService.logout(refreshToken);
 
     clearRefreshTokenCookie(res);

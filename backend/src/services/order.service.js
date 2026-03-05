@@ -36,7 +36,11 @@ const validateOrderData = (data) => {
     errors.push({ field: 'city', message: 'City is required' });
   }
 
-  if (!data.state || typeof data.state !== 'string' || data.state.trim() === '') {
+  if (
+    !data.state ||
+    typeof data.state !== 'string' ||
+    data.state.trim() === ''
+  ) {
     errors.push({ field: 'state', message: 'State is required' });
   }
 
@@ -88,21 +92,26 @@ export const create = async (data) => {
 
   return await prisma.$transaction(async (tx) => {
     // Verify all products exist
-    const productIds = data.items.map(item => item.productId);
+    const productIds = data.items.map((item) => item.productId);
     const products = await tx.product.findMany({
       where: { id: { in: productIds } },
-      select: { id: true }
+      select: { id: true },
     });
-    
-    const foundIds = new Set(products.map(p => p.id));
-    const missingIds = productIds.filter(id => !foundIds.has(id));
-    
+
+    const foundIds = new Set(products.map((p) => p.id));
+    const missingIds = productIds.filter((id) => !foundIds.has(id));
+
     if (missingIds.length > 0) {
       logger.warn('Order validation failed - invalid products', { missingIds });
       throw Object.assign(new Error('One or more products do not exist'), {
         statusCode: 400,
         code: 'INVALID_PRODUCT',
-        errors: [{ field: 'items', message: `Invalid product IDs: ${missingIds.join(', ')}` }]
+        errors: [
+          {
+            field: 'items',
+            message: `Invalid product IDs: ${missingIds.join(', ')}`,
+          },
+        ],
       });
     }
 

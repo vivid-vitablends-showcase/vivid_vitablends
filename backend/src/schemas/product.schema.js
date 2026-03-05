@@ -10,7 +10,10 @@ export const productSchema = z.object({
   badge: z
     .string()
     .max(50)
-    .regex(/^[a-zA-Z0-9\s%!-]*$/, 'Badge can only contain letters, numbers, spaces, %, !, and -')
+    .regex(
+      /^[a-zA-Z0-9\s%!-]*$/,
+      'Badge can only contain letters, numbers, spaces, %, !, and -'
+    )
     .optional(),
   originalPrice: z.number().positive().optional(),
   inStock: z.boolean().optional(),
@@ -26,7 +29,10 @@ export const productUpdateSchema = z.object({
   badge: z
     .string()
     .max(50)
-    .regex(/^[a-zA-Z0-9\s%!-]*$/, 'Badge can only contain letters, numbers, spaces, %, !, and -')
+    .regex(
+      /^[a-zA-Z0-9\s%!-]*$/,
+      'Badge can only contain letters, numbers, spaces, %, !, and -'
+    )
     .optional(),
   originalPrice: z.number().positive().optional(),
   inStock: z.boolean().optional(),

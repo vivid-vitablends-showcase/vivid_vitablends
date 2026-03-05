@@ -36,8 +36,14 @@ const ALLOWED_IMAGE_TYPES = [
 ];
 
 const categoryUpdateSchema = z.object({
-  name: z.string().min(1, "Category name is required").max(100, "Category name must not exceed 100 characters"),
-  description: z.string().max(500, "Description must not exceed 500 characters").optional(),
+  name: z
+    .string()
+    .min(1, "Category name is required")
+    .max(100, "Category name must not exceed 100 characters"),
+  description: z
+    .string()
+    .max(500, "Description must not exceed 500 characters")
+    .optional(),
   image: z.string().optional(),
 });
 
@@ -132,7 +138,7 @@ const CategoryManagement = () => {
 
   const handleUpdate = async () => {
     if (!editingCategory) return;
-    
+
     const validation = categoryUpdateSchema.safeParse(formData);
     if (!validation.success) {
       const firstError = validation.error.errors[0];
@@ -226,12 +232,18 @@ const CategoryManagement = () => {
                         }
                       }}
                       onKeyDown={(e) => {
-                        if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '.' || e.key === '+') {
+                        if (
+                          e.key === "-" ||
+                          e.key === "e" ||
+                          e.key === "E" ||
+                          e.key === "." ||
+                          e.key === "+"
+                        ) {
                           e.preventDefault();
                         }
                       }}
                       onPaste={(e) => {
-                        const pastedText = e.clipboardData.getData('text');
+                        const pastedText = e.clipboardData.getData("text");
                         if (!/^\d+$/.test(pastedText)) {
                           e.preventDefault();
                         }
