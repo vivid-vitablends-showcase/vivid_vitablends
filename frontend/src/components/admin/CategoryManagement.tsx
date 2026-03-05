@@ -223,7 +223,13 @@ const CategoryManagement = () => {
                         }
                       }}
                       onKeyDown={(e) => {
-                        if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '.') {
+                        if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '.' || e.key === '+') {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        const pastedText = e.clipboardData.getData('text');
+                        if (!/^\d+$/.test(pastedText)) {
                           e.preventDefault();
                         }
                       }}

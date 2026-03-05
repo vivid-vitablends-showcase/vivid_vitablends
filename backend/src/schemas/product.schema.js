@@ -31,3 +31,8 @@ export const productUpdateSchema = z.object({
   originalPrice: z.number().positive().optional(),
   inStock: z.boolean().optional(),
 });
+
+export const productQuerySchema = z.object({
+  categoryId: z.string().cuid().optional(),
+  featured: z.enum(['true', 'false']).optional(),
+});

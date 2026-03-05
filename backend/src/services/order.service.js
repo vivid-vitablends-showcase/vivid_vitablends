@@ -128,6 +128,7 @@ export const create = async (data) => {
       data: {
         orderId,
         customerName: data.customerName,
+        email: data.email,
         phone: data.phone,
         address: data.address,
         city: data.city,

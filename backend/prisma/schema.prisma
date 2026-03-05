@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Admin {
@@ -91,6 +90,7 @@ model Order {
   id           String      @id @default(cuid())
   orderId      String      @unique
   customerName String
+  email        String
   phone        String
   address      String
   city         String

@@ -3,7 +3,7 @@ import * as categoryController from '../controllers/category.controller.js';
 import { authenticate } from '../middleware/auth.js';
 import { requireAdmin } from '../middleware/adminAuth.js';
 import { cache } from '../middleware/cache.js';
-import { validate } from '../middleware/validate.js';
+import { validate, validateId } from '../middleware/validate.js';
 import {
   categorySchema,
   categoryUpdateSchema,
@@ -25,6 +25,7 @@ router.put(
   '/:id/homepage',
   authenticate,
   requireAdmin,
+  validateId,
   validate(categoryHomepageSchema),
   categoryController.updateHomepageVisibility
 );
@@ -32,6 +33,7 @@ router.put(
   '/:id',
   authenticate,
   requireAdmin,
+  validateId,
   validate(categoryUpdateSchema),
   categoryController.update
 );

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const orderSchema = z.object({
   customerName: z.string().min(1).max(100),
+  email: z.string().email(),
   phone: z.string().regex(/^\d{10}$/, 'Phone must be 10 digits'),
   address: z.string().min(1).max(500),
   city: z.string().min(1).max(100),

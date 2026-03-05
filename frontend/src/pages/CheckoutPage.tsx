@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, MapPin, Phone, User } from "lucide-react";
+import { ArrowLeft, Mail, MapPin, Phone, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ const CheckoutPage = () => {
   const { cart, clearCart } = useCart();
 
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
@@ -34,6 +35,11 @@ const CheckoutPage = () => {
   const validate = () => {
     if (!name.trim()) return "Please enter your name";
     if (name.length > 100) return "Name must not exceed 100 characters";
+
+    if (!email.trim()) return "Please enter your email";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return "Please enter a valid email address";
+    }
 
     const cleanPhone = phone.replace(/\D/g, "");
     if (!cleanPhone || cleanPhone.length !== 10) {
@@ -64,6 +70,7 @@ const CheckoutPage = () => {
     try {
       await orderApi.create({
         customerName: name,
+        email,
         phone: phone.replace(/\D/g, ""),
         address,
         city,
@@ -94,6 +101,7 @@ const CheckoutPage = () => {
 🛒 *New Order - Vivid Vitablends*
 
 👤 Name: ${name}
+📧 Email: ${email}
 📞 Phone: ${phone}
 📍 Address: ${address}, ${city} - ${pincode}
 
@@ -154,6 +162,22 @@ Please confirm availability & delivery time.
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your full name"
+                    className="w-full bg-transparent text-sm outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium">
+                  Email Address
+                </label>
+                <div className="flex items-center gap-2 rounded-xl border px-3 py-2">
+                  <Mail size={18} />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email address"
                     className="w-full bg-transparent text-sm outline-none"
                   />
                 </div>
