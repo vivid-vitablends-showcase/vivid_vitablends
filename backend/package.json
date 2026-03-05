@@ -37,9 +37,11 @@
     "prisma": "^6.19.2"
   },
   "overrides": {
-    "minimatch": "10.2.3"
+    "minimatch": "10.2.3",
+    "tar": "7.5.10"
   },
   "resolutions": {
-    "minimatch": "10.2.3"
+    "minimatch": "10.2.3",
+    "tar": "7.5.10"
   }
 }
