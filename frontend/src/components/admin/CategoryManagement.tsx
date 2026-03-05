@@ -71,6 +71,10 @@ const CategoryManagement = () => {
     showOnHome: boolean,
     newOrder: number
   ) => {
+    if (newOrder < 0 || !Number.isInteger(newOrder)) {
+      toast.error("Display order must be a non-negative number");
+      return;
+    }
     setUpdating(categoryId);
     try {
       await categoryApi.updateHomepageVisibility(
@@ -206,14 +210,23 @@ const CategoryManagement = () => {
                       id={`order-${category.id}`}
                       type="number"
                       min="0"
+                      step="1"
                       value={category.displayOrder}
-                      onChange={(e) =>
-                        handleDisplayOrderChange(
-                          category.id,
-                          category.showOnHome,
-                          parseInt(e.target.value) || 0
-                        )
-                      }
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value);
+                        if (!isNaN(value) && value >= 0) {
+                          handleDisplayOrderChange(
+                            category.id,
+                            category.showOnHome,
+                            value
+                          );
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '.') {
+                          e.preventDefault();
+                        }
+                      }}
                       className="w-16"
                       disabled={updating === category.id}
                     />
