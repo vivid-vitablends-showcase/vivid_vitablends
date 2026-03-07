@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
+import { EmptyCart } from "@/components/EmptyCart";
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const CartPage = () => {
   }, [cart]);
 
   return (
-    <div className="min-h-screen bg-[#d9d9d9]">
+    <div className="min-h-screen bg-[#fbfcfb]">
       <div className="mx-auto max-w-7xl px-5 py-10 md:py-12">
         <div className="mb-6 flex items-center gap-4 md:mb-10">
           <button
@@ -30,7 +31,7 @@ const CartPage = () => {
         </div>
 
         {cart.length === 0 ? (
-          <p className="text-muted-foreground">Your cart is empty</p>
+          <EmptyCart />
         ) : (
           <>
             {/* ================= MOBILE ================= */}
