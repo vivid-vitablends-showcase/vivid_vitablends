@@ -1,50 +1,60 @@
 import banner1 from "@/assets/banner1.png";
 import banner1mob from "@/assets/banner1mob.png";
-import product from "@/assets/koorka.jpg"; // your product image
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getComingSoonProducts } from "@/services/api/comingSoonApi";
 
 const HeroSection = () => {
+  const { data: products } = useQuery({
+    queryKey: ["comingSoon"],
+    queryFn: getComingSoonProducts,
+  });
+
+  const displayProduct = products?.[0]?.image;
+
   return (
     <section className="relative overflow-hidden">
       {/* Launching Soon Badge */}
-      <div className="absolute top-3 right-3 md:top-6 md:right-6 z-30 w-[90px] h-[90px] md:w-[120px] md:h-[120px]">
-        {/* Rotating Text */}
-        <div className="absolute inset-0 animate-rotate-badge">
-          <svg viewBox="0 0 100 100" className="w-full h-full">
-            <defs>
-              <path
-                id="circle"
-                d="
+      {displayProduct && (
+        <div className="absolute top-3 right-3 md:top-6 md:right-6 z-30 w-[90px] h-[90px] md:w-[120px] md:h-[120px]">
+          {/* Rotating Text */}
+          <div className="absolute inset-0 animate-rotate-badge">
+            <svg viewBox="0 0 100 100" className="w-full h-full">
+              <defs>
+                <path
+                  id="circle"
+                  d="
                   M 50,50
                   m -38,0
                   a 38,38 0 1,1 76,0
                   a 38,38 0 1,1 -76,0
                 "
-              />
-            </defs>
+                />
+              </defs>
 
-            <text
-              fill="#fbbf24"
-              fontSize="8"
-              fontWeight="bold"
-              letterSpacing="2"
-            >
-              <textPath href="#circle">
-                • LAUNCHING SOON • VIVID VITABLENDS •
-              </textPath>
-            </text>
-          </svg>
-        </div>
+              <text
+                fill="#fbbf24"
+                fontSize="8"
+                fontWeight="bold"
+                letterSpacing="2"
+              >
+                <textPath href="#circle">
+                  • LAUNCHING SOON • VIVID VITABLENDS •
+                </textPath>
+              </text>
+            </svg>
+          </div>
 
-        {/* Center Product */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <img
-            src={product}
-            alt="Launching product"
-            className="w-12 h-12 object-contain"
-          />
+          {/* Center Product */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <img
+              src={displayProduct}
+              alt="Launching product"
+              className="w-12 h-12 object-contain"
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="relative h-[80vh] min-h-[500px] md:h-[90vh]">
         {/* Background Images */}
