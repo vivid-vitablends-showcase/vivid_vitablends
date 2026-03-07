@@ -43,6 +43,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
           alt={product.name}
           className="h-full w-auto object-contain"
           loading="lazy"
+          width="300"
+          height="300"
+          decoding="async"
         />
         {isOutOfStock && (
           <Badge variant="destructive" className="absolute top-2 right-2">

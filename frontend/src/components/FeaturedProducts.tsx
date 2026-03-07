@@ -80,6 +80,11 @@ const FeaturedProducts = () => {
                       src={product.image}
                       alt={product.name}
                       className="h-full w-auto object-contain transition duration-300 group-hover:scale-105"
+                      loading="eager"
+                      fetchpriority="high"
+                      width="300"
+                      height="300"
+                      decoding="async"
                     />
                   </div>
 
@@ -143,6 +148,11 @@ const FeaturedProducts = () => {
                   src={product.image}
                   alt={product.name}
                   className="h-full w-auto object-contain transition duration-300 group-hover:scale-105"
+                  loading="eager"
+                  fetchpriority="high"
+                  width="300"
+                  height="300"
+                  decoding="async"
                 />
               </div>
 
