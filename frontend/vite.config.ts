@@ -25,21 +25,5 @@ export default defineConfig(({ mode }) => {
       },
     },
     envDir: path.resolve(__dirname, "../"), // Look for .env files in root directory
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            "react-vendor": ["react", "react-dom", "react-router-dom"],
-            "ui-vendor": [
-              "@radix-ui/react-dialog",
-              "@radix-ui/react-dropdown-menu",
-              "@radix-ui/react-select",
-            ],
-            "query-vendor": ["@tanstack/react-query"],
-          },
-        },
-      },
-      chunkSizeWarningLimit: 600,
-    },
   };
 });

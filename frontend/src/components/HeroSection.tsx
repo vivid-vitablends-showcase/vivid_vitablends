@@ -1,5 +1,5 @@
-import banner1 from "@/assets/banner1.webp";
-import banner1mob from "@/assets/banner1mob.webp";
+import banner1 from "@/assets/banner1.png";
+import banner1mob from "@/assets/banner1mob.png";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getComingSoonProducts } from "@/services/api/comingSoonApi";
@@ -64,10 +64,6 @@ const HeroSection = () => {
             alt="Vivid Vitablends premium homemade food products"
             className="absolute inset-0 w-full h-full object-cover object-top md:hidden"
             loading="eager"
-            fetchpriority="high"
-            width="768"
-            height="800"
-            decoding="async"
           />
 
           <img
@@ -75,10 +71,6 @@ const HeroSection = () => {
             alt="Vivid Vitablends premium homemade food products"
             className="absolute inset-0 hidden md:block w-full h-[900px] object-cover object-center"
             loading="eager"
-            fetchpriority="high"
-            width="1920"
-            height="900"
-            decoding="async"
           />
         </>
 
