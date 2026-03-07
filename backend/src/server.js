@@ -14,6 +14,7 @@ import reviewRoutes from './routes/review.routes.js';
 import orderRoutes from './routes/order.routes.js';
 import messageRoutes from './routes/message.routes.js';
 import categoryRoutes from './routes/category.routes.js';
+import comingSoonRoutes from './routes/comingSoon.routes.js';
 
 const app = express();
 
@@ -80,6 +81,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/coming-soon', comingSoonRoutes);
 app.use('/', healthRoutes);
 
 app.use((err, req, res, next) => {

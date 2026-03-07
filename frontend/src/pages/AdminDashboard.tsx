@@ -8,6 +8,7 @@ import { ProductsManagement } from "@/components/admin/ProductsManagement";
 import { ReviewsManagement } from "@/components/admin/ReviewsManagement";
 import { OrdersManagement } from "@/components/admin/OrdersManagement";
 import CategoryManagement from "@/components/admin/CategoryManagement";
+import { ComingSoonManagement } from "@/components/admin/ComingSoonManagement";
 import { useAdminProducts } from "@/hooks/useAdminProducts";
 import { useAdminReviews } from "@/hooks/useAdminReviews";
 import { useAdminOrders } from "@/hooks/useAdminOrders";
@@ -56,10 +57,11 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="coming-soon">Coming Soon</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
           </TabsList>
@@ -149,6 +151,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="products">
             <ProductsManagement />
+          </TabsContent>
+
+          <TabsContent value="coming-soon">
+            <ComingSoonManagement />
           </TabsContent>
 
           <TabsContent value="reviews">
