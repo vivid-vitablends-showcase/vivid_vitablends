@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import advideo from "@/assets/videos/ad.mp4";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Link } from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -131,9 +132,12 @@ const VideoSection = () => {
             </p>
 
             <div className="mt-8 flex flex-col lg:flex-row lg:items-center gap-6">
-              <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg transition">
+              <Link
+                to="/products"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg transition text-center"
+              >
                 SHOP NOW →
-              </button>
+              </Link>
 
               <div className="flex gap-8 text-sm text-muted-foreground">
                 <div>
