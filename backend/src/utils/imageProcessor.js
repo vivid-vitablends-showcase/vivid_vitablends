@@ -1,5 +1,8 @@
 import sharp from 'sharp';
 import logger from './logger.js';
+import { IMAGE_PROCESSING_CONFIG } from '../config/imageProcessing.js';
+
+const { MAX_DIMENSION, WEBP_QUALITY, PNG_QUALITY } = IMAGE_PROCESSING_CONFIG;
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10MB
 // Base64 encodes 3 bytes → 4 chars, so max base64 length for 10MB:
@@ -49,22 +52,43 @@ const detectImageFormat = (buffer) => {
   return null;
 };
 
+/**
+ * Process and optimize uploaded images
+ *
+ * Decision: Prefer WebP format for better compression
+ * Why: 40-60% smaller file size, 95%+ browser support
+ * Trade-off: PNG with alpha channel preserved when needed
+ * Impact: Faster page loads, reduced storage costs
+ * Migration: Existing images unaffected, new uploads optimized
+ *
+ * Size reduction: 1200x1200 → 800x800
+ * Why: Balance quality vs performance for product images
+ * Impact: 44% reduction in pixel count, faster rendering
+ */
 export const processImage = async (buffer) => {
   const image = sharp(buffer);
   const metadata = await image.metadata();
 
+  // Preserve alpha channel for images with transparency
   if (metadata.hasAlpha) {
     logger.info('Processing image with transparency as PNG');
     return image
-      .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
-      .png({ quality: 85 })
+      .resize(MAX_DIMENSION, MAX_DIMENSION, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .png({ quality: PNG_QUALITY })
       .toBuffer();
   }
 
-  logger.info('Processing image as JPEG');
+  // Convert to WebP for better compression
+  logger.info('Processing image as WebP');
   return image
-    .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
-    .jpeg({ quality: 85 })
+    .resize(MAX_DIMENSION, MAX_DIMENSION, {
+      fit: 'inside',
+      withoutEnlargement: true,
+    })
+    .webp({ quality: WEBP_QUALITY })
     .toBuffer();
 };
 
