@@ -35,7 +35,7 @@ jobs:
           HUSKY: "0"
         run: |
           cd frontend
-          npm ci
+          npm install --force
           npm audit --audit-level=high
 
       - name: Scan Dockerfiles
