@@ -2,9 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import placeholder from "@/assets/cartPlaceholder.png";
 
-interface EmptyCartProps {}
-
-export const EmptyCart = ({}: EmptyCartProps): JSX.Element => {
+export const EmptyCart = (): JSX.Element => {
   const navigate = useNavigate();
 
   const handleShopClick = () => {
