@@ -72,7 +72,7 @@ const CategoryManagement = () => {
       );
       await queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Category visibility updated");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update category");
     } finally {
       setUpdating(null);
@@ -97,7 +97,7 @@ const CategoryManagement = () => {
       );
       await queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Display order updated");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update display order");
     } finally {
       setUpdating(null);
@@ -152,9 +152,9 @@ const CategoryManagement = () => {
       await queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Category updated successfully");
       setEditingCategory(null);
-    } catch (error) {
+    } catch (err) {
       const message =
-        error instanceof Error ? error.message : "Failed to update category";
+        err instanceof Error ? err.message : "Failed to update category";
       toast.error(message);
     } finally {
       setUpdating(null);
