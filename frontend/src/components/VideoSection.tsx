@@ -93,8 +93,6 @@ const VideoSection = () => {
                 loop
                 muted
                 playsInline
-                preload="none"
-                loading="lazy"
                 aria-label="Product showcase video"
                 className="w-full h-[220px] md:h-[320px] lg:h-[500px] object-cover"
               />

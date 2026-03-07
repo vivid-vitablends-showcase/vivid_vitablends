@@ -19,10 +19,8 @@ export const upload = async (base64Image) => {
   logger.info('Processing image for upload');
   const optimizedBuffer = await processImage(buffer);
   const metadata = await sharp(optimizedBuffer).metadata();
-
-  // Determine format based on actual output (WebP or PNG with alpha)
-  const ext = metadata.format === 'png' ? 'png' : 'webp';
-  const contentType = metadata.format === 'png' ? 'image/png' : 'image/webp';
+  const ext = metadata.format === 'png' ? 'png' : 'jpg';
+  const contentType = metadata.format === 'png' ? 'image/png' : 'image/jpeg';
   const key = `${config.r2.pathPrefix}${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${ext}`;
 
   await imageRepository.uploadToS3(optimizedBuffer, key, contentType);

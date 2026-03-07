@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import placeholder from "@/assets/cartPlaceholder.webp";
+import placeholder from "@/assets/cartPlaceholder.png";
 
 export const EmptyCart = (): JSX.Element => {
   const navigate = useNavigate();
@@ -21,9 +21,6 @@ export const EmptyCart = (): JSX.Element => {
       <img
         src={placeholder}
         alt="Empty cart"
-        loading="lazy"
-        width="300"
-        height="300"
         className="mb-8 h-[300px] w-[300px] object-contain animate-[bounce_3s_ease-in-out_infinite]"
       />
 

@@ -46,7 +46,7 @@ const ProductsPage = () => {
         setActiveCategory(matchedCategory.id);
       }
     }
-  }, [categories, searchParams]);
+  }, [categories]);
 
   // Filter products by category and search
   const products = useMemo(() => {
