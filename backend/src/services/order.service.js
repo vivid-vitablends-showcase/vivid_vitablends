@@ -191,6 +191,35 @@ export const updateStatus = async (id, status) => {
     error.code = 'INVALID_STATUS';
     throw error;
   }
+
+  // Get current order status
+  const order = await prisma.order.findUnique({ where: { id } });
+  if (!order) {
+    const error = new Error('Order not found');
+    error.statusCode = 404;
+    error.code = 'ORDER_NOT_FOUND';
+    throw error;
+  }
+
+  const currentStatus = order.status;
+
+  // Validate status transitions
+  const allowedTransitions = {
+    PENDING: ['CONFIRMED', 'CANCELLED'],
+    CONFIRMED: ['DELIVERED', 'CANCELLED'],
+    CANCELLED: [], // Final state
+    DELIVERED: [], // Final state
+  };
+
+  if (!allowedTransitions[currentStatus]?.includes(status)) {
+    const error = new Error(
+      `Cannot change status from ${currentStatus} to ${status}`
+    );
+    error.statusCode = 400;
+    error.code = 'INVALID_STATUS_TRANSITION';
+    throw error;
+  }
+
   return await orderRepository.updateStatus(id, status);
 };
 
