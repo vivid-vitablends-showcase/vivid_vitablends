@@ -6,6 +6,7 @@ export const categorySchema = z.object({
   image: z.string().url().or(z.string().startsWith('data:image/')).optional(),
   showOnHome: z.boolean().optional(),
   displayOrder: z.number().int().min(0).optional(),
+  isCombo: z.boolean().optional(),
 });
 
 export const categoryUpdateSchema = z.object({
@@ -14,6 +15,7 @@ export const categoryUpdateSchema = z.object({
   image: z.string().url().or(z.string().startsWith('data:image/')).optional(),
   showOnHome: z.boolean().optional(),
   displayOrder: z.number().int().min(0).optional(),
+  isCombo: z.boolean().optional(),
 });
 
 export const categoryHomepageSchema = z.object({

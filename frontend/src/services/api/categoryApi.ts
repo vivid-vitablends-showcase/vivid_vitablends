@@ -17,10 +17,10 @@ export const categoryApi = {
     return json.data || [];
   },
 
-  create: async (name: string): Promise<Category> => {
+  create: async (data: Partial<Category>): Promise<Category> => {
     const res = await apiClient(`${API_BASE_URL}/api/categories`, {
       method: "POST",
-      body: JSON.stringify({ name }),
+      body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to create category");
     const json = await res.json();
