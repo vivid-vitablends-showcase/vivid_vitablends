@@ -11,7 +11,7 @@ export const getIpAddress = (req) => {
 const getCookieOptions = () => ({
   httpOnly: true,
   secure: config.nodeEnv === 'production',
-  sameSite: config.nodeEnv === 'production' ? 'none' : 'lax',
+  sameSite: 'strict',
   path: '/',
 });
 
