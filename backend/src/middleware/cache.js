@@ -51,10 +51,13 @@ export const clearCache = async (pattern = '*') => {
 
     do {
       // Use SCAN to iterate over keys matching the cache pattern in a non-blocking way
-      const [nextCursor, foundKeys] = await redisClient.scan(cursor, {
-        MATCH: matchPattern,
-        COUNT: 100,
-      });
+      const { cursor: nextCursor, keys: foundKeys } = await redisClient.scan(
+        cursor,
+        {
+          MATCH: matchPattern,
+          COUNT: 100,
+        }
+      );
 
       cursor = Number(nextCursor);
 
