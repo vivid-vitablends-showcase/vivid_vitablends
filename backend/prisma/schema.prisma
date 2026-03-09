@@ -40,6 +40,7 @@ model Category {
   image        String?
   showOnHome   Boolean   @default(true)
   displayOrder Int       @default(0)
+  isCombo      Boolean   @default(false)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @default(now()) @updatedAt
   products     Product[]

@@ -1,2 +1,2 @@
 // Category filter constants
-export const EXCLUDED_CATEGORY_NAMES = ["combo", "featured"] as const;
+export const EXCLUDED_CATEGORY_NAMES = ["featured"] as const;

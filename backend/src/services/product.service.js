@@ -64,7 +64,7 @@ export const getAll = async (filters) => {
 
 export const getCombos = async () => {
   logger.info('Fetching combo products');
-  const comboCategory = await categoryRepository.findByName('combo');
+  const comboCategory = await categoryRepository.findComboCategory();
   if (!comboCategory) return [];
   return productRepository.findByCategoryId(comboCategory.id);
 };

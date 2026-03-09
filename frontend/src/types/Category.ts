@@ -5,6 +5,7 @@ export interface Category {
   image?: string;
   showOnHome: boolean;
   displayOrder: number;
+  isCombo?: boolean;
   createdAt: string;
   updatedAt?: string;
 }
