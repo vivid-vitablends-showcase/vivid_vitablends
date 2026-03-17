@@ -5,6 +5,7 @@ A full-stack web application built with React, TypeScript, and Node.js.
 ## Tech Stack
 
 ### Frontend
+
 - **React 18.3.1** with **TypeScript 5.8.3**
 - **Vite 5.4.19** - Build tooling with SWC plugin
 - **Tailwind CSS 3.4.17** - Styling with Autoprefixer & PostCSS
@@ -23,6 +24,7 @@ A full-stack web application built with React, TypeScript, and Node.js.
 - **Husky** & **lint-staged** - Git hooks
 
 ### Backend
+
 - **Node.js** with **Express 4.18.2**
 - **Prisma ORM 5.8.0** - Database ORM
 - **PostgreSQL 16** (Alpine) - Database
@@ -38,12 +40,14 @@ A full-stack web application built with React, TypeScript, and Node.js.
 - **Prettier** & **Husky** - Code quality & Git hooks
 
 ### DevOps & Infrastructure
+
 - **Docker** & **Docker Compose** - Containerization
 - **GitHub Actions** - CI/CD pipeline
 - **Nginx** (Alpine) - Reverse proxy & production serving
 - **Cloudflare R2** - Object storage (S3-compatible)
 
 ### API Testing
+
 - **Bruno** - API testing client
 
 ## Prerequisites
@@ -70,9 +74,6 @@ cd vivid_vitablends
 cd backend
 npm install
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your database credentials
 
 # Generate Prisma client
 npm run prisma:generate
@@ -163,31 +164,6 @@ vivid_vitablends/
 └── scripts/                # Deployment scripts
 ```
 
-## Environment Variables
-
-### Backend (.env)
-
-```env
-DATABASE_URL=postgresql://[USERNAME]:[PASSWORD]@[HOST]:[PORT]/[DATABASE_NAME]
-DIRECT_URL=postgresql://[USERNAME]:[PASSWORD]@[HOST]:[PORT]/[DATABASE_NAME]
-PORT=5000
-NODE_ENV=development
-JWT_SECRET=[GENERATE_SECURE_JWT_SECRET_HERE]
-JWT_EXPIRES_IN=86400
-R2_ACCOUNT_ID=[YOUR_CLOUDFLARE_R2_ACCOUNT_ID]
-R2_ACCESS_KEY_ID=[YOUR_R2_ACCESS_KEY_ID]
-R2_SECRET_ACCESS_KEY=[YOUR_R2_SECRET_ACCESS_KEY]
-R2_BUCKET_NAME=[YOUR_BUCKET_NAME]
-R2_PUBLIC_BUCKET_ID=[YOUR_PUBLIC_BUCKET_ID]
-REDIS_ENABLED=true
-REDIS_URL=redis://[HOST]:[PORT]
-REDIS_TTL=3600
-```
-
-### Frontend
-
-Create `.env` file if needed for API endpoints.
-
 ## Deployment
 
 The project includes GitHub Actions workflow for automated deployment. Configure your deployment settings in `.github/workflows/deploy.yml`.
@@ -199,6 +175,7 @@ The project includes GitHub Actions workflow for automated deployment. Configure
 This project has undergone comprehensive security hardening:
 
 #### Authentication & Authorization ✅
+
 - ✅ **JWT Security**: Algorithm enforcement (HS256), no algorithm confusion attacks
 - ✅ **Password Hashing**: bcrypt with 12 salt rounds (OWASP compliant)
 - ✅ **Admin Authorization**: All admin routes protected with `requireAdmin` middleware
@@ -206,22 +183,26 @@ This project has undergone comprehensive security hardening:
 - ✅ **Session Management**: Refresh token rotation with httpOnly cookies
 
 #### Input Validation ✅
+
 - ✅ **Zod Validation**: All API endpoints validate input with Zod schemas
 - ✅ **Image Upload**: MIME type validation, 10MB size limit, safe processing with Sharp
 - ✅ **SQL Injection**: Prisma ORM with parameterized queries only
 
 #### API Security ✅
+
 - ✅ **Helmet.js**: CSP, HSTS, X-Frame-Options, X-Content-Type-Options
 - ✅ **CORS**: Explicit origin whitelist, wildcard blocked in production
 - ✅ **Error Handling**: Sanitized error messages, no stack trace leaks in production
 
 #### Infrastructure Security ✅
+
 - ✅ **Docker**: Containers run as non-root user (nodejs:1001)
 - ✅ **Redis**: Password authentication enabled
 - ✅ **CI/CD**: npm audit + Trivy container scanning in pipeline
 - ✅ **Secrets**: No credentials in repository, proper .env.example files
 
 #### Data Integrity ✅
+
 - ✅ **Transactions**: Atomic operations for order creation
 - ✅ **Frontend**: Protected admin routes, TypeScript strict mode
 
@@ -243,6 +224,7 @@ scripts\generate-credentials.bat
 ```
 
 Then update:
+
 1. `.env` file with new credentials
 2. GitHub Actions secrets
 3. Database password
@@ -252,17 +234,20 @@ Then update:
 ### Running Security Audits
 
 **Windows:**
+
 ```bash
 security-audit.bat
 ```
 
 **Linux/Mac:**
+
 ```bash
 chmod +x security-audit.sh
 ./security-audit.sh
 ```
 
 **Manual:**
+
 ```bash
 # Backend
 cd backend

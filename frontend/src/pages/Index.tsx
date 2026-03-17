@@ -1,6 +1,7 @@
 import AnnouncementBar from "@/components/AnnouncementBar";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import ProductShowcase from "@/components/ProductShowcase";
 import CategoryGrid from "@/components/CategoryGrid";
 import BrandPromise from "@/components/BrandPromise";
 import FeaturedProducts from "@/components/FeaturedProducts";
@@ -18,6 +19,7 @@ const Index = () => {
       <Header />
       <main>
         <HeroSection />
+        <ProductShowcase />
         <StorylineSection />
         <CategoryGrid />
         <BrandPromise />
