@@ -15,6 +15,7 @@ const Header = () => {
   const navLinks = [
     { label: "Home", type: "route", to: "/" },
     { label: "Shop", type: "route", to: "/products" },
+    { label: "Gallery", type: "route", to: "/gallery" },
     { label: "Combos", type: "scroll", to: "combos" },
     { label: "About", type: "scroll", to: "about" },
     { label: "Contact", type: "route", to: "/contact" },
