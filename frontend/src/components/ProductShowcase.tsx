@@ -3,51 +3,48 @@ import gsap from "gsap";
 import { products } from "@/data/products";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
+import Particles from "./Particles";
 
-// For the ambient particle effect in the light theme
-const Particles = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const particles = containerRef.current.children;
-
-    gsap.set(particles, {
-      x: "random(0, 100vw)",
-      y: "random(0, 100vh)",
-      scale: "random(0.5, 1.5)",
-      opacity: "random(0.2, 0.6)",
-    });
-
-    gsap.to(particles, {
-      y: "-=150",
-      x: "+=random(-80, 80)",
-      rotation: "random(-180, 180)",
-      duration: "random(12, 25)",
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      stagger: {
-        amount: 5,
-        from: "random",
-      },
-    });
-  }, []);
-
-  return (
-    <div
-      ref={containerRef}
-      className="absolute inset-0 overflow-hidden pointer-events-none z-0"
-    >
-      {[...Array(20)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute w-3 h-3 rounded-md bg-orange-400 blur-[3px] opacity-50"
-          style={{ transform: `rotate(${Math.random() * 45}deg)` }}
-        />
-      ))}
-    </div>
-  );
+const SHOWCASE_CONFIG = {
+  animation: {
+    inDuration: 1.6,
+    inEase: "elastic.out(1, 0.65)",
+    wordFallDuration: 0.8,
+    wordFallStagger: 0.15,
+    wordFallEase: "bounce.out",
+    glowDurationIn: 1.5,
+    glowDurationOut: 1,
+    glowEaseIn: "power3.out",
+    glowEaseOut: "power2.in",
+    floatDuration: 2,
+    floatOffset: "-=20",
+    readTime: 1.8,
+    outDuration: 1.2,
+    outEase: "back.in(1.2)",
+    wordDropDuration: 0.6,
+    wordDropStagger: 0.08,
+    wordDropEase: "power3.in",
+    detailInDuration: 0.8,
+    detailInStagger: 0.1,
+    detailOutDuration: 0.5,
+    detailOutStagger: 0.05,
+    parallaxDuration: 0.6,
+    parallaxGlowDuration: 1,
+  },
+  transforms: {
+    startImageX: 400,
+    startImageY: -400,
+    startImageScale: 0.3,
+    startImageRotation: 45,
+    endImageX: -400,
+    endImageY: 400,
+    endImageScale: 0.3,
+    endImageRotation: -45,
+    wordStartRotationX: 90,
+    wordEndRotationX: -90,
+    parallaxImageMultiplier: 40,
+    parallaxGlowMultiplier: 60,
+  },
 };
 
 const ProductShowcase = () => {
@@ -56,16 +53,49 @@ const ProductShowcase = () => {
   const product = products[currentIndex];
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
+
+      // If reduced motion is preferred, use a simple crossfade instead of complex 3D animations
+      if (prefersReducedMotion) {
+        gsap.set(".product-image", { opacity: 0, scale: 1 });
+        gsap.set(".word-block", { opacity: 0, y: 0, rotationX: 0 });
+        gsap.set(".product-detail-sub", { opacity: 0, y: 0 });
+        gsap.set(".light-glow", { opacity: 0, scale: 1 });
+
+        tl.to(".light-glow", { opacity: 0.5, duration: 1 })
+          .to(
+            [".product-image", ".word-block", ".product-detail-sub"],
+            { opacity: 1, duration: 1 },
+            "<"
+          )
+          .to({}, { duration: SHOWCASE_CONFIG.animation.readTime * 2 })
+          .to(
+            [
+              ".product-image",
+              ".word-block",
+              ".product-detail-sub",
+              ".light-glow",
+            ],
+            { opacity: 0, duration: 1 }
+          )
+          .call(() => {
+            setCurrentIndex((prev) => (prev + 1) % products.length);
+          });
+        return;
+      }
 
       // Reset states for the animation
       // Image starting from top-right corner, scaled down
       gsap.set(".product-image", {
-        x: 400,
-        y: -400,
-        scale: 0.3,
-        rotation: 45,
+        x: SHOWCASE_CONFIG.transforms.startImageX,
+        y: SHOWCASE_CONFIG.transforms.startImageY,
+        scale: SHOWCASE_CONFIG.transforms.startImageScale,
+        rotation: SHOWCASE_CONFIG.transforms.startImageRotation,
         opacity: 0,
         filter: "blur(0px)",
       });
@@ -74,7 +104,7 @@ const ProductShowcase = () => {
       gsap.set(".word-block", {
         y: -100,
         opacity: 0,
-        rotationX: 90,
+        rotationX: SHOWCASE_CONFIG.transforms.wordStartRotationX,
         transformOrigin: "50% 0%",
       });
 
@@ -85,7 +115,12 @@ const ProductShowcase = () => {
       // ================= ANIMATE IN =================
       tl.to(
         ".light-glow",
-        { scale: 1, opacity: 0.8, duration: 1.5, ease: "power3.out" },
+        {
+          scale: 1,
+          opacity: 0.8,
+          duration: SHOWCASE_CONFIG.animation.glowDurationIn,
+          ease: SHOWCASE_CONFIG.animation.glowEaseIn,
+        },
         0
       )
 
@@ -98,8 +133,8 @@ const ProductShowcase = () => {
             scale: 1,
             rotation: 0,
             opacity: 1,
-            duration: 1.6,
-            ease: "elastic.out(1, 0.65)",
+            duration: SHOWCASE_CONFIG.animation.inDuration,
+            ease: SHOWCASE_CONFIG.animation.inEase,
           },
           0.1
         )
@@ -111,9 +146,9 @@ const ProductShowcase = () => {
             y: 0,
             opacity: 1,
             rotationX: 0,
-            duration: 0.8,
-            stagger: 0.15,
-            ease: "bounce.out",
+            duration: SHOWCASE_CONFIG.animation.wordFallDuration,
+            stagger: SHOWCASE_CONFIG.animation.wordFallStagger,
+            ease: SHOWCASE_CONFIG.animation.wordFallEase,
           },
           0.3
         )
@@ -121,24 +156,41 @@ const ProductShowcase = () => {
         // Remaining details slide up
         .to(
           ".product-detail-sub",
-          { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out" },
+          {
+            y: 0,
+            opacity: 1,
+            duration: SHOWCASE_CONFIG.animation.detailInDuration,
+            stagger: SHOWCASE_CONFIG.animation.detailInStagger,
+            ease: "power3.out",
+          },
           0.6
         )
 
         // Continuous floating animation for the product
         .to(
           ".product-image-container",
-          { y: "-=20", duration: 2, repeat: 1, yoyo: true, ease: "sine.inOut" },
+          {
+            y: SHOWCASE_CONFIG.animation.floatOffset,
+            duration: SHOWCASE_CONFIG.animation.floatDuration,
+            repeat: 1,
+            yoyo: true,
+            ease: "sine.inOut",
+          },
           0
         )
 
         // Wait / Read time
-        .to({}, { duration: 1.8 })
+        .to({}, { duration: SHOWCASE_CONFIG.animation.readTime })
 
         // ================= ANIMATE OUT =================
         .to(
           ".light-glow",
-          { scale: 1.5, opacity: 0, duration: 1, ease: "power2.in" },
+          {
+            scale: 1.5,
+            opacity: 0,
+            duration: SHOWCASE_CONFIG.animation.glowDurationOut,
+            ease: SHOWCASE_CONFIG.animation.glowEaseOut,
+          },
           ">"
         )
 
@@ -146,13 +198,13 @@ const ProductShowcase = () => {
         .to(
           ".product-image",
           {
-            x: -400,
-            y: 400,
-            scale: 0.3,
-            rotation: -45,
+            x: SHOWCASE_CONFIG.transforms.endImageX,
+            y: SHOWCASE_CONFIG.transforms.endImageY,
+            scale: SHOWCASE_CONFIG.transforms.endImageScale,
+            rotation: SHOWCASE_CONFIG.transforms.endImageRotation,
             opacity: 0,
-            duration: 1.2,
-            ease: "back.in(1.2)",
+            duration: SHOWCASE_CONFIG.animation.outDuration,
+            ease: SHOWCASE_CONFIG.animation.outEase,
           },
           "<"
         )
@@ -163,10 +215,10 @@ const ProductShowcase = () => {
           {
             y: 100,
             opacity: 0,
-            rotationX: -90,
-            duration: 0.6,
-            stagger: 0.08,
-            ease: "power3.in",
+            rotationX: SHOWCASE_CONFIG.transforms.wordEndRotationX,
+            duration: SHOWCASE_CONFIG.animation.wordDropDuration,
+            stagger: SHOWCASE_CONFIG.animation.wordDropStagger,
+            ease: SHOWCASE_CONFIG.animation.wordDropEase,
           },
           "<0.2"
         )
@@ -176,8 +228,8 @@ const ProductShowcase = () => {
           {
             y: 30,
             opacity: 0,
-            duration: 0.5,
-            stagger: 0.05,
+            duration: SHOWCASE_CONFIG.animation.detailOutDuration,
+            stagger: SHOWCASE_CONFIG.animation.detailOutStagger,
             ease: "power2.in",
           },
           "<0.1"
@@ -194,39 +246,50 @@ const ProductShowcase = () => {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion) return;
+
     const { left, top, width, height } =
       containerRef.current.getBoundingClientRect();
     const x = (e.clientX - left) / width - 0.5;
     const y = (e.clientY - top) / height - 0.5;
 
     gsap.to(".product-image-wrapper", {
-      rotationY: x * 40,
-      rotationX: -y * 40,
+      rotationY: x * SHOWCASE_CONFIG.transforms.parallaxImageMultiplier,
+      rotationX: -y * SHOWCASE_CONFIG.transforms.parallaxImageMultiplier,
       ease: "power3.out",
-      duration: 0.6,
+      duration: SHOWCASE_CONFIG.animation.parallaxDuration,
       transformPerspective: 1000,
     });
 
     gsap.to(".light-glow", {
-      x: x * 60,
-      y: y * 60,
+      x: x * SHOWCASE_CONFIG.transforms.parallaxGlowMultiplier,
+      y: y * SHOWCASE_CONFIG.transforms.parallaxGlowMultiplier,
       ease: "power2.out",
-      duration: 1,
+      duration: SHOWCASE_CONFIG.animation.parallaxGlowDuration,
     });
   };
 
   const handleMouseLeave = () => {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReducedMotion) return;
+
     gsap.to(".product-image-wrapper", {
       rotationY: 0,
       rotationX: 0,
       ease: "power3.out",
-      duration: 1,
+      duration: SHOWCASE_CONFIG.animation.parallaxGlowDuration,
     });
     gsap.to(".light-glow", {
       x: 0,
       y: 0,
       ease: "power2.out",
-      duration: 1,
+      duration: SHOWCASE_CONFIG.animation.parallaxGlowDuration,
     });
   };
 

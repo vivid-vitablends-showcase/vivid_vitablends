@@ -5,6 +5,48 @@ import storyImage from "@/assets/hero-banner.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const ANIMATION_CONFIG = {
+  scrollTriggerStart: "top 65%",
+  imageReveal: {
+    startClipPath: "inset(100% 0 0 0)",
+    endClipPath: "inset(0% 0 0 0)",
+    duration: 1.6,
+    ease: "power4.inOut",
+  },
+  imageParallax: {
+    startScale: 1.4,
+    endScale: 1,
+    duration: 2.2,
+    ease: "power3.out",
+  },
+  headline: {
+    startY: "120%",
+    endY: "0%",
+    startRotateZ: 2,
+    endRotateZ: 0,
+    duration: 1.2,
+    stagger: 0.15,
+    ease: "power4.out",
+    offset: "-=1.4",
+  },
+  paragraphs: {
+    startY: 30,
+    endY: 0,
+    duration: 1,
+    stagger: 0.2,
+    ease: "power3.out",
+    offset: "-=0.8",
+  },
+  decorativeLines: {
+    width1: "4rem",
+    width2: "2rem",
+    duration: 0.8,
+    ease: "power3.out",
+    stagger: 0.1,
+    offset: "-=0.6",
+  },
+};
+
 const StorylineSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
@@ -29,39 +71,50 @@ const StorylineSection = () => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 65%", // Trigger animation when top of section hits 65% down the viewport
-          toggleActions: "play none none reverse", // Replay on scroll back
+          start: ANIMATION_CONFIG.scrollTriggerStart,
+          toggleActions: "play none none reverse",
         },
       });
 
       // 1. Cinematic Image Reveal
-      // The container unmasks from bottom to top using clip-path
       tl.fromTo(
         imageContainerRef.current,
-        { clipPath: "inset(100% 0 0 0)" },
-        { clipPath: "inset(0% 0 0 0)", duration: 1.6, ease: "power4.inOut" }
+        { clipPath: ANIMATION_CONFIG.imageReveal.startClipPath },
+        {
+          clipPath: ANIMATION_CONFIG.imageReveal.endClipPath,
+          duration: ANIMATION_CONFIG.imageReveal.duration,
+          ease: ANIMATION_CONFIG.imageReveal.ease,
+        }
       )
         // The image inside slowly zooms out (parallax-like effect)
         .fromTo(
           imageInnerRef.current,
-          { scale: 1.4 },
-          { scale: 1, duration: 2.2, ease: "power3.out" },
-          "<" // start at the exact same time
+          { scale: ANIMATION_CONFIG.imageParallax.startScale },
+          {
+            scale: ANIMATION_CONFIG.imageParallax.endScale,
+            duration: ANIMATION_CONFIG.imageParallax.duration,
+            ease: ANIMATION_CONFIG.imageParallax.ease,
+          },
+          "<"
         );
 
       // 2. Headline Text Reveal (Masked sliding up)
       tl.fromTo(
         [headingLine1Ref.current, headingLine2Ref.current],
-        { y: "120%", opacity: 0, rotateZ: 2 },
         {
-          y: "0%",
-          opacity: 1,
-          rotateZ: 0,
-          duration: 1.2,
-          stagger: 0.15,
-          ease: "power4.out",
+          y: ANIMATION_CONFIG.headline.startY,
+          opacity: 0,
+          rotateZ: ANIMATION_CONFIG.headline.startRotateZ,
         },
-        "-=1.4" // overlap heavily with image reveal
+        {
+          y: ANIMATION_CONFIG.headline.endY,
+          opacity: 1,
+          rotateZ: ANIMATION_CONFIG.headline.endRotateZ,
+          duration: ANIMATION_CONFIG.headline.duration,
+          stagger: ANIMATION_CONFIG.headline.stagger,
+          ease: ANIMATION_CONFIG.headline.ease,
+        },
+        ANIMATION_CONFIG.headline.offset
       );
 
       // 3. Staggered Paragraphs
@@ -69,9 +122,15 @@ const StorylineSection = () => {
       if (paragraphs) {
         tl.fromTo(
           paragraphs,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 1, stagger: 0.2, ease: "power3.out" },
-          "-=0.8"
+          { opacity: 0, y: ANIMATION_CONFIG.paragraphs.startY },
+          {
+            opacity: 1,
+            y: ANIMATION_CONFIG.paragraphs.endY,
+            duration: ANIMATION_CONFIG.paragraphs.duration,
+            stagger: ANIMATION_CONFIG.paragraphs.stagger,
+            ease: ANIMATION_CONFIG.paragraphs.ease,
+          },
+          ANIMATION_CONFIG.paragraphs.offset
         );
       }
 
@@ -80,17 +139,20 @@ const StorylineSection = () => {
         [lineRef1.current, lineRef2.current],
         { width: 0, opacity: 0 },
         {
-          width: (i) => (i === 0 ? "4rem" : "2rem"),
+          width: (i) =>
+            i === 0
+              ? ANIMATION_CONFIG.decorativeLines.width1
+              : ANIMATION_CONFIG.decorativeLines.width2,
           opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.1,
+          duration: ANIMATION_CONFIG.decorativeLines.duration,
+          ease: ANIMATION_CONFIG.decorativeLines.ease,
+          stagger: ANIMATION_CONFIG.decorativeLines.stagger,
         },
-        "-=0.6"
+        ANIMATION_CONFIG.decorativeLines.offset
       );
     }, sectionRef);
 
-    return () => ctx.revert(); // Cleanup on unmount
+    return () => ctx.revert();
   }, []);
 
   return (
