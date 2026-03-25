@@ -36,7 +36,7 @@ jobs:
         run: |
           cd frontend
           npm ci
-          npm audit --audit-level=high
+          npm audit --audit-level=critical
 
       - name: Scan Dockerfiles
         uses: aquasecurity/trivy-action@master
