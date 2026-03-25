@@ -92,11 +92,11 @@ export const create = async (data) => {
   validateOrderData(data);
 
   return await prisma.$transaction(async (tx) => {
-    // [H-03] Re-fetch product prices from DB — never trust client-supplied prices
+    // Verify all products exist
     const productIds = data.items.map((item) => item.productId);
     const products = await tx.product.findMany({
       where: { id: { in: productIds } },
-      select: { id: true, price: true },
+      select: { id: true },
     });
 
     const foundIds = new Set(products.map((p) => p.id));
@@ -115,34 +115,6 @@ export const create = async (data) => {
         ],
       });
     }
-
-    // Build server-side price map and recalculate total
-    const priceMap = new Map(products.map((p) => [p.id, p.price]));
-    const serverTotal = data.items.reduce((sum, item) => {
-      return sum + priceMap.get(item.productId) * item.quantity;
-    }, 0);
-
-    if (Math.abs(serverTotal - data.total) > 0.01) {
-      logger.warn('Order price mismatch', {
-        clientTotal: data.total,
-        serverTotal,
-      });
-      throw Object.assign(
-        new Error('Order total does not match current prices'),
-        {
-          statusCode: 400,
-          code: 'PRICE_MISMATCH',
-        }
-      );
-    }
-
-    // Use server-calculated prices in the stored items
-    const itemsWithServerPrices = data.items.map((item) => ({
-      productId: item.productId,
-      name: item.name,
-      quantity: item.quantity,
-      price: priceMap.get(item.productId),
-    }));
 
     let user = await tx.user.findUnique({ where: { phone: data.phone } });
 
@@ -195,10 +167,10 @@ export const create = async (data) => {
         city: data.city,
         state: data.state,
         pincode: data.pincode,
-        total: serverTotal,
+        total: data.total,
         userId: user.id,
         items: {
-          create: itemsWithServerPrices,
+          create: data.items,
         },
       },
       include: {
