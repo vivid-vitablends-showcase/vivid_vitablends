@@ -52,6 +52,10 @@ export const updateStatus = async (req, res, next) => {
 export const getByUserId = async (req, res, next) => {
   try {
     const { userId } = req.params;
+    // [H-01] Enforce ownership: non-admin users can only access their own orders
+    if (req.user.role !== 'admin' && req.user.id !== userId) {
+      return next(Object.assign(new Error('Forbidden'), { statusCode: 403 }));
+    }
     const orders = await orderService.getByUserId(userId);
     res.json({
       success: true,
