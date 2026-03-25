@@ -37,14 +37,16 @@
     "lint-staged": "^15.2.0",
     "nodemon": "^3.1.14",
     "prettier": "^3.2.5",
-    "prisma": "^6.19.2"
+    "prisma": "^6.12.0"
   },
   "overrides": {
     "minimatch": "10.2.3",
-    "tar": "7.5.10"
+    "tar": "7.5.10",
+    "effect": "^3.21.0"
   },
   "resolutions": {
     "minimatch": "10.2.3",
-    "tar": "7.5.10"
+    "tar": "7.5.10",
+    "effect": "^3.21.0"
   }
 }
