@@ -60,6 +60,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <span className="text-lg font-bold text-green-600">
             ₹{product.price}
           </span>
+          {product.originalPrice && product.originalPrice > product.price && (
+            <span className="ml-2 text-sm text-muted-foreground line-through">
+              ₹{product.originalPrice}
+            </span>
+          )}
         </div>
 
         <div className="flex gap-3">

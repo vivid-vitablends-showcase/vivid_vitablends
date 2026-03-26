@@ -18,7 +18,7 @@ const FeaturedProducts = () => {
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev === featured.length - 1 ? 0 : prev + 1));
-    }, 3000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [featured.length]);
@@ -94,6 +94,12 @@ const FeaturedProducts = () => {
 
                     <div className="mb-5 text-xl font-bold text-accent">
                       ₹{product.price}
+                      {product.originalPrice &&
+                        product.originalPrice > product.price && (
+                          <span className="ml-2 text-sm font-normal text-muted-foreground line-through">
+                            ₹{product.originalPrice}
+                          </span>
+                        )}
                     </div>
 
                     <div className="flex gap-3">
@@ -155,6 +161,12 @@ const FeaturedProducts = () => {
 
                 <div className="mb-5 text-xl font-bold text-accent">
                   ₹{product.price}
+                  {product.originalPrice &&
+                    product.originalPrice > product.price && (
+                      <span className="ml-2 text-sm font-normal text-muted-foreground line-through">
+                        ₹{product.originalPrice}
+                      </span>
+                    )}
                 </div>
 
                 <div className="flex gap-3">
