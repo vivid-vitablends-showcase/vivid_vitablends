@@ -1,3 +1,4 @@
+import { useState } from "react";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
@@ -10,10 +11,18 @@ import ContactCards from "@/components/ContactCards";
 import Footer from "@/components/Footer";
 import StorylineSection from "@/pages/StorylineSection";
 import ReviewsSection from "@/components/ReviewsSection";
+import SplashScreen from "@/components/SplashScreen";
 
 const Index = () => {
+  const [showSplash, setShowSplash] = useState(true);
+
+  const handleSplashDone = () => {
+    setShowSplash(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      {showSplash && <SplashScreen onDone={handleSplashDone} />}
       <AnnouncementBar />
       <Header />
       <main>

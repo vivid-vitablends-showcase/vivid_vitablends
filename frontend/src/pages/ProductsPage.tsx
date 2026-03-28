@@ -232,6 +232,12 @@ const ProductsPage = () => {
 
                     <p className="mb-3 text-sm font-bold text-green-600 md:mb-4 md:text-base">
                       ₹{product.price}
+                      {product.originalPrice &&
+                        product.originalPrice > product.price && (
+                          <span className="ml-2 text-xs font-normal text-muted-foreground line-through">
+                            ₹{product.originalPrice}
+                          </span>
+                        )}
                     </p>
 
                     <div className="flex flex-col gap-2 md:flex-row">

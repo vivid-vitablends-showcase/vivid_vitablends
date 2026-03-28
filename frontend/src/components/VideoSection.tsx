@@ -24,7 +24,7 @@ const VideoSection = () => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: "top 40%",
+        start: "top 90%",
         toggleActions: "play none none none",
       },
     });
