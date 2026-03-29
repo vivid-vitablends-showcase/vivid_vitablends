@@ -14,7 +14,8 @@ WORKDIR /app
 COPY --chown=nodejs:nodejs package*.json ./
 COPY --chown=nodejs:nodejs prisma ./prisma/
 
-RUN npm ci --only=production && \
+# Install production dependencies and generate Prisma client
+RUN npm ci --omit=dev && \
     npx prisma generate
 
 COPY --chown=nodejs:nodejs . .
