@@ -5,6 +5,8 @@ RUN apk update && \
     (apk add --no-cache libpng=1.6.55-r0 || apk upgrade libpng) && \
     npm install -g npm@latest
 
+ENV HUSKY=0
+
 WORKDIR /app
 
 # Copy root workspace manifest + lockfile, then frontend workspace manifest.
