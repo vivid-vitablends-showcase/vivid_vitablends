@@ -7,8 +7,6 @@ RUN apk update && \
     addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs
 
-ENV HUSKY=0
-
 WORKDIR /app
 
 # Copy root workspace manifest + lockfile, then backend workspace manifest.
