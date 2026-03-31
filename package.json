@@ -6,12 +6,11 @@
     "backend"
   ],
   "scripts": {
-    "prepare": "is-ci || husky",
+    "prepare": "node -e \"process.env.CI && process.exit(0)\" || husky",
     "lint-staged": "lint-staged"
   },
   "devDependencies": {
     "husky": "^9.0.11",
-    "is-ci": "^4.1.0",
     "lint-staged": "^15.2.0"
   },
   "dependencies": {
