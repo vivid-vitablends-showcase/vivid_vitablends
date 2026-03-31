@@ -14,9 +14,12 @@ import ReviewsSection from "@/components/ReviewsSection";
 import SplashScreen from "@/components/SplashScreen";
 
 const Index = () => {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(
+    () => !sessionStorage.getItem("splashShown")
+  );
 
   const handleSplashDone = () => {
+    sessionStorage.setItem("splashShown", "1");
     setShowSplash(false);
   };
 
