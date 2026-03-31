@@ -6,7 +6,7 @@
     "backend"
   ],
   "scripts": {
-    "prepare": "husky",
+    "prepare": "node -e \"process.env.CI && process.exit(0)\" || husky",
     "lint-staged": "lint-staged"
   },
   "devDependencies": {

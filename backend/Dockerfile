@@ -1,32 +1,37 @@
 FROM node:22.12-alpine
 
-# Update all packages and npm to fix security vulnerabilities
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache libpng=1.6.55-r0 openssl curl || \
-    (apk upgrade libpng && apk add --no-cache openssl curl) && \
+    apk add --no-cache openssl curl && \
     npm install -g npm@latest && \
     addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs
 
 WORKDIR /app
 
+# Copy root workspace manifest + lockfile, then backend workspace manifest.
+# Frontend is intentionally excluded so npm only installs backend deps.
 COPY --chown=nodejs:nodejs package*.json ./
-COPY --chown=nodejs:nodejs prisma ./prisma/
+COPY --chown=nodejs:nodejs backend/package.json ./backend/
 
-# Install production dependencies and generate Prisma client
-RUN npm ci --omit=dev && \
-    npx prisma generate
+# Install backend production deps from the single root lockfile
+RUN npm ci --workspace=backend --omit=dev
 
-COPY --chown=nodejs:nodejs . .
+# Copy prisma schema + config and generate the client
+COPY --chown=nodejs:nodejs backend/prisma ./backend/prisma/
+COPY --chown=nodejs:nodejs backend/prisma.config.ts ./backend/
 
-COPY --chown=nodejs:nodejs entrypoint.sh ./
-RUN chmod +x entrypoint.sh
+RUN cd backend && npx prisma generate
+
+# Copy the rest of the backend source
+COPY --chown=nodejs:nodejs backend/src ./backend/src/
+COPY --chown=nodejs:nodejs backend/entrypoint.sh ./backend/entrypoint.sh
+RUN chmod +x backend/entrypoint.sh
 
 USER nodejs
 EXPOSE 5000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/health || exit 1
+    CMD curl -f http://localhost:5000/api/health || exit 1
 
-CMD ["./entrypoint.sh"]
+CMD ["/app/backend/entrypoint.sh"]
