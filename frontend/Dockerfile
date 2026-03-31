@@ -1,6 +1,5 @@
 FROM node:22.12-alpine AS build
 
-# Update all packages and npm to fix security vulnerabilities
 RUN apk update && \
     apk upgrade && \
     (apk add --no-cache libpng=1.6.55-r0 || apk upgrade libpng) && \
@@ -8,21 +7,25 @@ RUN apk update && \
 
 WORKDIR /app
 
+# Copy root workspace manifest + lockfile, then frontend workspace manifest.
+# Backend is intentionally excluded so npm only installs frontend deps.
 COPY package*.json ./
-RUN npm ci
+COPY frontend/package.json ./frontend/
 
-COPY . .
-RUN npm run build
+# Install frontend deps from the single root lockfile
+RUN npm ci --workspace=frontend
+
+COPY frontend/ ./frontend/
+RUN cd frontend && npm run build
 
 FROM nginx:1.27-alpine
 
-# Update packages and install wget for healthcheck
 RUN apk update && \
     apk upgrade && \
     (apk add --no-cache libpng=1.6.55-r0 wget || (apk upgrade libpng && apk add --no-cache wget))
 
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/frontend/dist /usr/share/nginx/html
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 RUN mkdir -p /var/cache/nginx/client_temp \
              /var/cache/nginx/proxy_temp \

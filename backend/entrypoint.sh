@@ -1,8 +1,10 @@
 #!/bin/sh
 set -e
 
+cd /app/backend
+
 echo "[entrypoint] Running Prisma migrations..."
 npx prisma migrate deploy
 
 echo "[entrypoint] Starting server..."
-exec npm start
+exec node src/server.js

@@ -13,8 +13,7 @@ jobs:
         with:
           node-version: '22'
       - name: Install dependencies
-        working-directory: ./frontend
-        run: npm ci
+        run: npm ci --workspace=frontend
       - name: Run lint
         working-directory: ./frontend
         run: npm run lint
@@ -30,11 +29,10 @@ jobs:
         with:
           node-version: '22'
       - name: Install dependencies
-        working-directory: ./backend
-        run: npm ci
+        run: npm ci --workspace=backend
       - name: Generate Prisma Client
         working-directory: ./backend
-        run: npm run prisma:generate
+        run: npx prisma generate
       - name: Check formatting
         working-directory: ./backend
         run: npm run format:check

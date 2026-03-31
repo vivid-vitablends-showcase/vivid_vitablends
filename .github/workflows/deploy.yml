@@ -22,21 +22,15 @@ jobs:
         with:
           node-version: 22.12
 
-      - name: Backend Security Audit
+      - name: Install dependencies
         env:
           HUSKY: "0"
-        run: |
-          cd backend
-          npm ci
-          npm audit --audit-level=critical
+        run: npm ci
 
-      - name: Frontend Security Audit
-        env:
-          HUSKY: "0"
+      - name: Security Audit
         run: |
-          cd frontend
-          npm ci
-          npm audit --audit-level=critical
+          npm audit --audit-level=critical --workspace=backend
+          npm audit --audit-level=critical --workspace=frontend
 
       - name: Scan Dockerfiles
         uses: aquasecurity/trivy-action@master
@@ -76,7 +70,8 @@ jobs:
       - name: Build & Push backend image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
+          context: .
+          file: backend/Dockerfile
           push: true
           no-cache: true
           tags: |
@@ -103,7 +98,8 @@ jobs:
       - name: Build & Push frontend image
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend
+          context: .
+          file: frontend/Dockerfile
           push: true
           no-cache: true
           tags: |
