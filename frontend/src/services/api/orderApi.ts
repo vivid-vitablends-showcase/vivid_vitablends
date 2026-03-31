@@ -3,9 +3,11 @@ import { apiClient } from "@/lib/apiClient";
 
 export interface CreateOrderData {
   customerName: string;
+  email?: string;
   phone: string;
   address: string;
   city: string;
+  state?: string;
   pincode: string;
   items: Array<{
     productId: string;

@@ -13,8 +13,9 @@ const Header = () => {
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const navLinks = [
-    { label: "Home", type: "route", to: "/" },
+    { label: "Home", type: "scroll", to: "hero" },
     { label: "Shop", type: "route", to: "/products" },
+    { label: "Gallery", type: "route", to: "/gallery" },
     { label: "Combos", type: "scroll", to: "combos" },
     { label: "About", type: "scroll", to: "about" },
     { label: "Contact", type: "route", to: "/contact" },
@@ -30,9 +31,12 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-10">
-        <Link to="/" className="font-display text-2xl font-bold text-amber-500">
+        <button
+          onClick={() => handleScroll("hero")}
+          className="font-display text-2xl font-bold text-amber-500"
+        >
           Vivid <span className="text-amber-400">Vitablends</span>
-        </Link>
+        </button>
 
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-8 md:flex">

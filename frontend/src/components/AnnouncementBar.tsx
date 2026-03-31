@@ -1,6 +1,6 @@
 const AnnouncementBar = () => {
   const text =
-    "🎉 Free Shipping on Orders Above ₹499 • Use Code VIVID10 for 10% Off • Fresh Batch Available Now! •";
+    "🎉Flat ₹200 off on all orders above ₹1999 • Fresh Batch Available Now! •";
 
   return (
     <div className="bg-accent overflow-hidden py-2">

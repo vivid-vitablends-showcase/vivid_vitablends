@@ -49,18 +49,17 @@ const StorylineSection = () => {
               </p>
 
               <p className="text-muted-foreground/80">
-                Every pickle we prepare, every wellness blend we craft, begins
-                with{" "}
+                Everything we create begins with{" "}
                 <span className="font-semibold text-amber-700">
                   real ingredients
                 </span>
                 ,{" "}
                 <span className="font-semibold text-amber-700">
-                  slow processes
+                  mindful processes
                 </span>
                 , and{" "}
                 <span className="font-semibold text-amber-700">
-                  generations of tradition
+                  time-honored traditions.
                 </span>
                 .
               </p>
