@@ -174,16 +174,17 @@ jobs:
             docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
             
             echo "=== Backend Logs ==="
-            docker logs vivid_vitablends-backend-1
-            
+            ACTIVE=$(cat .active-color 2>/dev/null || echo "blue")
+            docker logs vivid_vitablends-backend-${ACTIVE}-1 2>/dev/null || true
+
             echo "=== Frontend Logs ==="
-            docker logs vivid_vitablends-frontend-1
-            
+            docker logs vivid_vitablends-frontend-1 2>/dev/null || true
+
             echo "=== Postgres Logs ==="
-            docker logs vivid_vitablends-postgres-1
-            
+            docker logs vivid_vitablends-postgres-1 2>/dev/null || true
+
             echo "=== Redis Logs ==="
-            docker logs vivid_vitablends-redis-1
+            docker logs vivid_vitablends-redis-1 2>/dev/null || true
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
