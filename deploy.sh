@@ -6,11 +6,11 @@ echo "🚀 Starting production deployment..."
 # Function to extract GitHub secrets and create .env files
 extract_github_secrets() {
   echo "📝 Extracting ALL GitHub secrets to .env files..."
-  
+
   # Get all environment variables that look like secrets (uppercase with underscores)
   BACKEND_VARS=$(env | grep -E '^[A-Z][A-Z0-9_]*=' | grep -v -E '^(PATH|HOME|USER|SHELL|PWD|OLDPWD|TERM|LANG|LC_|GITHUB_|RUNNER_|CI|ACTIONS_)' || true)
   FRONTEND_VARS=$(env | grep -E '^VITE_[A-Z0-9_]*=' || true)
-  
+
   # Create backend .env with all relevant secrets
   if [ -n "$BACKEND_VARS" ]; then
     echo "$BACKEND_VARS" > backend/.env
@@ -18,13 +18,13 @@ extract_github_secrets() {
   else
     echo "⚠️ No backend environment variables found"
   fi
-  
+
   # Create frontend .env with VITE_ prefixed variables
   if [ -n "$FRONTEND_VARS" ]; then
     echo "$FRONTEND_VARS" > frontend/.env
     echo "✅ Frontend .env created with $(echo "$FRONTEND_VARS" | wc -l) variables"
   fi
-  
+
   echo "📋 Extracted secrets summary:"
   echo "Backend vars: $(echo "$BACKEND_VARS" | grep -c '^' || echo 0)"
   echo "Frontend vars: $(echo "$FRONTEND_VARS" | grep -c '^' || echo 0)"
@@ -69,36 +69,100 @@ timeout 300 $COMPOSE_CMD -f docker-compose.prod.yml pull || {
 echo "Cleaning old unused images..."
 docker image prune -f || true
 
-PREVIOUS_BACKEND=$(docker inspect --format='{{.Image}}' vivid_vitablends-backend-1 2>/dev/null || echo "none")
-PREVIOUS_FRONTEND=$(docker inspect --format='{{.Image}}' vivid_vitablends-frontend-1 2>/dev/null || echo "none")
-echo "Previous backend image: $PREVIOUS_BACKEND"
-echo "Previous frontend image: $PREVIOUS_FRONTEND"
+# ── Blue-green setup ───────────────────────────────────────────────────────────
+ACTIVE_COLOR_FILE=".active-color"
+CURRENT_COLOR=$(cat "$ACTIVE_COLOR_FILE" 2>/dev/null || echo "blue")
 
-echo "Restarting all containers..."
-$COMPOSE_CMD -f docker-compose.prod.yml up -d --remove-orphans --pull never
+if [ "$CURRENT_COLOR" = "blue" ]; then
+  NEW_COLOR="green"
+  OLD_COLOR="blue"
+else
+  NEW_COLOR="blue"
+  OLD_COLOR="green"
+fi
 
-echo "Waiting for backend to be healthy..."
+echo "Current active: $OLD_COLOR → Deploying to: $NEW_COLOR"
+
+# ── Ensure infrastructure is healthy ──────────────────────────────────────────
+echo "Ensuring postgres and redis are running..."
+$COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps postgres redis
+
+for SVC in postgres redis; do
+  echo "Waiting for $SVC to be healthy..."
+  for i in $(seq 1 12); do
+    STATUS=$($COMPOSE_CMD -f docker-compose.prod.yml ps --format json "$SVC" 2>/dev/null \
+      | grep -o '"Health":"[^"]*"' | cut -d'"' -f4 || echo "unknown")
+    [ "$STATUS" = "healthy" ] && { echo "$SVC is healthy"; break; }
+    [ "$i" -eq 12 ] && { echo "❌ $SVC failed to become healthy after 2 minutes"; exit 1; }
+    echo "  $SVC attempt $i/12 - status: $STATUS - waiting 10s..."
+    sleep 10
+  done
+done
+
+# ── Write upstream config for new color (before nginx touches it) ──────────────
+echo "Writing upstream.conf → backend-${NEW_COLOR}..."
+cat > nginx/upstream.conf << EOF
+upstream backend {
+    server backend-${NEW_COLOR}:5000;
+    keepalive 32;
+}
+
+upstream frontend {
+    server frontend:8080;
+    keepalive 16;
+}
+EOF
+
+# ── Start the new backend color ────────────────────────────────────────────────
+echo "Starting backend-${NEW_COLOR}..."
+$COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps "backend-${NEW_COLOR}"
+
+# ── Wait for new backend to be healthy ────────────────────────────────────────
+echo "Waiting for backend-${NEW_COLOR} to be healthy..."
 HEALTHY=false
 for i in $(seq 1 12); do
-  STATUS=$($COMPOSE_CMD -f docker-compose.prod.yml ps --format json backend 2>/dev/null | grep -o '"Health":"[^"]*"' | cut -d'"' -f4 || echo "unknown")
+  STATUS=$($COMPOSE_CMD -f docker-compose.prod.yml ps --format json "backend-${NEW_COLOR}" 2>/dev/null \
+    | grep -o '"Health":"[^"]*"' | cut -d'"' -f4 || echo "unknown")
   if [ "$STATUS" = "healthy" ]; then
     HEALTHY=true
-    echo "Backend is healthy"
+    echo "backend-${NEW_COLOR} is healthy"
     break
   fi
-  echo "Attempt $i/12 - status: $STATUS - waiting 10s..."
+  echo "  Attempt $i/12 - status: $STATUS - waiting 10s..."
   sleep 10
 done
 
 if [ "$HEALTHY" = false ]; then
-  echo "Backend failed health check - rolling back..."
-  if [ "$PREVIOUS_BACKEND" != "none" ]; then
-    docker tag "$PREVIOUS_BACKEND" vividvitablendsdev/vividvitablends:backend-latest || true
-    $COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps backend || true
-    echo "Rolled back to previous backend image"
-  fi
+  echo "❌ backend-${NEW_COLOR} failed health check - aborting. backend-${OLD_COLOR} still serving traffic."
+  $COMPOSE_CMD -f docker-compose.prod.yml stop "backend-${NEW_COLOR}" || true
   exit 1
 fi
+
+# ── Switch nginx to new color (zero-downtime reload) ──────────────────────────
+NGINX_RUNNING=$(docker ps --filter "name=.*nginx.*" --filter "status=running" --format "{{.Names}}" 2>/dev/null | head -1 || true)
+
+if [ -n "$NGINX_RUNNING" ]; then
+  echo "Testing nginx config before reload..."
+  $COMPOSE_CMD -f docker-compose.prod.yml exec -T nginx nginx -t
+  echo "Reloading nginx → traffic now routed to backend-${NEW_COLOR}..."
+  $COMPOSE_CMD -f docker-compose.prod.yml exec -T nginx nginx -s reload
+  sleep 2
+else
+  echo "Starting nginx..."
+  $COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps nginx
+fi
+
+# ── Update frontend ────────────────────────────────────────────────────────────
+echo "Updating frontend..."
+$COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps frontend
+
+# ── Stop old backend ───────────────────────────────────────────────────────────
+echo "Stopping backend-${OLD_COLOR}..."
+$COMPOSE_CMD -f docker-compose.prod.yml stop "backend-${OLD_COLOR}" || true
+
+# ── Save active color ──────────────────────────────────────────────────────────
+echo "$NEW_COLOR" > "$ACTIVE_COLOR_FILE"
+echo "✅ Active color saved: $NEW_COLOR"
 
 # Show container status
 echo "📊 Container status:"
