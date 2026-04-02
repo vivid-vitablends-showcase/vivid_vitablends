@@ -22,8 +22,9 @@ export const create = async (req, res, next) => {
 
 export const getAll = async (req, res, next) => {
   try {
-    logger.info('Fetching all orders', { userId: req.user?.id });
-    const orders = await orderService.getAll();
+    const { search } = req.query;
+    logger.info('Fetching all orders', { userId: req.user?.id, search });
+    const orders = await orderService.getAll(search);
     logger.info('Orders fetched', { count: orders.length });
     res.json({
       success: true,

@@ -28,8 +28,18 @@ export const create = async (data) => {
   });
 };
 
-export const findAll = async () => {
+export const findAll = async (search) => {
+  const where = search
+    ? {
+        OR: [
+          { orderId: { contains: search, mode: 'insensitive' } },
+          { customerName: { contains: search, mode: 'insensitive' } },
+        ],
+      }
+    : {};
+
   return prisma.order.findMany({
+    where,
     include: {
       items: true,
       user: true,

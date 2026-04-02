@@ -180,8 +180,8 @@ export const create = async (data) => {
   });
 };
 
-export const getAll = async () => {
-  return await orderRepository.findAll();
+export const getAll = async (search) => {
+  return await orderRepository.findAll(search);
 };
 
 export const updateStatus = async (id, status) => {
