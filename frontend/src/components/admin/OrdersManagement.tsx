@@ -1,4 +1,6 @@
-import { Package, User } from "lucide-react";
+import { Package, User, Search } from "lucide-react";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -19,6 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAdminOrders } from "@/hooks/useAdminOrders";
+import { useDebounce } from "@/hooks/useDebounce";
 import { TableSkeleton } from "./TableSkeleton";
 import { EmptyState } from "./EmptyState";
 import { Order, orderApi } from "@/services/api/orderApi";
@@ -236,88 +239,94 @@ const OrderSection = ({
 };
 
 export const OrdersManagement = () => {
-  const { orders, loading, updateStatus } = useAdminOrders();
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 300);
+  const { orders, loading, updateStatus } = useAdminOrders(debouncedSearch);
 
-  if (loading) {
-    return <TableSkeleton />;
-  }
+  const renderContent = () => {
+    if (loading) {
+      return <TableSkeleton />;
+    }
 
-  if (orders.length === 0) {
-    return (
-      <EmptyState
-        icon={Package}
-        title="No orders yet"
-        description="Orders will appear here once customers place them"
-      />
+    if (orders.length === 0) {
+      if (debouncedSearch) {
+        return (
+          <EmptyState
+            icon={Package}
+            title="No search results"
+            description={`No orders found matching "${debouncedSearch}"`}
+          />
+        );
+      }
+      return (
+        <EmptyState
+          icon={Package}
+          title="No orders yet"
+          description="Orders will appear here once customers place them"
+        />
+      );
+    }
+
+    const pendingOrders = orders.filter(
+      (o) => !o.status || o.status.toUpperCase() === "PENDING"
     );
-  }
+    const confirmedOrders = orders.filter(
+      (o) => o.status?.toUpperCase() === "CONFIRMED"
+    );
+    const cancelledOrders = orders.filter(
+      (o) => o.status?.toUpperCase() === "CANCELLED"
+    );
+    const deliveredOrders = orders.filter(
+      (o) => o.status?.toUpperCase() === "DELIVERED"
+    );
 
-  const pendingOrders = orders.filter(
-    (o) => !o.status || o.status.toUpperCase() === "PENDING"
-  );
-  const confirmedOrders = orders.filter(
-    (o) => o.status?.toUpperCase() === "CONFIRMED"
-  );
-  const cancelledOrders = orders.filter(
-    (o) => o.status?.toUpperCase() === "CANCELLED"
-  );
-  const deliveredOrders = orders.filter(
-    (o) => o.status?.toUpperCase() === "DELIVERED"
-  );
-
-  const hasAnyOrders =
-    pendingOrders.length > 0 ||
-    confirmedOrders.length > 0 ||
-    cancelledOrders.length > 0 ||
-    deliveredOrders.length > 0;
-
-  if (!hasAnyOrders) {
     return (
-      <div>
-        <div className="mb-6">
+      <>
+        <OrderSection
+          title="Pending - Redirected to WhatsApp"
+          orders={pendingOrders}
+          updateStatus={updateStatus}
+        />
+        <OrderSection
+          title="Confirmed - Admin confirmed via WhatsApp"
+          orders={confirmedOrders}
+          updateStatus={updateStatus}
+        />
+        <OrderSection
+          title="Cancelled - Order cancelled"
+          orders={cancelledOrders}
+          updateStatus={updateStatus}
+        />
+        <OrderSection
+          title="Delivered - Successfully delivered"
+          orders={deliveredOrders}
+          updateStatus={updateStatus}
+        />
+      </>
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between gap-4">
+        <div>
           <h2 className="text-2xl font-bold">Orders Management</h2>
           <p className="text-muted-foreground">
             Manage customer orders by status
           </p>
         </div>
-        <EmptyState
-          icon={Package}
-          title="No orders to display"
-          description="Orders will be organized by status once they are created"
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold">Orders Management</h2>
-        <p className="text-muted-foreground">
-          Manage customer orders by status
-        </p>
+        <div className="relative w-full sm:max-w-xs">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by order ID or name..."
+            className="pl-9"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
       </div>
 
-      <OrderSection
-        title="Pending - Redirected to WhatsApp"
-        orders={pendingOrders}
-        updateStatus={updateStatus}
-      />
-      <OrderSection
-        title="Confirmed - Admin confirmed via WhatsApp"
-        orders={confirmedOrders}
-        updateStatus={updateStatus}
-      />
-      <OrderSection
-        title="Cancelled - Order cancelled"
-        orders={cancelledOrders}
-        updateStatus={updateStatus}
-      />
-      <OrderSection
-        title="Delivered - Successfully delivered"
-        orders={deliveredOrders}
-        updateStatus={updateStatus}
-      />
+      {renderContent()}
     </div>
   );
 };

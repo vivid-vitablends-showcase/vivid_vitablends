@@ -2,12 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { orderApi } from "@/services/api/orderApi";
 import { toast } from "sonner";
 
-export const useAdminOrders = () => {
+export const useAdminOrders = (search?: string) => {
   const queryClient = useQueryClient();
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["admin-orders"],
-    queryFn: () => orderApi.getAll(),
+    queryKey: ["admin-orders", search],
+    queryFn: () => orderApi.getAll(search),
   });
 
   const updateStatusMutation = useMutation({

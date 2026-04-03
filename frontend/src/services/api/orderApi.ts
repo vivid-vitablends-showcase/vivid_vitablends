@@ -59,8 +59,13 @@ export const orderApi = {
     return res.json();
   },
 
-  getAll: async (): Promise<{ success: boolean; data: Order[] }> => {
-    const res = await apiClient(`${API_BASE_URL}/api/orders`);
+  getAll: async (
+    search?: string
+  ): Promise<{ success: boolean; data: Order[] }> => {
+    const url = search
+      ? `${API_BASE_URL}/api/orders?search=${encodeURIComponent(search)}`
+      : `${API_BASE_URL}/api/orders`;
+    const res = await apiClient(url);
     if (!res.ok) throw new Error("Failed to fetch orders");
     return res.json();
   },

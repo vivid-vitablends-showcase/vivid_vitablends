@@ -120,6 +120,27 @@ Key details:
 - `Order.status` state machine: `PENDING → CONFIRMED → DELIVERED`; `PENDING/CONFIRMED → CANCELLED`
 - `User` is identified by phone number (unique, 10 digits, no password — public order submission)
 
+### Redis: caching and rate limiting
+
+Both features require `REDIS_ENABLED=true` and gracefully degrade when Redis is unavailable.
+
+- **Caching**: Responses are cached with a default TTL of 3600s (override with `REDIS_TTL`). Cached responses include an `X-Cache: HIT/MISS` header. Cache is invalidated by glob pattern on writes.
+- **Rate limiting**: Applied selectively — admin login (5 req/min), admin routes (10 req/min), contact messages (5 req/min), orders (10 req/min).
+
+### ComingSoon feature
+
+`GET /api/coming-soon` (public, cached 5 min) and `PUT /api/coming-soon` (admin-only) manage teaser products displayed on the homepage. The `PUT` endpoint adds or removes entries based on whether an `id` is present in the request body. Images follow the same R2 upload path as products.
+
+### Bruno collection
+
+`/bruno/` contains a GUI-based API test collection (like Postman). Open the Bruno desktop client and import the `/bruno` directory to run requests against the backend. Folders mirror the API: `Admin`, `Categories`, `Health`, `Messages`, `Orders`, `Products`, `Rate Limiting`, `Reviews`.
+
+### Root utility scripts
+
+- `check-ports.sh` — shows listening ports and Docker container port mappings
+- `monitor.sh` — health-checks deployed services and tails docker-compose logs
+- `deploy.sh` — production deploy script (also used by GitHub Actions)
+
 ### CI/CD
 
 - **`ci.yml`**: Runs on PRs to `main` — frontend lint + tests, backend generate + format check.
@@ -127,8 +148,10 @@ Key details:
 
 ## Key Constraints
 
-- The root `.env` file is shared by both backend scripts and docker-compose. Keep all environment variables there. Key vars beyond the README: `CORS_ORIGIN` (comma-separated allowed origins), `JWT_REFRESH_SECRET`, `JWT_REFRESH_EXPIRES_IN`, `REDIS_PASSWORD`, `SMTP_HOST`/`SMTP_PORT`/`SMTP_USER`/`SMTP_PASS`/`SMTP_FROM_EMAIL`; frontend needs `VITE_API_BASE_URL` (empty string = same-origin via Nginx proxy).
+- The root `.env` file is shared by both backend scripts and docker-compose. Keep all environment variables there. Key vars beyond the README: `CORS_ORIGIN` (comma-separated allowed origins), `JWT_REFRESH_SECRET`, `JWT_REFRESH_EXPIRES_IN`, `REDIS_PASSWORD`, `REDIS_TTL`, `LOG_LEVEL`; R2 needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_BUCKET_ID`; frontend needs `VITE_API_BASE_URL` (empty string = same-origin via Nginx proxy) and `VITE_WHATSAPP_NUMBER`.
 - `REDIS_ENABLED=true` must be explicitly set; it defaults to `false` and the server starts without Redis if omitted or if the connection fails.
 - Backend uses **Zod v4** (`zod` package ≥4); frontend uses **Zod v3** — the APIs differ slightly (e.g., `.parse` vs error formatting).
 - Prisma client must be regenerated (`prisma:generate`) whenever `schema.prisma` changes before the backend will compile/run.
 - Nginx sits in front of both services in production; the frontend Nginx config serves the SPA and proxies `/api` to the backend.
+- The backend has no automated test suite. `test-connection.js` and `test-r2.js` at the repo root are manual connectivity scripts, not part of CI.
+- Express JSON body limit is hardcoded at 10 MB in `server.js`.
