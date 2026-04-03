@@ -143,10 +143,15 @@ NGINX_RUNNING=$(docker ps --filter "name=.*nginx.*" --filter "status=running" --
 
 if [ -n "$NGINX_RUNNING" ]; then
   echo "Testing nginx config before reload..."
-  $COMPOSE_CMD -f docker-compose.prod.yml exec -T nginx nginx -t
-  echo "Reloading nginx → traffic now routed to backend-${NEW_COLOR}..."
-  $COMPOSE_CMD -f docker-compose.prod.yml exec -T nginx nginx -s reload
-  sleep 2
+  if $COMPOSE_CMD -f docker-compose.prod.yml exec -T nginx nginx -t 2>&1; then
+    echo "Reloading nginx → traffic now routed to backend-${NEW_COLOR}..."
+    $COMPOSE_CMD -f docker-compose.prod.yml exec -T nginx nginx -s reload
+    sleep 2
+  else
+    echo "Config test failed (stale container), recreating nginx..."
+    $COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps --force-recreate nginx
+    sleep 3
+  fi
 else
   echo "Starting nginx..."
   $COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps nginx
