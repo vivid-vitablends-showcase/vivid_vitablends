@@ -226,7 +226,17 @@ export const ProductsManagement = () => {
                               ?.name || "Unknown"}
                           </Badge>
                         </TableCell>
-                        <TableCell>${product.price.toFixed(2)}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span>₹{product.price.toFixed(2)}</span>
+                            {product.originalPrice &&
+                              product.originalPrice > product.price && (
+                                <span className="text-xs text-muted-foreground line-through">
+                                  ₹{product.originalPrice.toFixed(2)}
+                                </span>
+                              )}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           {(product.inStock ?? true) ? (
                             <Badge className="bg-green-500">In Stock</Badge>
