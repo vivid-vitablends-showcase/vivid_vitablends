@@ -72,8 +72,8 @@ Follows a layered pattern: `routes → controllers → services → repositories
 - `src/controllers/` — HTTP request/response handling
 - `src/schemas/` — Zod schemas for request validation (backend uses Zod v4)
 - `src/middleware/` — auth, rate limiting, error handling
-- `src/config/index.js` — all env-var config in one place (port, CORS, JWT, Redis, R2)
-- `src/config/s3.js` — S3/R2 client init; Redis client is in `src/utils/redis.js`
+- `src/config/index.js` — all env-var config in one place (port, CORS, JWT, Redis, R2, SMTP)
+- `src/config/s3.js` — S3/R2 client init; Redis client is in `src/utils/redis.js`; email transporter is in `src/utils/email.js`
 
 **Prisma note**: Backend uses `@prisma/adapter-pg` (PostgreSQL adapter) with Prisma 7. The `prisma/` directory is inside `backend/`. Always run `prisma:generate` after schema changes before building.
 
@@ -101,6 +101,10 @@ Follows a layered pattern: `routes → controllers → services → repositories
 - `ProtectedRoute` component checks auth context; admin API routes use the `authorize` middleware.
 - JWT uses HS256 only — algorithm confusion attacks are prevented.
 
+### Email (order status notifications)
+
+Transactional emails are sent via Nodemailer (`src/utils/email.js`) with a lazy-initialized SMTP transporter. `src/services/email.service.js` builds HTML templates and calls `sendEmail`. Emails are fire-and-forget — failures are logged but never thrown. Email is skipped when `SMTP_HOST`/`SMTP_USER`/`SMTP_PASS` are absent or when the order has no email / uses the sentinel `noemail@example.com`. Status `PENDING` never triggers an email. Required env vars: `SMTP_HOST`, `SMTP_PORT` (default 587), `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM_EMAIL`.
+
 ### Image uploads
 
 Images are uploaded to Cloudflare R2 (S3-compatible). The backend validates MIME type and enforces a 10 MB limit using Sharp for processing. Presigned URLs are generated via `@aws-sdk/s3-request-presigner`.
@@ -123,7 +127,7 @@ Key details:
 
 ## Key Constraints
 
-- The root `.env` file is shared by both backend scripts and docker-compose. Keep all environment variables there. Key vars beyond the README: `CORS_ORIGIN` (comma-separated allowed origins), `JWT_REFRESH_SECRET`, `JWT_REFRESH_EXPIRES_IN`, `REDIS_PASSWORD`; frontend needs `VITE_API_BASE_URL` (empty string = same-origin via Nginx proxy).
+- The root `.env` file is shared by both backend scripts and docker-compose. Keep all environment variables there. Key vars beyond the README: `CORS_ORIGIN` (comma-separated allowed origins), `JWT_REFRESH_SECRET`, `JWT_REFRESH_EXPIRES_IN`, `REDIS_PASSWORD`, `SMTP_HOST`/`SMTP_PORT`/`SMTP_USER`/`SMTP_PASS`/`SMTP_FROM_EMAIL`; frontend needs `VITE_API_BASE_URL` (empty string = same-origin via Nginx proxy).
 - `REDIS_ENABLED=true` must be explicitly set; it defaults to `false` and the server starts without Redis if omitted or if the connection fails.
 - Backend uses **Zod v4** (`zod` package ≥4); frontend uses **Zod v3** — the APIs differ slightly (e.g., `.parse` vs error formatting).
 - Prisma client must be regenerated (`prisma:generate`) whenever `schema.prisma` changes before the backend will compile/run.
