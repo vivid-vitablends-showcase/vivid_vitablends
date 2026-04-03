@@ -10,6 +10,7 @@ import { OrdersManagement } from "@/components/admin/OrdersManagement";
 import CategoryManagement from "@/components/admin/CategoryManagement";
 import { ComingSoonManagement } from "@/components/admin/ComingSoonManagement";
 import { MessagesManagement } from "@/components/admin/MessagesManagement";
+import { GalleryManagement } from "@/components/admin/GalleryManagement";
 import { useAdminProducts } from "@/hooks/useAdminProducts";
 import { useAdminReviews } from "@/hooks/useAdminReviews";
 import { useAdminOrders } from "@/hooks/useAdminOrders";
@@ -77,6 +78,12 @@ const AdminDashboard = () => {
                 className="flex-1 sm:flex-none min-w-[100px]"
               >
                 Products
+              </TabsTrigger>
+              <TabsTrigger
+                value="gallery"
+                className="flex-1 sm:flex-none min-w-[100px]"
+              >
+                Gallery
               </TabsTrigger>
               <TabsTrigger
                 value="coming-soon"
@@ -190,6 +197,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="products">
             <ProductsManagement />
+          </TabsContent>
+
+          <TabsContent value="gallery">
+            <GalleryManagement />
           </TabsContent>
 
           <TabsContent value="coming-soon">

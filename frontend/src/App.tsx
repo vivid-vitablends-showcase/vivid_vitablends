@@ -21,6 +21,7 @@ import { CartProvider } from "@/context/CartContext";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ReviewsPage from "./pages/ReviewsPage";
+import GalleryPage from "./pages/GalleryPage";
 
 const App = () => {
   const queryClient = useMemo(() => new QueryClient(), []);
@@ -50,6 +51,7 @@ const App = () => {
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/reviews" element={<ReviewsPage />} />
+              <Route path="/gallery" element={<GalleryPage />} />
               <Route path="/shipping-policy" element={<ShippingPolicy />} />
               <Route path="/return-policy" element={<ReturnPolicy />} />
               <Route path="/faq" element={<Faq />} />

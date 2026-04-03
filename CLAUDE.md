@@ -111,7 +111,7 @@ Images are uploaded to Cloudflare R2 (S3-compatible). The backend validates MIME
 
 ### Database models
 
-`Admin`, `Session`, `Category`, `Product`, `Review`, `Message`, `User`, `Order`, `OrderItem`, `ComingSoon`
+`Admin`, `Session`, `Category`, `Product`, `Review`, `Message`, `User`, `Order`, `OrderItem`, `ComingSoon`, `GalleryImage`
 
 Key details:
 
@@ -130,6 +130,10 @@ Both features require `REDIS_ENABLED=true` and gracefully degrade when Redis is 
 ### ComingSoon feature
 
 `GET /api/coming-soon` (public, cached 5 min) and `PUT /api/coming-soon` (admin-only) manage teaser products displayed on the homepage. The `PUT` endpoint adds or removes entries based on whether an `id` is present in the request body. Images follow the same R2 upload path as products.
+
+### Gallery feature
+
+`GET /api/gallery` (public, cached 5 min), `POST /api/gallery` (admin-only, creates a `GalleryImage`), and `DELETE /api/gallery/:id` (admin-only) manage the image gallery. Follows the same R2 upload pattern as products and ComingSoon.
 
 ### Bruno collection
 
