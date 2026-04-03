@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import HealthPowders from "./pages/HealthPowders";
 import PremiumPickles from "./pages/PremiumPickles";
 import ProductsPage from "./pages/ProductsPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 import ContactPage from "./pages/ContactPage";
 import ShippingPolicy from "./pages/shippingPolicy";
 import ReturnPolicy from "./pages/ReturnPolicy";
@@ -47,6 +48,7 @@ const App = () => {
               <Route path="/health-powders" element={<HealthPowders />} />
               <Route path="/premium-pickles" element={<PremiumPickles />} />
               <Route path="/products" element={<ProductsPage />} />
+              <Route path="/products/:id" element={<ProductDetailPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/contact" element={<ContactPage />} />
