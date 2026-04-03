@@ -10,9 +10,12 @@ const CartPage = () => {
   const { cart, removeFromCart, updateQuantity } = useCart();
   const [showDetails, setShowDetails] = useState(false);
 
-  const total = useMemo(() => {
+  const subtotal = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }, [cart]);
+
+  const discount = subtotal > 1999 ? 200 : 0;
+  const total = subtotal - discount;
 
   return (
     <div className="min-h-screen bg-[#fbfcfb]">
@@ -193,6 +196,26 @@ const CartPage = () => {
 
                 <div className="my-6 h-px bg-gray-200" />
 
+                {discount > 0 && (
+                  <>
+                    <div className="mb-2 flex justify-between text-sm">
+                      <span className="text-gray-600">Subtotal</span>
+                      <span className="font-semibold text-gray-600">
+                        ₹ {subtotal}
+                      </span>
+                    </div>
+                    <div className="mb-4 flex justify-between text-sm">
+                      <span className="text-green-600">
+                        Discount (Orders above ₹1999)
+                      </span>
+                      <span className="font-semibold text-green-600">
+                        -₹ {discount}
+                      </span>
+                    </div>
+                    <div className="my-4 h-px bg-gray-200" />
+                  </>
+                )}
+
                 <div className="flex justify-between font-bold">
                   <span>Total</span>
                   <span>₹ {total}</span>
@@ -280,6 +303,24 @@ const CartPage = () => {
                   </div>
 
                   <div className="my-4 h-px bg-gray-200" />
+
+                  {discount > 0 && (
+                    <>
+                      <div className="mb-2 flex justify-between text-sm">
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-semibold text-gray-600">
+                          ₹ {subtotal}
+                        </span>
+                      </div>
+                      <div className="mb-4 flex justify-between text-sm">
+                        <span className="text-green-600">Discount</span>
+                        <span className="font-semibold text-green-600">
+                          -₹ {discount}
+                        </span>
+                      </div>
+                      <div className="my-4 h-px bg-gray-200" />
+                    </>
+                  )}
 
                   <div className="flex justify-between font-bold">
                     <span>Total</span>

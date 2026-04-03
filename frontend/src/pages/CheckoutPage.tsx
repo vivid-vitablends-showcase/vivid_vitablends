@@ -27,12 +27,15 @@ const CheckoutPage = () => {
     return buyNowItem ? [buyNowItem] : cart;
   }, [buyNowItem, cart]);
 
-  const total = useMemo(() => {
+  const subtotal = useMemo(() => {
     return checkoutItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
   }, [checkoutItems]);
+
+  const discount = subtotal > 1999 ? 200 : 0;
+  const total = subtotal - discount;
 
   const validateField = (field: string, value: string) => {
     if (field === "name") {
@@ -159,7 +162,7 @@ const CheckoutPage = () => {
 
 📦 Items:
 ${itemsText}
-
+${discount > 0 ? `\n➖ Discount: ₹${discount}` : ""}
 💰 Total: ₹${total}
 
 Please confirm availability & delivery time.
@@ -354,6 +357,26 @@ Please confirm availability & delivery time.
             </div>
 
             <div className="my-6 h-px bg-gray-200" />
+
+            {discount > 0 && (
+              <>
+                <div className="mb-2 flex justify-between text-sm">
+                  <span className="text-gray-600">Subtotal</span>
+                  <span className="font-semibold text-gray-600">
+                    ₹ {subtotal}
+                  </span>
+                </div>
+                <div className="mb-4 flex justify-between text-sm">
+                  <span className="text-green-600">
+                    Discount (Orders above ₹1999)
+                  </span>
+                  <span className="font-semibold text-green-600">
+                    -₹ {discount}
+                  </span>
+                </div>
+                <div className="my-4 h-px bg-gray-200" />
+              </>
+            )}
 
             <div className="flex justify-between font-bold">
               <span>Total</span>
