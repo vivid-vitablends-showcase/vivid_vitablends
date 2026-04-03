@@ -206,7 +206,8 @@ const ProductsPage = () => {
                 return (
                   <div
                     key={product.id}
-                    className="group rounded-xl bg-card p-3 shadow-sm transition-all hover:shadow-lg md:rounded-2xl md:p-5"
+                    onClick={() => navigate(`/products/${product.id}`)}
+                    className="group flex flex-col rounded-xl bg-card p-3 shadow-sm transition-all hover:shadow-lg md:rounded-2xl md:p-5 cursor-pointer"
                   >
                     <div className="mb-3 flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-muted p-2 md:mb-4 md:rounded-xl md:p-3 relative">
                       <img
@@ -226,7 +227,7 @@ const ProductsPage = () => {
                       {product.name}
                     </h3>
 
-                    <p className="mb-2 text-[10px] text-muted-foreground line-clamp-2 md:mb-4 md:text-xs">
+                    <p className="mb-2 flex-1 line-clamp-2 break-words text-[10px] text-muted-foreground md:mb-4 md:text-xs">
                       {product.description}
                     </p>
 
@@ -242,7 +243,10 @@ const ProductsPage = () => {
 
                     <div className="flex flex-col gap-2 md:flex-row">
                       <button
-                        onClick={() => handleBuyNow(product)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBuyNow(product);
+                        }}
                         disabled={isOutOfStock}
                         className="flex-1 rounded-lg bg-warm-gold px-3 py-2 text-[10px] font-semibold text-white transition-all hover:bg-amber-600 active:scale-95 md:text-xs disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-warm-gold"
                       >
@@ -250,7 +254,10 @@ const ProductsPage = () => {
                       </button>
 
                       <button
-                        onClick={() => handleAddToCart(product)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(product);
+                        }}
                         disabled={isOutOfStock}
                         className="flex-1 rounded-lg border-2 border-warm-gold px-3 py-2 text-[10px] font-semibold text-warm-gold transition-all hover:bg-warm-gold hover:text-white active:scale-95 md:text-xs disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-warm-gold"
                       >
