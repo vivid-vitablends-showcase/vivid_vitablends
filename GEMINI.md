@@ -108,3 +108,6 @@ Key variables: `DATABASE_URL`, `DIRECT_URL`, `PORT=5000`, `CORS_ORIGIN`, `JWT_SE
 | GET             | `/messages`                                                            | Admin            |
 | GET             | `/coming-soon`                                                         | — (cached 5 min) |
 | PUT             | `/coming-soon`                                                         | Admin            |
+| GET             | `/gallery`                                                             | — (cached 5 min) |
+| POST            | `/gallery`                                                             | Admin            |
+| DELETE          | `/gallery/:id`                                                         | Admin            |

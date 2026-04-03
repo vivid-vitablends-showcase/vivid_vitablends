@@ -10,6 +10,12 @@ Vivid VitaBlends is a full-stack e-commerce platform (supplements/nutrition prod
 
 All commands run from their respective workspace directories unless noted.
 
+### Install (from repo root)
+
+```bash
+npm install   # installs all workspaces (frontend + backend)
+```
+
 ### Frontend (`frontend/`)
 
 ```bash
@@ -77,6 +83,10 @@ Follows a layered pattern: `routes → controllers → services → repositories
 
 **Prisma note**: Backend uses `@prisma/adapter-pg` (PostgreSQL adapter) with Prisma 7. The `prisma/` directory is inside `backend/`. Always run `prisma:generate` after schema changes before building.
 
+**Logging**: Winston (`src/utils/logger.js`) for structured logging; log level controlled by `LOG_LEVEL` env var.
+
+**Password hashing**: bcryptjs at 12 rounds for admin passwords.
+
 **ESM note**: `backend/` uses `"type": "module"` — all internal imports must include the `.js` extension (e.g., `import foo from './foo.js'`).
 
 **Validation middleware**: `src/middleware/validate.js` exports `validate` (body), `validateQuery` (query params), `validateParam` (named param), and shorthands `validateId` (CUID), `validateUuid`, `validateUserId`. Use these on routes instead of inline parsing.
@@ -93,6 +103,20 @@ Follows a layered pattern: `routes → controllers → services → repositories
 - **Animations**: GSAP used for the splash screen and hero section animations.
 - **Context providers** in `src/context/` manage cart state and auth.
 - **API calls**: Services use native `fetch` with `credentials: "include"` for cookie-based auth. `VITE_API_BASE_URL` (from `src/lib/config.ts`) is the base for all requests.
+
+Key `src/` directories:
+
+```
+components/admin/    # Dashboard management panels
+components/ui/       # shadcn/ui primitives (50+)
+components/layout/   # Shared layout components (Header, ProductCard, etc.)
+context/             # CartContext (localStorage-backed), AuthContext
+hooks/               # Custom hooks (useAdminAuth, useProducts, etc.)
+lib/                 # apiClient, config, constants, storage, utils
+pages/               # Route-level page components
+services/api/        # Fetch wrappers per resource (products, orders, etc.)
+types/               # TypeScript interfaces
+```
 
 ### Auth flow
 
@@ -135,6 +159,35 @@ Both features require `REDIS_ENABLED=true` and gracefully degrade when Redis is 
 
 `GET /api/gallery` (public, cached 5 min), `POST /api/gallery` (admin-only, creates a `GalleryImage`), and `DELETE /api/gallery/:id` (admin-only) manage the image gallery. Follows the same R2 upload pattern as products and ComingSoon.
 
+### API routes reference
+
+All routes under `/api`:
+
+| Method            | Path                                                  | Auth             |
+| ----------------- | ----------------------------------------------------- | ---------------- |
+| `GET`             | `/health`                                             | —                |
+| `POST`            | `/admin/login`                                        | — (rate: 5/min)  |
+| `POST`            | `/admin/refresh`                                      | — (rate: 10/min) |
+| `POST`            | `/admin/logout`                                       | Admin            |
+| `GET`             | `/products`, `/products/featured`, `/products/combos` | — (cached 300s)  |
+| `GET`             | `/products/:id`                                       | — (cached 600s)  |
+| `POST/PUT/DELETE` | `/products/*`                                         | Admin            |
+| `GET`             | `/categories`, `/categories/homepage`                 | — (cached 600s)  |
+| `POST/PUT`        | `/categories/*`                                       | Admin            |
+| `GET`             | `/reviews`, `/reviews/hero`                           | — (cached 300s)  |
+| `POST`            | `/reviews`                                            | —                |
+| `PATCH`           | `/reviews/:id/show-in-hero`                           | Admin            |
+| `POST`            | `/orders`                                             | — (rate: 10/min) |
+| `GET`             | `/orders`                                             | Admin            |
+| `PATCH`           | `/orders/:id/status`                                  | Admin            |
+| `POST`            | `/messages`                                           | — (rate: 5/min)  |
+| `GET`             | `/messages`                                           | Admin            |
+| `GET`             | `/coming-soon`                                        | — (cached 5 min) |
+| `PUT`             | `/coming-soon`                                        | Admin            |
+| `GET`             | `/gallery`                                            | — (cached 5 min) |
+| `POST`            | `/gallery`                                            | Admin            |
+| `DELETE`          | `/gallery/:id`                                        | Admin            |
+
 ### Bruno collection
 
 `/bruno/` contains a GUI-based API test collection (like Postman). Open the Bruno desktop client and import the `/bruno` directory to run requests against the backend. Folders mirror the API: `Admin`, `Categories`, `Health`, `Messages`, `Orders`, `Products`, `Rate Limiting`, `Reviews`.
@@ -152,10 +205,11 @@ Both features require `REDIS_ENABLED=true` and gracefully degrade when Redis is 
 
 ## Key Constraints
 
-- The root `.env` file is shared by both backend scripts and docker-compose. Keep all environment variables there. Key vars beyond the README: `CORS_ORIGIN` (comma-separated allowed origins), `JWT_REFRESH_SECRET`, `JWT_REFRESH_EXPIRES_IN`, `REDIS_PASSWORD`, `REDIS_TTL`, `LOG_LEVEL`; R2 needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_BUCKET_ID`; frontend needs `VITE_API_BASE_URL` (empty string = same-origin via Nginx proxy) and `VITE_WHATSAPP_NUMBER`.
+- The root `.env` file is shared by both backend scripts and docker-compose. Keep all environment variables there. Key vars: `DATABASE_URL`, `DIRECT_URL` (Prisma direct connection for migrations), `PORT=5000`, `CORS_ORIGIN` (comma-separated allowed origins), `JWT_SECRET`, `JWT_REFRESH_SECRET`, `JWT_EXPIRES_IN=15m`, `JWT_REFRESH_EXPIRES_IN=7d`, `REDIS_ENABLED`, `REDIS_URL`, `REDIS_PASSWORD`, `REDIS_TTL`, `LOG_LEVEL`; R2 needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_BUCKET_ID`; frontend needs `VITE_API_BASE_URL` (empty string = same-origin via Nginx proxy) and `VITE_WHATSAPP_NUMBER`.
 - `REDIS_ENABLED=true` must be explicitly set; it defaults to `false` and the server starts without Redis if omitted or if the connection fails.
 - Backend uses **Zod v4** (`zod` package ≥4); frontend uses **Zod v3** — the APIs differ slightly (e.g., `.parse` vs error formatting).
 - Prisma client must be regenerated (`prisma:generate`) whenever `schema.prisma` changes before the backend will compile/run.
 - Nginx sits in front of both services in production; the frontend Nginx config serves the SPA and proxies `/api` to the backend.
 - The backend has no automated test suite. `test-connection.js` and `test-r2.js` at the repo root are manual connectivity scripts, not part of CI.
 - Express JSON body limit is hardcoded at 10 MB in `server.js`.
+- **Discount rule**: ₹200 discount is automatically applied on the frontend (CartPage, CheckoutPage) when the cart subtotal is ≥ ₹1999. This is purely client-side — the backend `POST /orders` receives the already-discounted total.
