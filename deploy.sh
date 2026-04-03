@@ -99,20 +99,6 @@ for SVC in postgres redis; do
   done
 done
 
-# ── Write upstream config for new color (before nginx touches it) ──────────────
-echo "Writing upstream.conf → backend-${NEW_COLOR}..."
-cat > nginx/upstream.conf << EOF
-upstream backend {
-    server backend-${NEW_COLOR}:5000;
-    keepalive 32;
-}
-
-upstream frontend {
-    server frontend:8080;
-    keepalive 16;
-}
-EOF
-
 # ── Start the new backend color ────────────────────────────────────────────────
 echo "Starting backend-${NEW_COLOR}..."
 $COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps "backend-${NEW_COLOR}"
@@ -137,6 +123,20 @@ if [ "$HEALTHY" = false ]; then
   $COMPOSE_CMD -f docker-compose.prod.yml stop "backend-${NEW_COLOR}" || true
   exit 1
 fi
+
+# ── Write upstream config (only after new backend is confirmed healthy) ────────
+echo "Writing upstream.conf → backend-${NEW_COLOR}..."
+cat > nginx/upstream.conf << EOF
+upstream backend {
+    server backend-${NEW_COLOR}:5000;
+    keepalive 32;
+}
+
+upstream frontend {
+    server frontend:8080;
+    keepalive 16;
+}
+EOF
 
 # ── Switch nginx to new color (zero-downtime reload) ──────────────────────────
 NGINX_RUNNING=$(docker ps --filter "name=.*nginx.*" --filter "status=running" --format "{{.Names}}" 2>/dev/null | head -1 || true)
