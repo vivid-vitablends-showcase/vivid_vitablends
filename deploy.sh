@@ -67,7 +67,7 @@ timeout 300 $COMPOSE_CMD -f docker-compose.prod.yml pull || {
 }
 
 echo "Cleaning old unused images..."
-docker image prune -f || true
+timeout 60 docker image prune -f || true
 
 # ── Blue-green setup ───────────────────────────────────────────────────────────
 ACTIVE_COLOR_FILE=".active-color"
