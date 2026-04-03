@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import * as orderRepository from '../repositories/order.repository.js';
+import * as emailService from './email.service.js';
 import prisma from '../utils/prisma.js';
 import logger from '../utils/logger.js';
 
@@ -221,7 +222,16 @@ export const updateStatus = async (id, status) => {
     throw error;
   }
 
-  return await orderRepository.updateStatus(id, status);
+  const updatedOrder = await orderRepository.updateStatus(id, status);
+
+  // Fire and forget the email to prevent blocking the response
+  emailService.sendOrderStatusUpdateEmail(updatedOrder).catch((err) => {
+    logger.error('Unhandled error sending order status email', {
+      error: err.message,
+    });
+  });
+
+  return updatedOrder;
 };
 
 export const getByUserId = async (userId) => {

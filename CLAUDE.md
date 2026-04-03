@@ -72,8 +72,8 @@ Follows a layered pattern: `routes → controllers → services → repositories
 - `src/controllers/` — HTTP request/response handling
 - `src/schemas/` — Zod schemas for request validation (backend uses Zod v4)
 - `src/middleware/` — auth, rate limiting, error handling
-- `src/config/index.js` — all env-var config in one place (port, CORS, JWT, Redis, R2)
-- `src/config/s3.js` — S3/R2 client init; Redis client is in `src/utils/redis.js`
+- `src/config/index.js` — all env-var config in one place (port, CORS, JWT, Redis, R2, SMTP)
+- `src/config/s3.js` — S3/R2 client init; Redis client is in `src/utils/redis.js`; email transporter is in `src/utils/email.js`
 
 **Prisma note**: Backend uses `@prisma/adapter-pg` (PostgreSQL adapter) with Prisma 7. The `prisma/` directory is inside `backend/`. Always run `prisma:generate` after schema changes before building.
 
@@ -100,6 +100,10 @@ Follows a layered pattern: `routes → controllers → services → repositories
 - Refresh tokens stored as **SHA256 hashes** in the `Session` model (never plain); rotated on every use.
 - `ProtectedRoute` component checks auth context; admin API routes use the `authorize` middleware.
 - JWT uses HS256 only — algorithm confusion attacks are prevented.
+
+### Email (order status notifications)
+
+Transactional emails are sent via Nodemailer (`src/utils/email.js`) with a lazy-initialized SMTP transporter. `src/services/email.service.js` builds HTML templates and calls `sendEmail`. Emails are fire-and-forget — failures are logged but never thrown. Email is skipped when `SMTP_HOST`/`SMTP_USER`/`SMTP_PASS` are absent or when the order has no email / uses the sentinel `noemail@example.com`. Status `PENDING` never triggers an email. Required env vars: `SMTP_HOST`, `SMTP_PORT` (default 587), `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM_EMAIL`.
 
 ### Image uploads
 

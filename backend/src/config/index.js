@@ -22,4 +22,12 @@ export default {
     publicBucketId: process.env.R2_PUBLIC_BUCKET_ID,
     pathPrefix: 'products/',
   },
+  smtp: {
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+    fromEmail: process.env.SMTP_FROM_EMAIL || 'noreply@vividvitablends.com',
+  },
+  logoUrl: process.env.LOGO_URL || '',
 };
