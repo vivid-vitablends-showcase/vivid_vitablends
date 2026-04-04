@@ -330,6 +330,10 @@ VITE_WHATSAPP_NUMBER           # without leading +
 - Health check: `GET /api/health` with 18 retries over 3 minutes
 - Discord notification
 
+### PR Creation Notes
+
+When using the GitHub CLI (`gh pr create`) with a file for the body (e.g., `--body-file pr_body.txt`), do not accidentally stage and commit the temporary body file. Always remove the temporary file before running `git add` or committing.
+
 ## Docker (Production)
 
 `docker-compose.prod.yml` services:
