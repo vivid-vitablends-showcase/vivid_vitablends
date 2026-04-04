@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { useFeaturedProducts } from "@/hooks/useProducts";
+import ProductDetailModal from "@/components/ProductDetailModal";
+import { Product } from "@/types/Product";
 
 const FeaturedProducts = () => {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ const FeaturedProducts = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [startX, setStartX] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // ================= AUTO SLIDE =================
   useEffect(() => {
@@ -41,6 +44,20 @@ const FeaturedProducts = () => {
     }
   };
 
+  const handleBuyNow = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    navigate("/checkout", {
+      state: {
+        buyNowItem: { ...product, quantity: 1 },
+      },
+    });
+  };
+
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    addToCart(product);
+  };
+
   return (
     <section className="section-padding bg-background">
       <div className="mx-auto max-w-7xl">
@@ -68,7 +85,10 @@ const FeaturedProducts = () => {
           >
             {featured.map((product) => (
               <div key={product.id} className="w-full flex-shrink-0 px-4">
-                <div className="group relative overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl">
+                <div
+                  className="group relative overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl cursor-pointer"
+                  onClick={() => setSelectedProduct(product)}
+                >
                   {product.badge && (
                     <span className="absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground shadow">
                       {product.badge}
@@ -105,13 +125,7 @@ const FeaturedProducts = () => {
                     <div className="flex gap-3">
                       <Button
                         className="w-1/2"
-                        onClick={() =>
-                          navigate("/checkout", {
-                            state: {
-                              buyNowItem: { ...product, quantity: 1 },
-                            },
-                          })
-                        }
+                        onClick={(e) => handleBuyNow(e, product)}
                       >
                         Buy Now
                       </Button>
@@ -119,7 +133,7 @@ const FeaturedProducts = () => {
                       <Button
                         variant="outline"
                         className="w-1/2"
-                        onClick={() => addToCart(product)}
+                        onClick={(e) => handleAddToCart(e, product)}
                       >
                         Add to Cart
                       </Button>
@@ -136,7 +150,8 @@ const FeaturedProducts = () => {
           {featured.map((product) => (
             <div
               key={product.id}
-              className="group relative overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl"
+              className="group relative overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl cursor-pointer"
+              onClick={() => setSelectedProduct(product)}
             >
               {product.badge && (
                 <span className="absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground shadow">
@@ -172,13 +187,7 @@ const FeaturedProducts = () => {
                 <div className="flex gap-3">
                   <Button
                     className="w-1/2"
-                    onClick={() =>
-                      navigate("/checkout", {
-                        state: {
-                          buyNowItem: { ...product, quantity: 1 },
-                        },
-                      })
-                    }
+                    onClick={(e) => handleBuyNow(e, product)}
                   >
                     Buy Now
                   </Button>
@@ -186,7 +195,7 @@ const FeaturedProducts = () => {
                   <Button
                     variant="outline"
                     className="w-1/2"
-                    onClick={() => addToCart(product)}
+                    onClick={(e) => handleAddToCart(e, product)}
                   >
                     Add to Cart
                   </Button>
@@ -196,6 +205,12 @@ const FeaturedProducts = () => {
           ))}
         </div>
       </div>
+
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={!!selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </section>
   );
 };
