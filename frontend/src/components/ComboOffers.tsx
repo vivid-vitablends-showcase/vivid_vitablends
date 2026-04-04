@@ -52,11 +52,11 @@ const ComboOffers = () => {
                 className="group flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl md:flex-row"
               >
                 {/* Image */}
-                <div className="h-64 md:h-auto md:w-1/2">
+                <div className="flex h-64 items-center justify-center bg-muted md:h-auto md:min-h-[280px] md:w-1/2">
                   <img
                     src={combo.image}
                     alt={combo.name}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain p-4"
                     loading="lazy"
                   />
                 </div>
