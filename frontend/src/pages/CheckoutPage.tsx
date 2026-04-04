@@ -120,8 +120,9 @@ const CheckoutPage = () => {
       return;
     }
 
+    let orderId = "";
     try {
-      await orderApi.create({
+      const res = await orderApi.create({
         customerName: name,
         email,
         phone: phone.replace(/\D/g, ""),
@@ -138,6 +139,7 @@ const CheckoutPage = () => {
         total,
         sendWhatsApp: true,
       });
+      orderId = res?.data?.orderId || res?.orderId || "";
     } catch {
       toast.error("Failed to save order. Please check your details.");
       return;
@@ -154,6 +156,7 @@ const CheckoutPage = () => {
 
     const message = `
 🛒 *New Order - Vivid Vitablends*
+${orderId ? `\n🆔 Order ID: ${orderId}` : ""}
 
 👤 Name: ${name}
 📧 Email: ${email}
