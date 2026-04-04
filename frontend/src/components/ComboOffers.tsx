@@ -3,18 +3,23 @@ import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import { useCombos } from "@/hooks/useProducts";
 import { Product } from "@/types/Product";
+import { useState } from "react";
+import ProductDetailModal from "@/components/ProductDetailModal";
 
 const ComboOffers = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { products: combos } = useCombos();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
     addToCart(product);
     toast.success(`${product.name} added to cart`);
   };
 
-  const handleBuyNow = (product: Product) => {
+  const handleBuyNow = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
     navigate("/checkout", {
       state: {
         buyNowItem: {
@@ -39,7 +44,7 @@ const ComboOffers = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 mt-8">
           {combos.map((combo) => {
             const savings =
               combo.originalPrice && combo.originalPrice > combo.price
@@ -49,14 +54,15 @@ const ComboOffers = () => {
             return (
               <div
                 key={combo.id}
-                className="group flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl md:flex-row"
+                onClick={() => setSelectedProduct(combo)}
+                className="group flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm transition hover:shadow-xl md:flex-row cursor-pointer"
               >
                 {/* Image */}
                 <div className="flex h-64 items-center justify-center bg-muted md:h-auto md:min-h-[280px] md:w-1/2">
                   <img
                     src={combo.image}
                     alt={combo.name}
-                    className="h-full w-full object-contain p-4"
+                    className="h-full w-full object-contain p-4 transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                   />
                 </div>
@@ -99,15 +105,15 @@ const ComboOffers = () => {
 
                   <div className="mt-6 flex gap-3">
                     <button
-                      onClick={() => handleBuyNow(combo)}
-                      className="flex-1 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
+                      onClick={(e) => handleBuyNow(e, combo)}
+                      className="flex-1 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110 active:scale-95"
                     >
                       Buy Now
                     </button>
 
                     <button
-                      onClick={() => handleAddToCart(combo)}
-                      className="flex-1 rounded-lg border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                      onClick={(e) => handleAddToCart(e, combo)}
+                      className="flex-1 rounded-lg border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white active:scale-95"
                     >
                       Add to Cart
                     </button>
@@ -118,6 +124,12 @@ const ComboOffers = () => {
           })}
         </div>
       </div>
+
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={!!selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </section>
   );
 };

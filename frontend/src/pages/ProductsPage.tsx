@@ -7,6 +7,7 @@ import { categoryApi } from "@/services/api/categoryApi";
 import { Product } from "@/types/Product";
 import { Category } from "@/types/Category";
 import { useState, useMemo, useEffect } from "react";
+import ProductDetailModal from "@/components/ProductDetailModal";
 
 const ProductsPage = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const ProductsPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const { products: allProducts } = useProducts();
 
@@ -206,7 +208,7 @@ const ProductsPage = () => {
                 return (
                   <div
                     key={product.id}
-                    onClick={() => navigate(`/products/${product.id}`)}
+                    onClick={() => setSelectedProduct(product)}
                     className="group flex flex-col rounded-xl bg-card p-3 shadow-sm transition-all hover:shadow-lg md:rounded-2xl md:p-5 cursor-pointer"
                   >
                     <div className="mb-3 flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-muted p-2 md:mb-4 md:rounded-xl md:p-3 relative">
@@ -271,6 +273,12 @@ const ProductsPage = () => {
           )}
         </div>
       </div>
+
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={!!selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </main>
   );
 };

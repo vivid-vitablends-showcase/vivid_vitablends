@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/types/Product";
+import { useState } from "react";
+import ProductDetailModal from "@/components/ProductDetailModal";
 
 type ProductCardProps = {
   product: Product;
@@ -13,8 +15,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const isOutOfStock = product.inStock === false;
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleBuyNow = () => {
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.stopPropagation();
     navigate("/checkout", {
       state: {
         buyNowItem: {
@@ -25,7 +29,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
     });
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
     addToCart({
       id: product.id,
       name: product.name,
@@ -36,57 +41,68 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <Card className="overflow-hidden transition hover:shadow-lg">
-      <div className="flex h-48 items-center justify-center bg-muted relative">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="h-full w-auto object-contain"
-          loading="lazy"
-        />
-        {isOutOfStock && (
-          <Badge variant="destructive" className="absolute top-2 right-2">
-            Out of Stock
-          </Badge>
-        )}
-      </div>
-
-      <CardContent className="p-6">
-        <h3 className="mb-2 text-xl font-semibold">{product.name}</h3>
-
-        <p className="mb-4 text-muted-foreground">{product.description}</p>
-
-        <div className="mb-4">
-          <span className="text-lg font-bold text-green-600">
-            ₹{product.price}
-          </span>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span className="ml-2 text-sm text-muted-foreground line-through">
-              ₹{product.originalPrice}
-            </span>
+    <>
+      <Card
+        className="overflow-hidden transition hover:shadow-lg cursor-pointer"
+        onClick={() => setIsModalOpen(true)}
+      >
+        <div className="flex h-48 items-center justify-center bg-muted relative">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="h-full w-auto object-contain"
+            loading="lazy"
+          />
+          {isOutOfStock && (
+            <Badge variant="destructive" className="absolute top-2 right-2">
+              Out of Stock
+            </Badge>
           )}
         </div>
 
-        <div className="flex gap-3">
-          <Button
-            className="w-1/2"
-            onClick={handleBuyNow}
-            disabled={isOutOfStock}
-          >
-            {isOutOfStock ? "Out of Stock" : "Buy Now"}
-          </Button>
+        <CardContent className="p-6">
+          <h3 className="mb-2 text-xl font-semibold">{product.name}</h3>
 
-          <Button
-            variant="outline"
-            className="w-1/2"
-            onClick={handleAddToCart}
-            disabled={isOutOfStock}
-          >
-            Add to Cart
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+          <p className="mb-4 text-muted-foreground">{product.description}</p>
+
+          <div className="mb-4">
+            <span className="text-lg font-bold text-green-600">
+              ₹{product.price}
+            </span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="ml-2 text-sm text-muted-foreground line-through">
+                ₹{product.originalPrice}
+              </span>
+            )}
+          </div>
+
+          <div className="flex gap-3">
+            <Button
+              className="w-1/2"
+              onClick={handleBuyNow}
+              disabled={isOutOfStock}
+            >
+              {isOutOfStock ? "Out of Stock" : "Buy Now"}
+            </Button>
+
+            <Button
+              variant="outline"
+              className="w-1/2"
+              onClick={handleAddToCart}
+              disabled={isOutOfStock}
+            >
+              Add to Cart
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <ProductDetailModal
+        product={product}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </>
   );
 };
 
