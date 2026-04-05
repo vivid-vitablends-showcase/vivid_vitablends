@@ -1,6 +1,7 @@
 import { ArrowLeft, Mail, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { MessageCircle } from "lucide-react";
 
 const ShippingPolicy = () => {
   const navigate = useNavigate();
@@ -112,8 +113,8 @@ const ShippingPolicy = () => {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-accent"
                 >
-                  <Phone size={18} />
-                  +91 XXXXX XXXXX
+                  <MessageCircle size={18} />
+                  +91 8129362297
                 </a>
               </div>
             </div>
