@@ -135,7 +135,7 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           port: ${{ secrets.VM_PORT }}
           command_timeout: 20m
-          envs: DOCKER_USERNAME,DOCKER_TOKEN,DATABASE_URL,DIRECT_URL,JWT_SECRET,JWT_EXPIRES_IN,JWT_REFRESH_SECRET,JWT_REFRESH_EXPIRES_IN,POSTGRES_PASSWORD,CORS_ORIGIN,REDIS_PASSWORD,R2_ACCOUNT_ID,R2_ACCESS_KEY_ID,R2_SECRET_ACCESS_KEY,R2_BUCKET_NAME,R2_PUBLIC_BUCKET_ID
+          envs: DOCKER_USERNAME,DOCKER_TOKEN,DATABASE_URL,DIRECT_URL,JWT_SECRET,JWT_EXPIRES_IN,JWT_REFRESH_SECRET,JWT_REFRESH_EXPIRES_IN,POSTGRES_PASSWORD,CORS_ORIGIN,REDIS_PASSWORD,R2_ACCOUNT_ID,R2_ACCESS_KEY_ID,R2_SECRET_ACCESS_KEY,R2_BUCKET_NAME,R2_PUBLIC_BUCKET_ID,SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASS,SMTP_FROM_EMAIL
           script: |
             set -e
             cd /opt/vivid_vitablends
@@ -165,6 +165,11 @@ jobs:
             R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
             R2_BUCKET_NAME=${R2_BUCKET_NAME}
             R2_PUBLIC_BUCKET_ID=${R2_PUBLIC_BUCKET_ID}
+            SMTP_HOST=${SMTP_HOST}
+            SMTP_PORT=${SMTP_PORT:-587}
+            SMTP_USER=${SMTP_USER}
+            SMTP_PASS=${SMTP_PASS}
+            SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL:-noreply@vividvitablends.com}
             EOF
 
             chmod +x deploy.sh
@@ -203,6 +208,11 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
           R2_PUBLIC_BUCKET_ID: ${{ secrets.R2_PUBLIC_BUCKET_ID }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM_EMAIL: ${{ secrets.SMTP_FROM_EMAIL }}
 
       - name: Health Check
         run: |
