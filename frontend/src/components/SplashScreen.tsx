@@ -20,7 +20,7 @@ const SplashScreen = ({ onDone }: { onDone: () => void }) => {
 
       {/* Brand text */}
       <div className="splash-text-wrap">
-        <p className="splash-sub">est. 2024</p>
+        <p className="splash-sub">est. 2026</p>
         <h1 className="splash-title">
           VIVID
           <br />
