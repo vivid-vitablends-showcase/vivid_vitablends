@@ -23,14 +23,11 @@ export const orderSchema = z.object({
     .max(100)
     .regex(/^[a-zA-Z\s]+$/, 'State must contain only letters'),
   pincode: z.string().regex(/^\d{6}$/, 'Pincode must be 6 digits'),
-  total: z.number().positive(),
   items: z
     .array(
       z.object({
         productId: z.string().cuid(),
-        name: z.string(),
         quantity: z.number().int().positive(),
-        price: z.number().positive(),
       })
     )
     .min(1),
