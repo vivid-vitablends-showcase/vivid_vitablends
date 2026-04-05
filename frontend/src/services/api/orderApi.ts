@@ -11,11 +11,8 @@ export interface CreateOrderData {
   pincode: string;
   items: Array<{
     productId: string;
-    name: string;
     quantity: number;
-    price: number;
   }>;
-  total: number;
   sendWhatsApp?: boolean;
 }
 

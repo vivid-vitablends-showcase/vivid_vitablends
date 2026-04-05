@@ -61,17 +61,13 @@ const validateOrderData = (data) => {
     });
   } else {
     data.items.forEach((item, index) => {
-      if (!item.productId || !item.name || !item.quantity || !item.price) {
+      if (!item.productId || !item.quantity) {
         errors.push({
           field: `items[${index}]`,
           message: 'Invalid item structure',
         });
       }
     });
-  }
-
-  if (typeof data.total !== 'number' || data.total <= 0) {
-    errors.push({ field: 'total', message: 'Total must be a positive number' });
   }
 
   if (errors.length > 0) {
@@ -93,15 +89,15 @@ export const create = async (data) => {
   validateOrderData(data);
 
   return await prisma.$transaction(async (tx) => {
-    // Verify all products exist
+    // Verify all products exist and fetch prices
     const productIds = data.items.map((item) => item.productId);
     const products = await tx.product.findMany({
       where: { id: { in: productIds } },
-      select: { id: true },
+      select: { id: true, price: true, name: true },
     });
 
-    const foundIds = new Set(products.map((p) => p.id));
-    const missingIds = productIds.filter((id) => !foundIds.has(id));
+    const productsMap = new Map(products.map((p) => [p.id, p]));
+    const missingIds = productIds.filter((id) => !productsMap.has(id));
 
     if (missingIds.length > 0) {
       logger.warn('Order validation failed - invalid products', { missingIds });
@@ -116,6 +112,23 @@ export const create = async (data) => {
         ],
       });
     }
+
+    // Calculate subtotal
+    let subtotal = 0;
+    const orderItems = data.items.map((item) => {
+      const product = productsMap.get(item.productId);
+      subtotal += product.price * item.quantity;
+      return {
+        productId: item.productId,
+        name: product.name,
+        quantity: item.quantity,
+        price: product.price,
+      };
+    });
+
+    // Apply discount logic
+    const discount = subtotal > 1999 ? 200 : 0;
+    const total = subtotal - discount;
 
     let user = await tx.user.findUnique({ where: { phone: data.phone } });
 
@@ -154,8 +167,8 @@ export const create = async (data) => {
     logger.info('Creating order', {
       orderId,
       userId: user.id,
-      total: data.total,
-      itemCount: data.items.length,
+      total: total,
+      itemCount: orderItems.length,
     });
 
     return await tx.order.create({
@@ -168,10 +181,10 @@ export const create = async (data) => {
         city: data.city,
         state: data.state,
         pincode: data.pincode,
-        total: data.total,
+        total: total,
         userId: user.id,
         items: {
-          create: data.items,
+          create: orderItems,
         },
       },
       include: {

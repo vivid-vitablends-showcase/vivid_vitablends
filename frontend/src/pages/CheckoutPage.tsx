@@ -132,11 +132,8 @@ const CheckoutPage = () => {
         pincode: pincode.replace(/\D/g, ""),
         items: checkoutItems.map((item) => ({
           productId: item.id,
-          name: item.name,
           quantity: item.quantity,
-          price: item.price,
         })),
-        total,
         sendWhatsApp: true,
       });
       orderId = res?.data?.orderId || res?.orderId || "";
