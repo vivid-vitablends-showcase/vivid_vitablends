@@ -85,8 +85,7 @@ const GalleryPage = () => {
           Our Gallery
         </h1>
         <p className="text-amber-300/60 text-sm max-w-md mx-auto">
-          Handcrafted with love — every jar tells a story of tradition and
-          taste.
+          Handcrafted with love — See the Freshness. Feel the Quality.
         </p>
       </section>
 
