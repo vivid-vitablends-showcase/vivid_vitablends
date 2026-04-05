@@ -15,12 +15,13 @@ const PATTERN: [number, number][] = [
   [1, 1], // small
   [1, 2], // tall
   [1, 1], // small
-  [2, 1], // wide
+  [2, 1], // small (as per your change)
+  [1, 1], // wide (as per your change)
+  [1, 2], // small
+  [2, 1], // tall
   [1, 1], // small
-  [1, 2], // tall
-  [2, 1], // wide
   [1, 1], // small
-  [1, 1], // small
+  [1, 1], // small (added missing entry)
   [2, 2], // big square
 ];
 
