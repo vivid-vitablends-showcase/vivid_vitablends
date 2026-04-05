@@ -51,6 +51,7 @@ const ReturnPolicy = () => {
               <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                 <li>Inform us within 24 hours</li>
                 <li>Share clear photos of the product and packaging</li>
+                <li>Share a 30-second video of the package opening</li>
               </ul>
             </div>
 
