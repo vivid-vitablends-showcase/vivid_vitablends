@@ -20,6 +20,7 @@ const ProductDetailPage = () => {
 
   const product = products.find((p) => p.id === id);
   const isOutOfStock = product?.inStock === false;
+
   const discount =
     product?.originalPrice && product.originalPrice > product.price
       ? Math.round(
@@ -53,9 +54,11 @@ const ProductDetailPage = () => {
           >
             <ArrowLeft size={20} />
           </button>
+
           <h1 className="line-clamp-1 max-w-[60%] text-center font-display text-base font-bold tracking-wide text-white md:text-xl">
-            {loading ? "Loading…" : (product?.name ?? "Product")}
+            {loading ? "Loading…" : product?.name ?? "Product"}
           </h1>
+
           <button
             onClick={() => navigate("/cart")}
             className="relative rounded-lg p-2 text-white transition-colors hover:bg-white/20"
@@ -134,24 +137,25 @@ const ProductDetailPage = () => {
                   />
                 </div>
 
+                {/* Badge stack */}
+                <div className="absolute left-4 top-4 flex flex-col gap-2">
+                  {!isOutOfStock && discount && (
+                    <span className="rounded-lg bg-green-600 px-3 py-1 text-xs font-bold text-white shadow">
+                      {discount}% OFF
+                    </span>
+                  )}
+
+                  {product.badge && (
+                    <span className="rounded-lg bg-warm-gold px-3 py-1 text-xs font-bold text-white shadow">
+                      {product.badge}
+                    </span>
+                  )}
+                </div>
+
                 {/* Stock badge */}
                 {isOutOfStock && (
                   <span className="absolute right-4 top-4 rounded-lg bg-red-500 px-3 py-1 text-xs font-bold text-white shadow">
                     Out of Stock
-                  </span>
-                )}
-
-                {/* Discount badge */}
-                {!isOutOfStock && discount && (
-                  <span className="absolute left-4 top-4 rounded-lg bg-green-600 px-3 py-1 text-xs font-bold text-white shadow">
-                    {discount}% OFF
-                  </span>
-                )}
-
-                {/* Custom badge */}
-                {product.badge && (
-                  <span className="absolute left-4 top-4 rounded-lg bg-warm-gold px-3 py-1 text-xs font-bold text-white shadow">
-                    {product.badge}
                   </span>
                 )}
               </div>
@@ -179,6 +183,7 @@ const ProductDetailPage = () => {
                     <span className="text-3xl font-bold text-green-600">
                       ₹{product.price.toLocaleString("en-IN")}
                     </span>
+
                     {product.originalPrice &&
                       product.originalPrice > product.price && (
                         <>
@@ -194,6 +199,7 @@ const ProductDetailPage = () => {
                         </>
                       )}
                   </div>
+
                   <div className="mt-2 flex items-center gap-1.5">
                     {isOutOfStock ? (
                       <>
@@ -233,6 +239,7 @@ const ProductDetailPage = () => {
                     <Zap size={15} />
                     {isOutOfStock ? "Out of Stock" : "Buy Now"}
                   </button>
+
                   <button
                     onClick={handleAddToCart}
                     disabled={isOutOfStock}
