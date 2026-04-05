@@ -67,10 +67,7 @@ const ShippingPolicy = () => {
                 <li>
                   Shipping charges (if applicable) are calculated at checkout.
                 </li>
-                <li>
-                  Free shipping may be offered on selected orders or promotional
-                  periods.
-                </li>
+
               </ul>
             </div>
 
@@ -102,15 +99,15 @@ const ShippingPolicy = () => {
 
               <div className="space-y-3">
                 <a
-                  href="mailto:hello@vividvitablends.com"
+                  href="mailto:vividvitablendss@gmail.com"
                   className="flex items-center gap-2 text-muted-foreground hover:text-accent"
                 >
                   <Mail size={18} />
-                  hello@vividvitablends.com
+                  vividvitablendss@gmail.com
                 </a>
 
                 <a
-                  href="https://wa.me/91XXXXXXXXXX"
+                  href="https://wa.me/918129362297"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-accent"
