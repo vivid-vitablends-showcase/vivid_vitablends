@@ -113,7 +113,7 @@ const ShippingPolicy = () => {
                   className="flex items-center gap-2 text-muted-foreground hover:text-accent"
                 >
                   <Phone size={18} />
-                  +91 XXXXX XXXXX
+                  +91 81293 62297
                 </a>
               </div>
             </div>
