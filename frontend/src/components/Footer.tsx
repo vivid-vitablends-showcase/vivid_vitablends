@@ -49,8 +49,9 @@ const Footer = () => {
             </p>
 
             <div className="mt-4 flex gap-3">
+              {/* Instagram */}
               <a
-                href={CONTACT_INFO.instagram}
+                href="https://www.instagram.com/vivid_vitablends/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-all hover:border-accent hover:text-accent"
@@ -59,16 +60,18 @@ const Footer = () => {
                 <SocialIcon type="instagram" size={18} />
               </a>
 
+              {/* Email */}
               <a
-                href={`mailto:${CONTACT_INFO.email}`}
+                href="mailto: vividvitablendss@gmail.com"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-all hover:border-accent hover:text-accent"
                 aria-label="Email"
               >
                 <SocialIcon type="email" size={18} />
               </a>
 
+              {/* WhatsApp */}
               <a
-                href={CONTACT_INFO.whatsapp}
+                href="https://wa.me/918129362297"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-all hover:border-accent hover:text-accent"
