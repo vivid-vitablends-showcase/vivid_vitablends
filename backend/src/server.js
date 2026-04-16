@@ -19,10 +19,6 @@ import galleryRoutes from './routes/gallery.routes.js';
 
 const app = express();
 
-initRedis().catch((err) => {
-  logger.error('Redis initialization failed, continuing without cache', err);
-});
-
 app.use(
   helmet({
     contentSecurityPolicy: {

@@ -81,7 +81,7 @@ Follows a layered pattern: `routes → controllers → services → repositories
 - `src/config/index.js` — all env-var config in one place (port, CORS, JWT, Redis, R2, SMTP)
 - `src/config/s3.js` — S3/R2 client init; Redis client is in `src/utils/redis.js`; email transporter is in `src/utils/email.js`
 
-**Prisma note**: Backend uses `@prisma/adapter-pg` (PostgreSQL adapter) with Prisma 7. The `prisma/` directory is inside `backend/`. Always run `prisma:generate` after schema changes before building.
+**Prisma note**: Backend uses `@prisma/adapter-pg` (PostgreSQL adapter) with Prisma 7. The `prisma/` directory is inside `backend/`. Always run `prisma:generate` after schema changes before building. `backend/prisma.config.ts` is the Prisma 7 config file referenced by the Dockerfile. In production Docker containers, `backend/entrypoint.sh` runs `prisma migrate deploy` before starting the server.
 
 **Logging**: Winston (`src/utils/logger.js`) for structured logging; log level controlled by `LOG_LEVEL` env var.
 
@@ -101,8 +101,10 @@ Follows a layered pattern: `routes → controllers → services → repositories
 - **UI**: shadcn/ui components (Radix UI primitives) styled with Tailwind CSS. `components.json` configures shadcn paths.
 - **Path alias**: `@/` maps to `src/` (configured in both `vite.config.ts` and `tsconfig.json`).
 - **Animations**: GSAP used for the splash screen and hero section animations.
-- **Context providers** in `src/context/` manage cart state and auth.
+- **Context providers**: `CartContext` (in `src/context/`) persists cart to localStorage under the key `"vivid_vitablends_cart"`. There is **no** AuthContext — admin auth state is stored in sessionStorage via the `authStorage` wrapper (`src/lib/storage.ts`) and consumed via the `useAdminAuth` hook. Do not add an AuthContext without understanding the existing pattern.
 - **API calls**: Services use native `fetch` with `credentials: "include"` for cookie-based auth. `VITE_API_BASE_URL` (from `src/lib/config.ts`) is the base for all requests.
+- **Token refresh in apiClient**: `src/lib/apiClient.ts` implements a queue-based auto-refresh on 401 responses with error code `INVALID_TOKEN`. Concurrent requests are queued while the refresh is in flight; if refresh fails, the user is redirected to `/#/sys-admin-portal`. Only admin API calls use this flow.
+- **Router**: Uses `HashRouter` — all routes are hash-prefixed (e.g., `/#/products/:id`). Admin login is at `/#/sys-admin-portal`; dashboard at `/#/sys-admin-dashboard`.
 
 Key `src/` directories:
 
@@ -110,7 +112,7 @@ Key `src/` directories:
 components/admin/    # Dashboard management panels
 components/ui/       # shadcn/ui primitives (50+)
 components/layout/   # Shared layout components (Header, ProductCard, etc.)
-context/             # CartContext (localStorage-backed), AuthContext
+context/             # CartContext (localStorage-backed); no AuthContext
 hooks/               # Custom hooks (useAdminAuth, useProducts, etc.)
 lib/                 # apiClient, config, constants, storage, utils
 pages/               # Route-level page components
@@ -140,9 +142,13 @@ Images are uploaded to Cloudflare R2 (S3-compatible). The backend validates MIME
 Key details:
 
 - `Session.refreshTokenHash` — SHA256 of the raw refresh token
-- `Order.orderId` — human-readable `VV-XXXXXX` format
+- `Order.orderId` — human-readable `VV-XXXXXX` format (unique, separate from the primary CUID `id`)
+- `Order.whatsappSent` — Boolean flag tracking whether a WhatsApp notification was sent for the order
 - `Order.status` state machine: `PENDING → CONFIRMED → DELIVERED`; `PENDING/CONFIRMED → CANCELLED`
 - `User` is identified by phone number (unique, 10 digits, no password — public order submission)
+- `Product.originalPrice` — nullable Float for displaying a crossed-out original price (sale pricing)
+- `Product.inStock` — Boolean for inventory display
+- `Category.showOnHome` + `displayOrder` — composite index powers the `/categories/homepage` endpoint efficiently
 
 ### Redis: caching and rate limiting
 
@@ -198,14 +204,22 @@ All routes under `/api`:
 - `monitor.sh` — health-checks deployed services and tails docker-compose logs
 - `deploy.sh` — production deploy script (also used by GitHub Actions)
 
+### Docker production layout
+
+- **nginx**: exposes port `8000` (HTTP) and `8443` (HTTPS); reads `./nginx/nginx.conf`, `./nginx/upstream.conf`, and SSL certs from `./nginx/ssl/`
+- **backend-blue / backend-green**: dual backend instances for blue-green deploys; nginx routes between them via `upstream.conf`. Each has a 384 MB memory limit and runs with `--max-old-space-size=256`.
+- **postgres** (Alpine 16) and **redis** (Alpine 7) are internal-only (no published ports).
+
 ### CI/CD
 
 - **`ci.yml`**: Runs on PRs to `main` — frontend lint + tests, backend generate + format check.
 - **`deploy.yml`**: Runs on push to `main` — `npm audit` (critical) + Trivy scan, Docker build/push to Docker Hub (tagged `:latest` + `:SHA`), SSH deploy to VM, health check, Discord notification.
+- **`ci-dev.yml`**: Mirrors `ci.yml` but targets PRs to the `dev` branch.
+- **`deploy-dev.yml`**: Mirrors `deploy.yml` but for the `dev` branch. Deploys to `/opt/vivid_dev` on the VM, exposes port `8001`, uses Docker Compose project name `vivid-dev` (fully isolated from prod), and reads GitHub secrets with a `_DEV` suffix (e.g., `DATABASE_URL_DEV`, `JWT_SECRET_DEV`). The deploy script patches `docker-compose.dev.yml` and `deploy.sh` in-place during the run.
 
 ## Key Constraints
 
-- The root `.env` file is shared by both backend scripts and docker-compose. Keep all environment variables there. Key vars: `DATABASE_URL`, `DIRECT_URL` (Prisma direct connection for migrations), `PORT=5000`, `CORS_ORIGIN` (comma-separated allowed origins), `JWT_SECRET`, `JWT_REFRESH_SECRET`, `JWT_EXPIRES_IN=15m`, `JWT_REFRESH_EXPIRES_IN=7d`, `REDIS_ENABLED`, `REDIS_URL`, `REDIS_PASSWORD`, `REDIS_TTL`, `LOG_LEVEL`; R2 needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_BUCKET_ID`; frontend needs `VITE_API_BASE_URL` (empty string = same-origin via Nginx proxy) and `VITE_WHATSAPP_NUMBER`.
+- The root `.env` file is shared by both backend scripts and docker-compose. Keep all environment variables there. Key vars: `DATABASE_URL`, `DIRECT_URL` (Prisma direct connection for migrations), `PORT=5000`, `CORS_ORIGIN` (comma-separated allowed origins), `JWT_SECRET`, `JWT_REFRESH_SECRET`, `JWT_EXPIRES_IN=15m`, `JWT_REFRESH_EXPIRES_IN=7d`, `REDIS_ENABLED`, `REDIS_URL`, `REDIS_PASSWORD`, `REDIS_TTL`, `LOG_LEVEL`; R2 needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_BUCKET_ID`; email needs `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM_EMAIL`, and optionally `LOGO_URL` (used in email HTML templates); frontend needs `VITE_API_BASE_URL` (empty string = same-origin via Nginx proxy) and `VITE_WHATSAPP_NUMBER`.
 - `REDIS_ENABLED=true` must be explicitly set; it defaults to `false` and the server starts without Redis if omitted or if the connection fails.
 - Backend uses **Zod v4** (`zod` package ≥4); frontend uses **Zod v3** — the APIs differ slightly (e.g., `.parse` vs error formatting).
 - Prisma client must be regenerated (`prisma:generate`) whenever `schema.prisma` changes before the backend will compile/run.
@@ -213,3 +227,7 @@ All routes under `/api`:
 - The backend has no automated test suite. `test-connection.js` and `test-r2.js` at the repo root are manual connectivity scripts, not part of CI.
 - Express JSON body limit is hardcoded at 10 MB in `server.js`.
 - **Discount rule**: ₹200 discount is automatically applied on the frontend (CartPage, CheckoutPage) when the cart subtotal is ≥ ₹1999. This is purely client-side — the backend `POST /orders` receives the already-discounted total.
+- **R2 upload path prefix**: All uploaded images are stored under the `products/` prefix in the R2 bucket regardless of whether they are for products, coming soon items, or gallery images.
+- **Frontend TypeScript is intentionally loose**: `tsconfig.json` disables `strictNullChecks`, `noImplicitAny`, and `noUnusedLocals`. Do not add strict-mode fixes to existing code not being changed.
+- **Vite `envDir`**: set to the repo root, so `VITE_*` vars are read from the root `.env` file (same file used by the backend). This is intentional — do not move the `.env`.
+- **Default CORS origin**: `http://localhost:8081` in `src/config/index.js` (not 8080). During local development, either set `CORS_ORIGIN` or be aware the frontend dev server (port 8080) will be blocked unless overridden.
