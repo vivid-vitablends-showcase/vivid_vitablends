@@ -85,7 +85,7 @@ echo "Current active: $OLD_COLOR → Deploying to: $NEW_COLOR"
 
 # ── Ensure infrastructure is healthy ──────────────────────────────────────────
 echo "Ensuring postgres and redis are running..."
-$COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps postgres redis
+$COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps --remove-orphans postgres redis
 
 for SVC in postgres redis; do
   echo "Waiting for $SVC to be healthy..."
@@ -101,25 +101,30 @@ done
 
 # ── Start the new backend color ────────────────────────────────────────────────
 echo "Starting backend-${NEW_COLOR}..."
-$COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps "backend-${NEW_COLOR}"
+$COMPOSE_CMD -f docker-compose.prod.yml up -d --no-deps --remove-orphans "backend-${NEW_COLOR}"
 
 # ── Wait for new backend to be healthy ────────────────────────────────────────
+# Total wait: 30 attempts × 10s = 300s (5 min). Matches start_period(90s) + retries(8×15s=120s) = 210s max to healthy.
 echo "Waiting for backend-${NEW_COLOR} to be healthy..."
 HEALTHY=false
-for i in $(seq 1 12); do
-  STATUS=$($COMPOSE_CMD -f docker-compose.prod.yml ps --format json "backend-${NEW_COLOR}" 2>/dev/null \
+for i in $(seq 1 30); do
+  STATUS=$(timeout 15 $COMPOSE_CMD -f docker-compose.prod.yml ps --format json "backend-${NEW_COLOR}" 2>/dev/null \
     | grep -o '"Health":"[^"]*"' | cut -d'"' -f4 || echo "unknown")
   if [ "$STATUS" = "healthy" ]; then
     HEALTHY=true
     echo "backend-${NEW_COLOR} is healthy"
     break
   fi
-  echo "  Attempt $i/12 - status: $STATUS - waiting 10s..."
+  echo "  Attempt $i/30 - status: $STATUS - waiting 10s..."
   sleep 10
 done
 
 if [ "$HEALTHY" = false ]; then
   echo "❌ backend-${NEW_COLOR} failed health check - aborting. backend-${OLD_COLOR} still serving traffic."
+  echo "=== Last 80 lines of backend-${NEW_COLOR} logs ==="
+  docker logs --tail=80 "vivid_vitablends-backend-${NEW_COLOR}-1" 2>&1 || true
+  echo "=== Container state ==="
+  docker inspect "vivid_vitablends-backend-${NEW_COLOR}-1" --format '{{json .State}}' 2>&1 || true
   $COMPOSE_CMD -f docker-compose.prod.yml stop "backend-${NEW_COLOR}" || true
   exit 1
 fi
