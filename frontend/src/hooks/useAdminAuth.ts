@@ -26,8 +26,13 @@ export const useAdminAuth = () => {
       });
 
       navigate("/sys-admin-dashboard");
-    } catch {
-      const errorMessage = "Login failed";
+    } catch (err) {
+      const errorMessage =
+        err instanceof TypeError
+          ? "Cannot reach server. Check your connection or try again."
+          : err instanceof Error && err.message
+            ? err.message
+            : "Login failed";
       setError(errorMessage);
 
       toast({
