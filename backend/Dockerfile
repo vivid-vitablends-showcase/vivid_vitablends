@@ -21,7 +21,9 @@ RUN npm ci --workspace=backend --omit=dev
 COPY --chown=nodejs:nodejs backend/prisma ./backend/prisma/
 COPY --chown=nodejs:nodejs backend/prisma.config.ts ./backend/
 
-RUN cd backend && npx prisma generate
+WORKDIR /app/backend
+RUN npx prisma generate
+WORKDIR /app
 
 # Copy the rest of the backend source
 COPY --chown=nodejs:nodejs backend/src ./backend/src/

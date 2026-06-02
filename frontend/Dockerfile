@@ -16,7 +16,9 @@ COPY frontend/package.json ./frontend/
 RUN npm ci --workspace=frontend
 
 COPY frontend/ ./frontend/
-RUN cd frontend && npm run build
+WORKDIR /app/frontend
+RUN npm run build
+WORKDIR /app
 
 FROM nginx:1.27-alpine
 
