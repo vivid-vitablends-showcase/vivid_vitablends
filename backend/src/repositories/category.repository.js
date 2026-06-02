@@ -23,6 +23,14 @@ export const findByName = async (name) => {
   return prisma.category.findUnique({ where: { name } });
 };
 
+export const findComboCategory = async () => {
+  return prisma.category.findFirst({ where: { isCombo: true } });
+};
+
+export const unsetIsComboForAll = async () => {
+  return prisma.category.updateMany({ data: { isCombo: false } });
+};
+
 export const update = async (id, data) => {
   return prisma.category.update({ where: { id }, data });
 };

@@ -45,6 +45,7 @@ const categoryUpdateSchema = z.object({
     .max(500, "Description must not exceed 500 characters")
     .optional(),
   image: z.string().optional(),
+  isCombo: z.boolean().optional(),
 });
 
 const CategoryManagement = () => {
@@ -57,6 +58,7 @@ const CategoryManagement = () => {
     name: "",
     description: "",
     image: "",
+    isCombo: false,
   });
 
   const handleToggleHomepage = async (
@@ -111,6 +113,7 @@ const CategoryManagement = () => {
       name: "",
       description: "",
       image: "",
+      isCombo: false,
     });
   };
 
@@ -120,6 +123,7 @@ const CategoryManagement = () => {
       name: category.name,
       description: category.description || "",
       image: category.image || "",
+      isCombo: category.isCombo || false,
     });
   };
 
@@ -156,7 +160,7 @@ const CategoryManagement = () => {
 
     setUpdating("creating");
     try {
-      await categoryApi.create(formData.name);
+      await categoryApi.create(formData);
       await queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Category created successfully");
       setCreatingCategory(false);
@@ -342,6 +346,19 @@ const CategoryManagement = () => {
                 maxLength={100}
               />
             </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <Switch
+                id="create-isCombo"
+                checked={formData.isCombo}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, isCombo: checked })
+                }
+              />
+              <Label htmlFor="create-isCombo" className="text-sm">
+                Is Combo Category
+              </Label>
+            </div>
           </div>
 
           <DialogFooter>
@@ -419,6 +436,19 @@ const CategoryManagement = () => {
                   className="mt-2 h-24 w-24 rounded-lg object-cover"
                 />
               )}
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <Switch
+                id="edit-isCombo"
+                checked={formData.isCombo}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, isCombo: checked })
+                }
+              />
+              <Label htmlFor="edit-isCombo" className="text-sm">
+                Is Combo Category
+              </Label>
             </div>
           </div>
 

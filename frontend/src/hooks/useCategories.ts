@@ -21,7 +21,10 @@ export const useCategories = () => {
         .filter(
           (cat) =>
             cat.showOnHome &&
-            !EXCLUDED_CATEGORY_NAMES.includes(cat.name.toLowerCase())
+            !cat.isCombo &&
+            !(EXCLUDED_CATEGORY_NAMES as readonly string[]).includes(
+              cat.name.toLowerCase()
+            )
         )
         .sort((a, b) => a.displayOrder - b.displayOrder),
     [categories]

@@ -19,7 +19,23 @@ export const create = async (data) => {
     });
   }
 
-  const category = await categoryRepository.create({ name: data.name.trim() });
+  if (data.image && data.image.startsWith('data:image/')) {
+    const fileName = `category-new-${Date.now()}`;
+    data.image = await uploadImage(data.image, fileName);
+  }
+
+  if (data.isCombo) {
+    await categoryRepository.unsetIsComboForAll();
+  }
+
+  const category = await categoryRepository.create({
+    name: data.name.trim(),
+    description: data.description,
+    image: data.image,
+    showOnHome: data.showOnHome,
+    displayOrder: data.displayOrder,
+    isCombo: data.isCombo,
+  });
   logger.info('Category created', { id: category.id, name: category.name });
   return category;
 };
@@ -80,6 +96,10 @@ export const update = async (id, data) => {
   if (data.image && data.image.startsWith('data:image/')) {
     const fileName = `category-${id}`;
     data.image = await uploadImage(data.image, fileName);
+  }
+
+  if (data.isCombo) {
+    await categoryRepository.unsetIsComboForAll();
   }
 
   const updatedCategory = await categoryRepository.update(id, data);

@@ -84,7 +84,7 @@ export const useAdminProducts = () => {
 
   const createCategory = async (name: string) => {
     try {
-      await categoryApi.create(name);
+      await categoryApi.create({ name });
       toast.success("Category created successfully");
       await fetchCategories();
       return true;
