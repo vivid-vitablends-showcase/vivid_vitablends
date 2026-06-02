@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { useMemo } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import ComingSoon from "./pages/ComingSoon";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
@@ -35,7 +36,8 @@ const App = () => {
         <CartProvider>
           <HashRouter>
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<ComingSoon />} />
+              <Route path="/app" element={<Index />} />
               <Route path="/sys-admin-portal" element={<AdminLogin />} />
               <Route
                 path="/sys-admin-dashboard"
